@@ -1,0 +1,49 @@
+# Environments
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend/.env
+backend/.env.template
+
+# Logs
+*.log
+npm-debug.log*
+
+# Python / Dependencies
+node_modules/
+backend/venv/
+backend/.venv/
+frontend/node_modules/
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.so
+*.pyc
+
+# Databases
+*.db
+
+# Build outputs
+frontend/dist/
+dist/
+build/
+
+# IDEs
+.vscode/
+.idea/
+.claude/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test outputs
+*_TEST.json
