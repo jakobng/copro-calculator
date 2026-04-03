@@ -358,8 +358,8 @@ def _build_criteria_summary(incentive: Incentive, country_name: str, has_local: 
             score_info = f" (min {incentive.cultural_test_min_score} points)"
         parts.append(f"pass cultural test{score_info}")
     if not parts:
-        return f"Meet {country_name} programme requirements."
-    return "You need: " + "; ".join(parts) + "."
+        return f"No obvious extra requirements were detected for {country_name} from the current inputs."
+    return "Likely requirements: " + "; ".join(parts) + "."
 
 
 def check_incentive_eligibility(
@@ -394,7 +394,7 @@ def check_incentive_eligibility(
     format_mismatch = bool(incentive.eligible_formats and proj_format not in incentive.eligible_formats)
     if format_mismatch:
         return False, [Requirement(
-            description=f"Format '{project.format}' not eligible for {incentive.name}. Accepted: {', '.join(incentive.eligible_formats)}",
+            description=f"This programme does not cover {project.format}. It is for: {', '.join(incentive.eligible_formats)}.",
             category="format", source=source,
         )], 0.0, None
 
@@ -411,9 +411,20 @@ def check_incentive_eligibility(
     )
     if stage_mismatch:
         return False, [Requirement(
-            description=f"Stage not eligible. This incentive covers: {', '.join(incentive.eligible_stages)}. Your selected stage(s): {', '.join(active_stages)}.",
+            description=f"This programme is for {', '.join(incentive.eligible_stages)}, not {', '.join(active_stages)}.",
             category="stage", source=source,
         )], 0.0, None
+
+    # --- Region-specific incentives cannot be auto-confirmed from country-only inputs ---
+    if incentive.region:
+        requirements.append(Requirement(
+            description=(
+                f"This programme is only relevant if your work is actually based in {incentive.region}. "
+                f"The calculator only knows the country so far, not the region, so this needs a manual check."
+            ),
+            category="region",
+            source=source,
+        ))
 
     # --- Minimum total budget (SOFT requirement) ---
     eff_min_budget = _effective_min_budget(project, incentive)
@@ -425,14 +436,14 @@ def check_incentive_eligibility(
             threshold_display += f" (~{native_ccy} {eff_min_budget:,.0f})"
 
         requirements.append(Requirement(
-            description=f"Minimum total budget: {threshold_display}. Your budget: {project.budget_currency} {project.budget:,.0f}.",
+            description=f"Your total budget is below this programme's minimum. Required: {threshold_display}. Current budget: {project.budget_currency} {project.budget:,.0f}.",
             category="budget", source=source,
         ))
 
     # --- Post-production (soft) ---
     if incentive.post_production_local_required and not project.post_flexible:
         requirements.append(Requirement(
-            description=f"Post-production in {country_name} required. Mark post-production as flexible to explore this incentive.",
+            description=f"Some post-production needs to happen in {country_name}. Right now your inputs do not leave room for that.",
             category="production", source=source,
         ))
 
@@ -443,7 +454,7 @@ def check_incentive_eligibility(
     )
     if incentive.local_producer_required and not has_local and not project.willing_add_coproducer:
         return False, [Requirement(
-            description=f"Requires a {country_name} coproducer. Enable 'willing to add coproducer' to explore this option.",
+            description=f"This needs a {country_name} coproducer, and your current inputs say you are not adding one.",
             category="producer", source=source,
         )], 0.0, None
 
@@ -452,14 +463,14 @@ def check_incentive_eligibility(
     failed_codes = [c.upper() for c in (project.cultural_test_failed or [])]
     if cc.upper() in failed_codes:
         return False, [Requirement(
-            description=f"Does not pass {country_name} cultural test (marked as failed).",
+            description=f"You marked the {country_name} cultural test as failed.",
             category="cultural", source=source,
         )], 0.0, None
 
     # --- Shoot percent/days (HARD block) ---
     if incentive.min_shoot_percent and shoot_pct < incentive.min_shoot_percent:
         return False, [Requirement(
-            description=f"Minimum shoot in {country_name}: {incentive.min_shoot_percent}%. Current: {shoot_pct}%.",
+            description=f"You need at least {incentive.min_shoot_percent}% of the shoot in {country_name}. Current input: {shoot_pct}%.",
             category="production", source=source,
         )], 0.0, None
 
@@ -467,7 +478,7 @@ def check_incentive_eligibility(
         # min_shoot_days is a soft requirement — we can't verify actual days from
         # shoot percentage alone, so we surface it as a requirement instead of blocking.
         requirements.append(Requirement(
-            description=f"Minimum {incentive.min_shoot_days} shooting days in {country_name} required.",
+            description=f"You may also need at least {incentive.min_shoot_days} shoot day(s) in {country_name}. The calculator cannot verify days yet.",
             category="production", source=source,
         ))
 
@@ -475,19 +486,19 @@ def check_incentive_eligibility(
 
     if incentive.local_producer_required and not has_local:
         requirements.append(Requirement(
-            description=f"Partner with a {country_name} coproducer (or maintain an active {country_name} production company)",
+            description=f"You would need a {country_name} coproducer or production company.",
             category="producer", source=source,
         ))
 
     if incentive.local_crew_min_percent:
         requirements.append(Requirement(
-            description=f"Hire at least {incentive.local_crew_min_percent}% local crew in {country_name}",
+            description=f"You would likely need at least {incentive.local_crew_min_percent}% local crew in {country_name}.",
             category="crew", source=source,
         ))
 
     if incentive.post_production_local_required:
         requirements.append(Requirement(
-            description=f"Complete post-production in {country_name}",
+            description=f"Some post-production would need to happen in {country_name}.",
             category="production", source=source,
         ))
 
@@ -496,13 +507,13 @@ def check_incentive_eligibility(
         if incentive.cultural_test_min_score and incentive.cultural_test_total_score:
             score_info = f" (min {incentive.cultural_test_min_score}/{incentive.cultural_test_total_score} points)"
         requirements.append(Requirement(
-            description=f"Pass {country_name} Cultural Test{score_info}",
+            description=f"You would need to pass the {country_name} cultural test{score_info}.",
             category="cultural", source=source,
         ))
 
     if incentive.min_spend_percent:
         requirements.append(Requirement(
-            description=f"Ensure at least {incentive.min_spend_percent}% of the total budget is spent in {country_name}",
+            description=f"You would need to spend at least {incentive.min_spend_percent}% of the budget in {country_name}.",
             category="spend", source=source,
         ))
 
@@ -535,8 +546,8 @@ def check_incentive_eligibility(
 
         requirements.append(Requirement(
             description=(
-                f"Minimum qualifying spend: {spend_threshold_display}. "
-                f"Estimated: {project.budget_currency} {estimated_qualifying_spend:,.0f} ({spend_basis})."
+                f"This programme usually needs at least {spend_threshold_display} of qualifying spend in {country_name}. "
+                f"Your current plan looks closer to {project.budget_currency} {estimated_qualifying_spend:,.0f} ({spend_basis})."
             ),
             category="spend", source=source,
         ))
@@ -637,10 +648,10 @@ def check_incentive_eligibility(
                 clause_reference=clause_ref,
             ))
             calc_notes = (
-                f"Rebate applies to qualified labour only. "
+                f"This incentive applies to labour spend only. "
                 f"Estimated local spend: {currency} {estimated_qualifying_spend:,.0f} ({spend_basis}). "
-                f"Labour estimated at {labour_fraction*100:.0f}% of local spend = {currency} {qualifying_base:,.0f}. "
-                f"Credit: {effective_rebate}% of {currency} {qualifying_base:,.0f} = {currency} {benefit_amount:,.0f}."
+                f"The calculator assumes labour is about {labour_fraction*100:.0f}% of that, or {currency} {qualifying_base:,.0f}. "
+                f"Estimated return: {effective_rebate}% of {currency} {qualifying_base:,.0f} = {currency} {benefit_amount:,.0f}."
             )
         else:
             qualifying_base = estimated_qualifying_spend
@@ -654,8 +665,8 @@ def check_incentive_eligibility(
                 clause_reference=clause_ref,
             ))
             calc_notes = (
-                f"Estimated qualifying spend: {currency} {estimated_qualifying_spend:,.0f} ({spend_basis}). "
-                f"Rebate: {effective_rebate}% of {currency} {qualifying_base:,.0f} = {currency} {benefit_amount:,.0f}."
+                f"Estimated local qualifying spend: {currency} {estimated_qualifying_spend:,.0f} ({spend_basis}). "
+                f"Estimated return: {effective_rebate}% of {currency} {qualifying_base:,.0f} = {currency} {benefit_amount:,.0f}."
             )
 
         if incentive.max_cap_amount:
@@ -677,7 +688,7 @@ def check_incentive_eligibility(
 
         explanation = (
             f"{criteria} {calc_notes} "
-            f"This is an estimate, not a binding figure."
+            f"This is only a planning estimate, not a guaranteed award."
         )
 
         benefit = IncentiveBenefit(
@@ -699,9 +710,9 @@ def check_incentive_eligibility(
         cap_note = ""
         if incentive.max_cap_amount:
             cap_proj = _convert(incentive.max_cap_amount, native_ccy, project.budget_currency)
-            cap_note = f" Award ceiling up to {currency} {cap_proj:,.0f} (competitive, case-specific)."
+            cap_note = f" If successful, the award can go up to about {currency} {cap_proj:,.0f}."
         explanation = (
-            f"{criteria} This is a grant/fund programme; awards are competitive and case-specific.{cap_note}"
+            f"{criteria} This is a selective fund, not an automatic rebate, so the calculator does not assign it a cash value.{cap_note}"
         )
         benefit = IncentiveBenefit(
             criteria_summary=criteria,
@@ -711,7 +722,7 @@ def check_incentive_eligibility(
             benefit_amount=0.0,
             benefit_currency=currency,
             benefit_explanation=explanation,
-            calculation_notes="No percentage stored; grant amounts are determined case-by-case.",
+            calculation_notes="This is a selective fund, so the award amount depends on the application and cannot be modeled as an automatic rebate.",
             calculation_steps=[],
             sources=sources,
         )

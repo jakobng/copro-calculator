@@ -215,17 +215,6 @@ def _evaluate_country(
         if nm and nm.incentive_name not in selected_names and nm.incentive_name not in excluded_names:
             near_misses.append(nm)
 
-    # Fourth pass: check near-misses for eligible incentives with unmet requirements
-    # This catches cases like "you're at 7% spend but need 10%" where the incentive
-    # is technically eligible (soft req) but the user is close to a threshold
-    for cand in candidates:
-        if cand["reqs"]:  # has unmet requirements
-            anns = doc_by_incentive.get(cand["inc"].id)
-            doc_ref = _first_doc_ref(anns) if anns else None
-            nm = check_near_miss(project, cand["inc"], doc_ref=doc_ref)
-            if nm and nm.incentive_name in selected_names:
-                near_misses.append(nm)
-
     return eligible, all_reqs, total_pct, near_misses
 
 
@@ -376,21 +365,24 @@ def _build_rationale(
 
     country_names = [p.country_name for p in partners]
     if len(country_names) == 1:
-        parts.append(f"Single-country production in {country_names[0]}.")
+        parts.append(f"This is a single-country setup in {country_names[0]}.")
     else:
-        parts.append(f"Coproduction between {', '.join(country_names[:-1])} and {country_names[-1]}.")
+        parts.append(f"This setup is a coproduction between {', '.join(country_names[:-1])} and {country_names[-1]}.")
 
     if treaties:
         treaty_names = [t.treaty_name for t in treaties]
-        parts.append(f"Treaty basis: {'; '.join(treaty_names)}.")
+        parts.append(f"Possible treaty route: {'; '.join(treaty_names)}.")
 
     incentive_count = sum(len(p.eligible_incentives) for p in partners)
     if incentive_count > 0 and total_pct > 0:
-        parts.append(f"{incentive_count} eligible incentive(s) identified, estimated at {total_pct}% of budget ({currency} {amount:,.0f}).")
+        parts.append(
+            f"The calculator found {incentive_count} relevant incentive(s), "
+            f"with modeled upside of about {total_pct:.1f}% of budget ({currency} {amount:,.0f})."
+        )
     elif incentive_count > 0:
-        parts.append(f"{incentive_count} incentive(s) identified; benefit depends on spend allocation and eligibility conditions being met.")
+        parts.append(f"The calculator found {incentive_count} relevant incentive(s), but the value still depends on how spend is allocated and whether the remaining conditions are met.")
     else:
-        parts.append("No incentives currently match, but treaty framework enables coproduction structure. See requirements for what's needed to qualify.")
+        parts.append("No incentives clearly match yet. The treaty structure may still be useful, but more changes would be needed.")
 
     return " ".join(parts)
 

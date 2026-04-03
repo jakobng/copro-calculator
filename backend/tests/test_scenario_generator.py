@@ -289,3 +289,80 @@ class TestDocumentaryProjects:
                         if inc.benefit and inc.benefit.benefit_amount > 0:
                             # 30% of qualifying spend — should be meaningful portion
                             assert inc.benefit.benefit_amount <= project.budget
+
+
+class TestScenarioPresentationSafeguards:
+    def test_selected_incentive_does_not_also_appear_as_near_miss(self):
+        db = SessionLocal()
+        db.add(Incentive(
+            name="Threshold Rebate",
+            country_code="ES",
+            incentive_type="tax_credit",
+            rebate_percent=30.0,
+            rebate_applies_to="qualifying_spend",
+            min_qualifying_spend=1_000_000,
+            eligible_formats=["documentary"],
+            eligible_stages=["production"],
+            local_producer_required=False,
+            max_cap_currency="EUR",
+            source_url="https://example.com/threshold",
+            source_description="Threshold source",
+        ))
+        db.commit()
+
+        project = _make_project(
+            format="documentary",
+            budget=500_000,
+            shoot_locations=[ShootLocation(country="Spain", percent=100)],
+            director_nationalities=[],
+            producer_nationalities=[],
+            production_company_countries=[],
+        )
+        scenarios = generate_scenarios(project, db)
+        db.close()
+
+        spain_scenarios = [s for s in scenarios if any(p.country_code == "ES" for p in s.partners)]
+        assert spain_scenarios
+        for scenario in spain_scenarios:
+            eligible_names = {inc.name for p in scenario.partners for inc in p.eligible_incentives}
+            near_miss_names = {nm.incentive_name for nm in scenario.near_misses}
+            assert eligible_names.isdisjoint(near_miss_names)
+
+    def test_regional_incentive_requires_manual_confirmation(self):
+        db = SessionLocal()
+        db.add(Incentive(
+            name="Regional Spain Fund",
+            country_code="ES",
+            region="Catalonia",
+            incentive_type="tax_credit",
+            rebate_percent=20.0,
+            rebate_applies_to="qualifying_spend",
+            eligible_formats=["documentary"],
+            eligible_stages=["production"],
+            local_producer_required=False,
+            max_cap_currency="EUR",
+            source_url="https://example.com/catalonia",
+            source_description="Regional source",
+        ))
+        db.commit()
+
+        project = _make_project(
+            format="documentary",
+            budget=800_000,
+            shoot_locations=[ShootLocation(country="Spain", percent=100)],
+            director_nationalities=[],
+            producer_nationalities=[],
+            production_company_countries=[],
+        )
+        scenarios = generate_scenarios(project, db)
+        db.close()
+
+        regional_incentives = [
+            inc
+            for scenario in scenarios
+            for partner in scenario.partners
+            for inc in partner.eligible_incentives
+            if inc.name == "Regional Spain Fund"
+        ]
+        assert regional_incentives
+        assert any(any(req.category == "region" for req in inc.requirements) for inc in regional_incentives)
