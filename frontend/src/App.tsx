@@ -57,7 +57,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    fetch('/api/stats').then(r => r.json()).then(setStats).catch(() => {})
+    fetch(`${API_BASE_URL}/api/stats`).then(r => r.json()).then(setStats).catch(() => {})
   }, [])
 
   const analyze = async () => {

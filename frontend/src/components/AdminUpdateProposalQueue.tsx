@@ -37,7 +37,7 @@ export function AdminUpdateProposalQueue({ initialStatus = 'pending' }: Props) {
   const loadProposals = async () => {
     setLoading(true)
     try {
-      const url = `/api/admin/update-proposals${status ? `?status=${status}` : ''}`
+      const url = `${API_BASE_URL}/api/admin/update-proposals${status ? `?status=${status}` : ''}`
       const response = await fetch(url)
       if (!response.ok) throw new Error('Failed to load proposals')
       const data = await response.json()

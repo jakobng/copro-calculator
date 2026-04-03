@@ -54,7 +54,7 @@ export function IntakeChat({ onProjectReady, onAnalyze, onSessionStart }: Props)
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('/api/intake/start', { method: 'POST' })
+      const res = await fetch(`${API_BASE_URL}/api/intake/start`, { method: 'POST' })
       if (!res.ok) throw new Error(await res.text())
       const data = await res.json()
       setSessionId(data.session_id)
@@ -79,7 +79,7 @@ export function IntakeChat({ onProjectReady, onAnalyze, onSessionStart }: Props)
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('/api/intake/message', {
+      const res = await fetch(`${API_BASE_URL}/api/intake/message`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ session_id: sessionId, message: userText }),
