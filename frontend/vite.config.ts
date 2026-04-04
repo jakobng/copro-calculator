@@ -1,8 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+const base = process.env.DEPLOY_BASE || '/'
+
 export default defineConfig({
-  base: '/copro/',
+  base,
   plugins: [react()],
   server: {
     port: 5173,
