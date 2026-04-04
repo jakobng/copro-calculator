@@ -3,7 +3,6 @@ import { API_BASE_URL } from './config'
 import type { ProjectInput, AnalyzeResponse } from './types'
 import { ProjectForm } from './components/ProjectForm'
 import { ScenarioList } from './components/ScenarioList'
-import { CulturalTestPanel } from './components/CulturalTestPanel'
 import { DocumentPanel } from './components/DocumentPanel'
 import { Info, ArrowRight } from 'lucide-react'
 
@@ -167,18 +166,13 @@ function App() {
                   <p className="text-sm text-neutral-500 italic leading-relaxed">"{response.project_summary}"</p>
                 </header>
 
-                <CulturalTestPanel
-                  scenarios={response.scenarios}
-                  project={project}
-                  sessionId={null}
-                  onProjectUpdate={setProject}
-                  onReanalyze={analyze}
-                />
-
                 <ScenarioList
                   scenarios={response.scenarios}
+                  project={project}
                   budget={project.budget}
                   currency={project.budget_currency}
+                  onProjectUpdate={setProject}
+                  onReanalyze={analyze}
                   onDocumentOpen={handleDocumentOpen}
                 />
 

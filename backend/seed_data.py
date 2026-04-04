@@ -70,7 +70,7 @@ incentives = [
         notes="30% of eligible French spend; cap €30M/project; min €250k eligible spend in France; "
               "live-action min 5 shooting days in France. Documentaries excluded. "
               "Rate rises to 40% if VFX spend exceeds €2M. Mutually exclusive with domestic credit.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="France Crédit d'impôt Cinéma (domestic)",
@@ -85,7 +85,7 @@ incentives = [
         clause_reference="Art. 220 sexies, Code général des impôts",
         notes="25% tax credit on qualifying French expenditure for French-initiated or official coproductions. "
               "Cap €25M. Must be a French or European coproduction with French producer. Mutually exclusive with TRIP.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -105,10 +105,15 @@ incentives = [
         source_url="https://www.gov.uk/guidance/claim-audio-visual-expenditure-credits-for-corporation-tax",
         source_description="HMRC — Audio Visual Expenditure Credit guidance",
         clause_reference="s.1179A–1179KA, Corporation Tax Act 2009 (as inserted by Finance (No.2) Act 2023)",
-        notes="34% of qualifying UK expenditure (credit is taxable income, net benefit ~25.5% depending on tax position). "
+        conditional_rates=[
+            {"condition": "vfx_spend_gt", "threshold": 0, "rate": 39.0,
+             "note": "AVEC VFX uplift: 39% on qualifying VFX expenditure from 1 Apr 2025."}
+        ],
+        notes="34% base rate on qualifying UK expenditure (credit is taxable income, net benefit depends on tax position). "
+              "HMRC guidance also notes 39% and 53% rates for certain production types, plus a 39% VFX uplift from 1 Apr 2025. "
               "Min 10% UK core expenditure. Cultural test: 18/35 points (BFI administers). "
               "Replaced old Film Tax Relief from 1 Jan 2024.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -167,7 +172,7 @@ incentives = [
         notes="Up to 30% of eligible German production costs; min total budget €1M (feature), €200k (documentary); "
               "min 25% of total production costs in Germany (20% if budget ≥€20M); max €5M DFFF/project. "
               "Competitive grant, not automatic.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Germany GMPF (German Motion Picture Fund)",
@@ -183,7 +188,7 @@ incentives = [
         notes="30% of approved German production costs (raised from 25% on 1 Feb 2025, uniform with DFFF). "
               "For high-budget productions: min €5M total budget, or €1.25M per episode for series. "
               "Max €10M/project. Part of €250M annual federal film funding from 2026.",
-        last_verified="2026-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -224,7 +229,7 @@ incentives = [
         notes="Investors receive 42% tax break; production receives investment equivalent to ~35-42% of qualifying Belgian spend. "
               "Max investment per work: €21M. Min 70% of spending must be in Belgium/EEA (90% in Belgium for maximum benefit). "
               "Framework agreement must be signed before principal photography.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -245,7 +250,7 @@ incentives = [
               "Min €200k qualifying spend in Italy. Cap €20M/project. "
               "Italian spend must represent at least 80% of the project's eligible costs (for the Italian portion). "
               "Requires Italian executive producer.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -263,26 +268,25 @@ incentives = [
         source_description="Ley del Impuesto sobre Sociedades (BOE-A-2014-12328)",
         clause_reference="Art. 36.2, Ley 27/2014",
         notes="30% on first €1M of qualifying spend + 25% on remainder. Cap €10M/project. "
-              "Min €1M spend in Spain. Canary Islands: enhanced rate up to 50%/45%. "
+              "Min €1M spend in Spain. Canary Islands: enhanced rate up to 54%/45%. "
               "Requires Spanish executive producer or service company.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Spain — Canary Islands Tax Incentive",
         country_code="ES",
         region="Canary Islands",
         incentive_type="tax_credit",
-        rebate_percent=50.0,
-        max_cap_amount=18_000_000,
+        rebate_percent=54.0,
+        max_cap_amount=None,
         min_qualifying_spend=1_000_000,
         eligible_formats=["feature_fiction", "documentary", "series", "animation"],
-        source_url="https://www.gobiernodecanarias.org/hacienda/canariaszec/",
-        source_description="Canary Islands ZEC / enhanced film incentive",
+        source_url="https://www.gobiernodecanarias.org/hacienda/ref/ref_fiscal.html",
+        source_description="Gobierno de Canarias — REF Fiscal",
         clause_reference="RDL 15/2014 (Real Decreto-ley 15/2014, 19 December)",
-        notes="50% on first €1M qualifying spend + 45% on remainder (enhanced over mainland Spain). "
-              "Max €18M/project. Same basic requirements as mainland but with higher rates under "
-              "Canary Islands special economic zone rules.",
-        last_verified="2025-03",
+        notes="54% on the first €1M of base + 45% on the remainder for foreign productions in the Canary Islands. "
+              "Min €200k spend in the islands. The government page shows a 60% overall aid ceiling and no explicit per-project cap for the foreign-production deduction on this page.",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -328,7 +332,7 @@ incentives = [
         cultural_test_required=True,
         cultural_test_min_score=50,
         cultural_test_total_score=100,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -352,7 +356,7 @@ incentives = [
         cultural_test_required=True,
         cultural_test_min_score=50,
         cultural_test_total_score=100,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -374,7 +378,7 @@ incentives = [
         cultural_test_required=True,
         cultural_test_min_score=12,
         cultural_test_total_score=34,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -391,7 +395,7 @@ incentives = [
         clause_reference="Act No. 43/1999 on Incentives for Initial Investments in Iceland (as amended)",
         notes="25% reimbursement of production costs incurred in Iceland. "
               "No minimum spend threshold. Applied for via Icelandic Film Centre.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -417,7 +421,7 @@ incentives = [
         cultural_test_required=True,
         cultural_test_min_score=20,
         cultural_test_total_score=51,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -454,7 +458,7 @@ incentives = [
         source_description="West Danish Film Fund — production support",
         notes="Regional grant for productions shooting in Western Denmark. "
               "Max DKK 7.5M per project. Competitive application.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -472,7 +476,7 @@ incentives = [
         source_description="Swedish Film Institute — Production Rebate",
         notes="25% rebate on qualifying Swedish expenditure. Max SEK 50M/project. "
               "Applied via Swedish Film Institute. Available from 2025.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -490,7 +494,7 @@ incentives = [
         notes="Selective grant funding for coproductions with Luxembourg participation. "
               "Max €3M per project. Requires Luxembourg coproducer and significant Luxembourg spend. "
               "Luxembourg also offers a certificate for audiovisual investment (CIAV) tax shelter.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -510,7 +514,7 @@ incentives = [
         clause_reference="s.125.4, Income Tax Act (Canada)",
         notes="25% of qualified Canadian labour expenditure; labour capped at 60% of production costs per Income Tax Act. "
               "Requires Canadian content certification (CAVCO). Provincial credits are separate and stackable.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Canada FISTC (Film or Video Production Services Tax Credit)",
@@ -526,7 +530,7 @@ incentives = [
         notes="16% of qualified Canadian labour expenditure for foreign (service) productions. "
               "No Canadian content requirement (unlike CPTC). Labour capped at 60% per Income Tax Act. Provincial credits may stack.",
         local_producer_required=False,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -536,17 +540,16 @@ incentives = [
         name="Australia Location Offset",
         country_code="AU",
         incentive_type="tax_credit",
-        rebate_percent=30.0,
+        rebate_percent=16.5,
         max_cap_currency="AUD",
         min_qualifying_spend=15_000_000,
         eligible_formats=["feature_fiction", "documentary", "series"],
         source_url="https://www.screenaustralia.gov.au/funding-and-support/producer-offset/location-and-pdv-offsets",
         source_description="Screen Australia — Location Offset",
         clause_reference="s.376-15, Income Tax Assessment Act 1997 (Cth)",
-        notes="30% of qualifying Australian production expenditure (QAPE). "
-              "Min AUD $15M QAPE (lowered from $20M, retrospective to July 2023). "
-              "Lower thresholds for TV series. Requires Australian co-producer or approved co-production.",
-        last_verified="2025-03",
+        notes="16.5% of qualifying Australian production expenditure (QAPE). "
+              "Min AUD $15M QAPE. Screen Australia's current material distinguishes this statutory offset from the Producer Offset and earlier policy debates about a 30% location rate.",
+        last_verified="2026-04",
     ),
     inc(
         name="Australia Producer Offset",
@@ -567,7 +570,7 @@ incentives = [
               "Requires significant Australian content (SAC test — holistic assessment, not points-based). "
               "Must be an official Australian production or coproduction.",
         cultural_test_required=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -584,10 +587,10 @@ incentives = [
         source_url="https://www.nzfilm.co.nz/incentives-co-productions/nzspg-international",
         source_description="NZFC — New Zealand Screen Production Grant (International)",
         clause_reference="New Zealand Film Commission Act 1978, s.18(2)",
-        notes="20% cash grant on qualifying NZ expenditure. Additional 5% uplift possible (total 25%). "
-              "Min NZD $15M QNZPE for feature films. "
+        notes="20% cash grant on qualifying NZ expenditure. Additional 5% uplift remains available for invited productions. "
+              "Current NZFC criteria show NZ$15M minimum QNZPE for feature film theatrical releases, NZ$4M for television and other non-feature formats, and NZ$250k for PDV. "
               "Significant economic benefit test applies.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -628,7 +631,7 @@ incentives = [
         notes="25% rebate on qualifying South African production expenditure. "
               "Min ZAR 12M qualifying spend. Max ZAR 50M per project. "
               "Post-production only: 25% of qualifying SA post spend, min ZAR 1.5M.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -647,7 +650,7 @@ incentives = [
               "20% on logistics spending. Requires Filming Colombia Commission certificate. "
               "Available to foreign and coproductions.",
         local_producer_required=False,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -665,7 +668,7 @@ incentives = [
               "Higher rates possible for large-scale productions. "
               "Administered by Centre Cinématographique Marocain (CCM).",
         local_producer_required=False,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -684,7 +687,7 @@ incentives = [
         clause_reference="Law 5105/2024 (Creative Greece Act, Section C)",
         notes="40% cash rebate on qualifying Greek expenditure. Max €5M per project. "
               "Min €100k qualifying spend. Among the highest rebate rates in Europe.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -723,7 +726,7 @@ incentives = [
         source_description="Business Finland — Audiovisual Production Incentive",
         notes="25% cash rebate on qualifying Finnish expenditure. Max €3M per project. "
               "Min €150k eligible Finnish spend. Available to Finnish and foreign productions.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -751,7 +754,7 @@ incentives = [
         cultural_test_required=True,
         cultural_test_min_score=33,
         cultural_test_total_score=66,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -801,18 +804,18 @@ incentives = [
         name="Estonia Cash Rebate for Film Production",
         country_code="EE",
         incentive_type="cash_rebate",
-        rebate_percent=40.0,
+        rebate_percent=30.0,
         max_cap_amount=2_000_000,
         min_qualifying_spend=200_000,
         min_qualifying_spend_documentary=80_000,
         eligible_formats=["feature_fiction", "documentary", "series", "animation"],
         source_url="https://filmestonia.eu/film-estonia-funding/guidelines-and-how-to-apply/",
-        source_description="Film Estonia — Cash Rebate programme (raised to 40% in March 2026)",
-        notes="40% cash rebate on qualifying Estonian expenditure (raised from 30% in March 2026). "
+        source_description="Film Estonia — Cash Rebate programme (up to 30%)",
+        notes="Up to 30% cash rebate on qualifying Estonian expenditure. "
               "Max €2M per project. Min €200k qualifying spend (€80k for documentaries). "
-              "Eligibility based on Estonian crew involvement and spend criteria.",
+              "Eligibility and support intensity depend on Estonian spend and crew criteria; the public site currently describes the scheme as up to 30%.",
         cultural_test_required=False,
-        last_verified="2026-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -833,7 +836,7 @@ incentives = [
               "Min €150k qualifying spend (€70k for documentaries). No per-project cap but subject to annual budget. "
               "No formal cultural test — rate varies by Riga connection.",
         cultural_test_required=False,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -854,7 +857,7 @@ incentives = [
               "Cultural content test: must meet 2 of 4 criteria (Lithuanian/European themes, social events, "
               "notable figures, literary works). Administered by Lithuanian Film Centre.",
         cultural_test_required=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -879,7 +882,7 @@ incentives = [
         cultural_test_required=True,
         cultural_test_min_score=24,
         cultural_test_total_score=48,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -898,7 +901,7 @@ incentives = [
         notes="25% cash rebate on qualifying Slovenian expenditure. "
               "Max €2.5M per project. Min €150k qualifying spend. "
               "Additional 5% bonus for Slovenian minority coproductions (up to 30%).",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -942,7 +945,7 @@ incentives = [
               "Max €6M per project. Min €100k qualifying spend. "
               "2% additional for productions set in Malta; 5% for off-peak production; "
               "additional for Maltese creative talent. One of the highest effective rates in Europe.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -962,7 +965,7 @@ incentives = [
         notes="20% cash rebate on qualifying Swiss expenditure. "
               "Max CHF 2.5M per project. Min CHF 200k qualifying spend. "
               "Productions must have Swiss co-producer or service producer.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -973,7 +976,7 @@ incentives = [
         country_code="CY",
         incentive_type="cash_rebate",
         rebate_percent=35.0,
-        max_cap_amount=500_000,
+        max_cap_amount=None,
         min_qualifying_spend=200_000,
         eligible_formats=["feature_fiction", "documentary", "series", "animation"],
         source_url="https://www.invest-cyprus.com/film-production-incentives",
@@ -981,7 +984,7 @@ incentives = [
         notes="35% cash rebate on qualifying Cypriot expenditure. "
               "Max €500k per project. Min €200k qualifying spend. "
               "Additional 5% bonus for productions promoting Cyprus as a filming destination.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -992,7 +995,7 @@ incentives = [
         country_code="ME",
         incentive_type="cash_rebate",
         rebate_percent=25.0,
-        max_cap_amount=500_000,
+        max_cap_amount=None,
         min_qualifying_spend=50_000,
         eligible_formats=["feature_fiction", "documentary", "series", "animation"],
         source_url="https://www.fccg.me/en/incentives",
@@ -1001,7 +1004,7 @@ incentives = [
               "Max €500k per project. Min €50k qualifying spend. "
               "Competitive grant system, subject to annual budget.",
         local_producer_required=False,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -1020,7 +1023,7 @@ incentives = [
               "Min €100k qualifying spend. Emerging incentive aimed at attracting "
               "international productions to the Balkans.",
         local_producer_required=False,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -1041,7 +1044,7 @@ incentives = [
               "Max approximately $1M per project. Min $200k qualifying spend. "
               "Rate depends on total spend level.",
         local_producer_required=False,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -1083,7 +1086,7 @@ incentives = [
               "Emerging incentive scheme. Min €50k qualifying spend. "
               "Subject to annual programme budget.",
         local_producer_required=False,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -1164,7 +1167,7 @@ incentives = [
               "One of Germany's top three regional funds. "
               "Stackable with DFFF/GMPF.",
         stacking_allowed=True,
-        last_verified="2026-03",
+        last_verified="2026-04",
     ),
     inc(
         name="MOIN Film Fund Hamburg Schleswig-Holstein",
@@ -1180,7 +1183,7 @@ incentives = [
               "Supports cinema films, high-end series, and innovative formats. "
               "High-end: budgets over €2.5M; Director's Cut: under €2.5M. "
               "Regional spend requirement applies.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="MFG Filmförderung Baden-Württemberg",
@@ -1195,7 +1198,7 @@ incentives = [
         notes="Selective grant. Recent awards typically €400k-€550k per feature. "
               "Annual budget ~€18M total across all programmes. "
               "Regional spend requirement applies. Ludwigsburg studio base.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="HessenFilm und Medien",
@@ -1210,7 +1213,7 @@ incentives = [
         notes="Grant up to €500k per project (up to €1M in exceptional cases). "
               "For productions with total budget up to €5M. "
               "Regional spend: 100-125% of grant. Requires German co-producer.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="MDM Mitteldeutsche Medienförderung",
@@ -1225,7 +1228,7 @@ incentives = [
         notes="Selective grant. Covers Saxony, Saxony-Anhalt, and Thuringia. "
               "Up to €300k for debut features, higher amounts possible. "
               "Regional spend requirement applies. Guidelines effective 1 Jan 2024.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Nordmedia Film- und Mediengesellschaft",
@@ -1240,7 +1243,7 @@ incentives = [
         notes="Selective grant. Covers Lower Saxony and Bremen. "
               "Annual budget ~€10M. Up to 60% of German production costs for co-productions. "
               "Regional spend requirement applies.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -1259,7 +1262,7 @@ incentives = [
         notes="Selective regional grant for productions shooting in the Paris/Île-de-France region. "
               "Competitive application; exact max varies by call — check règlement PDF for current limits. "
               "Must demonstrate significant regional economic impact.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Région Sud (PACA) Film Fund",
@@ -1273,7 +1276,7 @@ incentives = [
         source_description="Région Sud — Aide à la production audiovisuelle",
         notes="Selective grant; variable amount per project. "
               "Requires 125% regional spend multiplier. Covers Marseille, Nice, Cannes corridor.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Auvergne-Rhône-Alpes Cinéma",
@@ -1287,7 +1290,7 @@ incentives = [
         source_description="Auvergne-Rhône-Alpes Cinéma — Production Support",
         notes="Selective grant; average co-production investment ~€220k, 120% regional spend required. "
               "Covers Lyon, Grenoble, Clermont-Ferrand corridor.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Nouvelle-Aquitaine Film Fund",
@@ -1301,7 +1304,7 @@ incentives = [
         source_description="ALCA Nouvelle-Aquitaine — Aide à la production",
         notes="Selective grant; variable amount per project — ALCA manages the fund. "
               "Covers Bordeaux, Limoges, Poitiers area. Requires significant regional shooting and spend.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Occitanie Films Fund",
@@ -1315,7 +1318,7 @@ incentives = [
         source_description="Occitanie Films — Aide à la production",
         notes="Selective grant: up to €250k for fiction/animation series, €120k for single fiction works. "
               "Covers Toulouse and Montpellier corridor.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Bretagne FACCA Film Fund",
@@ -1329,7 +1332,7 @@ incentives = [
         source_description="Bretagne Cinéma — FACCA Production Fund",
         notes="FACCA fund: up to €300k for features/series, €150k for single programs. "
               "Total annual budget ~€4.09M. 160% regional spend required.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Hauts-de-France Film Fund",
@@ -1343,7 +1346,7 @@ incentives = [
         source_description="Pictanovo / Hauts-de-France — Aide à la production",
         notes="Selective grant; Pictanovo manages €8.6M annual budget across 10 funding categories. "
               "Per-project max varies by category. Covers Lille, Amiens corridor.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Grand Est Film Fund",
@@ -1358,7 +1361,7 @@ incentives = [
         notes="Feature production: €100k-€300k (depending on territorial integration), fiction series up to €250k. "
               "Total fund ~€3.67M + €570k Plato device. Covers Strasbourg, Metz, Nancy. "
               "Cross-border potential with Germany, Luxembourg, Belgium.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Normandie Images Film Fund",
@@ -1371,7 +1374,7 @@ incentives = [
         source_url="https://normandieimages.fr/creation-production/fonds-d-aides/14-creation-et-production/fonds-d-aide/32-production-long-metrage",
         source_description="Normandie Images — Aide à la production long métrage",
         notes="Features: €100k-€200k; docs (TV): €15k-€50k. 160% regional spend required.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Corsica Film Fund",
@@ -1385,7 +1388,7 @@ incentives = [
         source_description="Collectivité de Corse — Règlement des aides audiovisuel et cinéma",
         notes="Average feature production grant ~€181k. Total fund ~€3.43M. "
               "20% bonus for Corsican-language projects.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -1405,7 +1408,7 @@ incentives = [
               "New €10M annual fund for international co-productions (confirmed to 2027). "
               "30-45% of eligible costs. Stackable with the national 40% tax credit.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Lombardy for Cinema Fund",
@@ -1413,15 +1416,13 @@ incentives = [
         region="Lombardy",
         incentive_type="grant",
         rebate_percent=None,
-        max_cap_amount=300_000,
+        max_cap_amount=None,
         eligible_formats=["feature_fiction", "documentary", "series", "animation"],
-        source_url="https://www.miamarket.it/en/lombardia-for-cinema-second-edition-of-the-e3-million-funding-scheme/",
-        source_description="Lombardia for Cinema — €3M Funding Scheme",
-        notes="€3M annual fund. Max €250k for fiction features, €300k for fiction series, "
-              "€75k for docs, €150k for doc series. "
-              "Requires shooting in Lombardy. Stackable with national tax credit.",
+        source_url="https://www.regione.lombardia.it/wps/portal/istituzionale/HP/DettaglioAvviso/servizi-e-informazioni/enti-e-operatori/cultura/Spettacolo/lombardia-per-il-cinema-2025-criteri/lombardia-per-il-cinema-2025-criteri",
+        source_description="Regione Lombardia — Bando Lombardia per il cinema",
+        notes="Selective grant up to 50% of eligible production costs. Total budget €3M split between Linea A (€2.4M for lungometraggi and seriality) and Linea B (€600k for documentaries). Requires shooting in Lombardy. Stackable with national tax credit.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Sicilia Film Commission Fund",
@@ -1437,7 +1438,7 @@ incentives = [
               "€40k for shorts. €10.8M total fund. Must be shot in Sicily. "
               "One of Italy's largest regional funds. Stackable with national tax credit.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Film Commission Torino Piemonte — FIP",
@@ -1452,7 +1453,7 @@ incentives = [
         notes="FIP (Film Investimenti Piemonte) investment up to €200k (€100k for debuts). "
               "Requires shooting in Piedmont. Stackable with national tax credit.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Apulia Film Fund",
@@ -1468,7 +1469,7 @@ incentives = [
               "€500k animation. One of Italy's most active regional funds. "
               "Stackable with national tax credit.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Emilia-Romagna Film Commission Fund",
@@ -1483,7 +1484,7 @@ incentives = [
         notes="Grant up to €250k (Section A films), €150k (Section B), €50k (docs). "
               "Covers Bologna, Ravenna, Rimini. Stackable with national tax credit.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Toscana Film Commission Fund",
@@ -1493,12 +1494,12 @@ incentives = [
         rebate_percent=None,
         max_cap_amount=450_000,
         eligible_formats=["feature_fiction", "documentary", "series", "animation"],
-        source_url="https://www.italiafilmservice.com/subsidies-et-finance/regional.html",
-        source_description="Toscana Film Commission — Cinema Fund",
+        source_url="https://www.regione.toscana.it/-/sovvenzioni-a-fondo-perduto-per-la-produzione-di-opere-cinematografiche-e-audiovisive",
+        source_description="Regione Toscana — Sovvenzioni per la produzione di opere cinematografiche e audiovisive",
         notes="Grant up to €200k for first works, up to €450k for second works, "
               "€50k for documentaries. Requires shooting in Tuscany.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Veneto Film and Audiovisual Fund",
@@ -1506,14 +1507,13 @@ incentives = [
         region="Veneto",
         incentive_type="grant",
         rebate_percent=None,
-        max_cap_amount=75_000,
+        max_cap_amount=320_000,
         eligible_formats=["feature_fiction", "documentary", "series", "animation"],
-        source_url="https://www.italiafilmservice.com/subsidies-et-finance/regional.html",
-        source_description="Veneto Film Commission — Film and Audiovisual Fund",
-        notes="Grant up to €75k (6 weeks shooting) or €5k (1 week). "
-              "Covers Venice, Padua, Verona. Stackable with national tax credit.",
+        source_url="https://venetofilmcommission.com/en/fondo-di-produzione-2025/",
+        source_description="Veneto Film Commission — Production Fund 2025",
+        notes="Production Fund 2025: Type A supports lungometraggi and seriality up to €320k at 30% of eligible spend; Type B supports documentaries up to €52.5k at 60% of eligible spend. Covers Venice, Padua, Verona. Stackable with national tax credit.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Campania Film Commission Fund",
@@ -1523,13 +1523,13 @@ incentives = [
         rebate_percent=None,
         max_cap_amount=250_000,
         eligible_formats=["feature_fiction", "documentary", "series", "animation"],
-        source_url="https://www.italyformovies.it/news/detail/2530/campania-bando-a-sostegno-della-produzione-valorizzazione-e-fruizione-della-cultura-cinematografica-2025",
-        source_description="Film Commission Regione Campania — Production Fund 2025",
+        source_url="https://fcrc.it/piano-cinema-2025-sezione-1-opere-audiovisive/",
+        source_description="Film Commission Regione Campania — Piano Cinema 2025, Sezione 1",
         notes="Selective grant €25k–€250k depending on category and shooting days, max 50% of costs. "
               "Total annual budget ~€2M for production. Covers Naples, Amalfi Coast, Pompeii. "
               "Stackable with national tax credit.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Sardegna Film Commission — Large Production Fund",
@@ -1539,13 +1539,11 @@ incentives = [
         rebate_percent=None,
         max_cap_amount=500_000,
         eligible_formats=["feature_fiction", "documentary", "series", "animation"],
-        source_url="https://www.unicaradio.it/en/blog/2025/12/26/large-production-fund-1-million-to-support-made-in-sardinia-cinema/",
-        source_description="Sardegna Film Commission — Large Production Fund 2025-2026",
-        notes="Non-repayable grant up to €500k per project. Total fund ~€925k. "
-              "Up to 50% of eligible expenses (de minimis/GBER). "
-              "Must be shot in Sardinia. Stackable with national tax credit.",
+        source_url="https://www.sardegnafilmcommission.it/bando-grandi-produzioni",
+        source_description="Sardegna Film Commission — Fondo Grandi Produzioni",
+        notes="Fondo Grandi Produzioni 2025-2026: total budget €925,926. Category-specific grants can reach up to €500k, with aid intensity up to 50% of eligible expenses under de minimis/GBER. Must be shot in Sardinia. Stackable with national tax credit.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Calabria Film Commission Fund",
@@ -1561,7 +1559,7 @@ incentives = [
               "160% regional spend required. Total fund ~€4M features + €1M docs/shorts. "
               "Stackable with national tax credit.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="FVG Film Commission Fund",
@@ -1571,12 +1569,12 @@ incentives = [
         rebate_percent=None,
         max_cap_amount=150_000,
         eligible_formats=["feature_fiction", "documentary", "series", "animation"],
-        source_url="https://www.italiafilmservice.com/subsidies-et-finance/regional.html",
-        source_description="FVG Film Commission — Film Fund",
+        source_url="https://www.regione.fvg.it/rafvg/cms/RAFVG/economia-imprese/turismo/FOGLIA13/",
+        source_description="Regione Friuli Venezia Giulia — Produzioni di film e audiovisivi per la promozione del territorio",
         notes="Grant up to €150k. Covers Trieste area, cross-border with Slovenia. "
               "Stackable with national tax credit.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Trentino Film Fund",
@@ -1593,7 +1591,7 @@ incentives = [
               "Min 20% local crew. Cross-border with Austria (Dolomites). "
               "Stackable with national tax credit.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -1620,7 +1618,7 @@ incentives = [
               "50% for animated films, shorts, documentaries. Max €5M deduction per production. "
               "At least 40% of deduction base must be spent in Navarre. "
               "Foral tax regime — independent of mainland Spain rates.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Spain — Basque Country Tax Incentive (Bizkaia Foral Regime)",
@@ -1636,7 +1634,7 @@ incentives = [
               "Rates by Bizkaia spend: 60% if >50% in Bizkaia, 50% if 35-50%, 40% if 20-35%, "
               "35% base with no territoriality. No fixed per-production cap. "
               "Can offset 100% of corporate tax liability. One of Europe's highest rates.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Spain — Catalonia Film Fund (ICEC)",
@@ -1651,7 +1649,7 @@ incentives = [
         notes="Selective grant up to €300k for productions shooting in Catalonia. "
               "Also benefits from national Spanish tax incentive (30%/25%). "
               "Barcelona is a major production hub.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Spain — Madrid Film Fund",
@@ -1661,11 +1659,11 @@ incentives = [
         rebate_percent=None,
         max_cap_amount=250_000,
         eligible_formats=["feature_fiction", "documentary", "series", "animation"],
-        source_url="https://www.comunidad.madrid/servicios/cultura/ayudas-sector-audiovisual",
-        source_description="Comunidad de Madrid — Ayudas al sector audiovisual",
+        source_url="https://www.comunidad.madrid/inversion/inicia-desarrolla-tu-empresa/ayudas-industria-audiovisual",
+        source_description="Comunidad de Madrid — Ayudas a la industria audiovisual",
         notes="Selective grant for productions shooting in Madrid region. "
               "Max ~€250k. Also benefits from national Spanish tax incentive.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Spain — Andalusia Film Fund",
@@ -1680,7 +1678,7 @@ incentives = [
         notes="Selective grant up to €300k for productions shooting in Andalusia. "
               "Seville, Málaga, Almería (including Tabernas desert studios). "
               "Stackable with national Spanish tax incentive.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Spain — Galicia Film Fund (AGADIC)",
@@ -1694,7 +1692,7 @@ incentives = [
         source_description="AGADIC — Axencia Galega das Industrias Culturais",
         notes="Selective grant up to €200k for productions shooting in Galicia. "
               "Stackable with national incentive.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Spain — Balearic Islands Film Fund",
@@ -1708,7 +1706,7 @@ incentives = [
         source_description="Mallorca Film Commission / IEB — Production Fund",
         notes="Selective grant for productions shooting in the Balearic Islands (Mallorca, Ibiza, Menorca). "
               "Stackable with national incentive.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Spain — Valencia Film Fund (IVC)",
@@ -1722,7 +1720,7 @@ incentives = [
         source_description="Institut Valencià de Cultura — Production Fund",
         notes="Selective grant up to €250k. Covers Valencia, Alicante, Ciudad de la Luz studios. "
               "Stackable with national Spanish tax incentive.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Spain — Castilla y León Film Fund",
@@ -1735,7 +1733,7 @@ incentives = [
         source_url="https://www.jcyl.es/web/jcyl/Cultura/es/Plantilla100/1284802299615/_/_/_",
         source_description="Junta de Castilla y León — Ayudas a la producción audiovisual",
         notes="Selective grant up to €150k for productions shooting in Castilla y León.",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -1747,16 +1745,16 @@ incentives = [
         region="Scotland",
         incentive_type="grant",
         rebate_percent=None,
-        max_cap_amount=500_000,
+        max_cap_amount=None,
         max_cap_currency="GBP",
         eligible_formats=["feature_fiction", "documentary", "series", "animation"],
         source_url="https://www.screen.scot/funding-and-support/funding/production-growth-fund",
         source_description="Screen Scotland — Production Growth Fund",
-        notes="Grant £200k-£500k for productions shooting in Scotland. "
-              "Min 10:1 Scottish spend ratio (e.g. £200k grant requires £2M Scottish spend). "
-              "Annual budget £2M. Stackable with UK AVEC tax credit.",
+        notes="Selective grant with no fixed project cap published. "
+              "Annual budget ?2M. Projects must demonstrate at least ?2M Scottish spend. "
+              "Examples of awards range from roughly ?90k to ?370k. Stackable with UK AVEC tax credit.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Ffilm Cymru Wales Production Fund",
@@ -1773,7 +1771,7 @@ incentives = [
               "Most awards £150k-£400k. Not more than 50% of total budget. "
               "Stackable with UK AVEC tax credit.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Northern Ireland Screen Fund",
@@ -1781,16 +1779,16 @@ incentives = [
         region="Northern Ireland",
         incentive_type="grant",
         rebate_percent=None,
-        max_cap_amount=800_000,
+        max_cap_amount=None,
         max_cap_currency="GBP",
         eligible_formats=["feature_fiction", "documentary", "series", "animation"],
-        source_url="https://northernirelandscreen.co.uk/funding/",
+        source_url="https://northernirelandscreen.co.uk/funding/production-funding/",
         source_description="Northern Ireland Screen — Funding",
         notes="Recoupable loan up to £800k (max 25% of overall budget). "
               "Production must have at least 65% financing in place. "
               "Belfast studios are major draw. Stackable with UK AVEC tax credit.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -1806,14 +1804,14 @@ incentives = [
         min_qualifying_spend=300_000,
         min_qualifying_spend_documentary=75_000,
         eligible_formats=["feature_fiction", "documentary", "series", "animation"],
-        source_url="https://www.wallimage.be/en/services/wallimage-coproductions/",
+        source_url="https://www.wallimage.be/services/coproductions/",
         source_description="Wallimage — Coproductions",
-        notes="Economic co-investment fund. €6.5M annual budget across all projects. "
+        notes="Economic co-investment fund. €5.5M annual budget across all projects. "
               "Projects must have expenses over €300k (€75k for docs). "
               "Producers must have 30% financing secured before applying. "
               "Competitive allocation per session. Stackable with Belgian Tax Shelter.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Screen Flanders (VAF Economic Fund)",
@@ -1830,7 +1828,7 @@ incentives = [
               "50% of budget must be secured. Max 50% public funding (60% for EU co-productions). "
               "Stackable with Belgian Tax Shelter.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Centre du Cinéma — Fédération Wallonie-Bruxelles Film Fund",
@@ -1846,7 +1844,7 @@ incentives = [
               "Cultural fund, separate from economic Wallimage fund. "
               "Stackable with Tax Shelter.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -1866,7 +1864,7 @@ incentives = [
               "Structured as soft loans. Annual budget ~€11.5M. "
               "Stackable with FISA+ national incentive.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Cine Tirol Production Incentive",
@@ -1882,7 +1880,7 @@ incentives = [
               "Contingent on 'Tirol Effect' (economic impact) and/or 'Tirol Reference' (thematic). "
               "Applications year-round. Stackable with FISA+.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Salzburg Film Fund",
@@ -1898,7 +1896,7 @@ incentives = [
               "Operated by Innovation Salzburg ('Filmlocation'). Also a €20k 'Freie Filmförderung'. "
               "Stackable with FISA+.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -1919,7 +1917,7 @@ incentives = [
               "Northern Norway locations (Tromsø, Lofoten, Arctic). "
               "Stackable with national NFI incentive.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Vestnorsk Filmsenter (Western Norway Film Fund)",
@@ -1935,7 +1933,7 @@ incentives = [
         notes="Features: NOK 500k–3M; docs: NOK 150k–500k. Annual budget ~€2M. "
               "Bergen and fjord region. Stackable with national NFI incentive.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -1957,7 +1955,7 @@ incentives = [
               "Trollhättan (Trollywood) studios. Sweden's largest regional fund. "
               "Stackable with national SFI rebate.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Film Stockholm",
@@ -1974,7 +1972,7 @@ incentives = [
               "Annual budget min SEK 15M (~€1.5M). "
               "Stackable with national SFI rebate.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -1994,7 +1992,7 @@ incentives = [
               "Operations transferred from POEM Foundation to Business Oulu. "
               "Arctic/Lapland locations. Stackable with national FFF incentive.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -2014,7 +2012,7 @@ incentives = [
               "Leitrim, Mayo, Roscommon, Sligo. Managed by Ardán (formerly Galway Film Centre) "
               "and Western Development Commission. Stackable with Section 481 tax credit.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -2034,7 +2032,7 @@ incentives = [
               "Amsterdam Film Fund provides additional city-level facilitation. "
               "Stackable mechanisms available.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     # Rotterdam: No dedicated city-level production fund verified.
     # Rotterdam International Film Festival operates the Hubert Bals Fund
@@ -2057,7 +2055,7 @@ incentives = [
         notes="City grant up to CZK 2M for productions shooting in Prague. "
               "Stackable with national cash rebate (now 25% with tripled cap from 2025).",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -2078,7 +2076,7 @@ incentives = [
               "Practical per-project grants average ~PLN 150k. "
               "Łódź Film School and studio infrastructure. Stackable with national 30% cash rebate.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     inc(
         name="Mazovia Warsaw Film Fund",
@@ -2094,7 +2092,7 @@ incentives = [
         notes="Co-production fund up to PLN 2M (~€475k) per project, max 40% of local production costs. "
               "Requires scenes filmed in Warsaw/Mazovia. Stackable with national 30% cash rebate.",
         stacking_allowed=True,
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -4550,7 +4548,7 @@ treaties = [
               "10% min for third-party coproducer. Creative/technical contributions proportional to share.",
         source_url="https://www.cnc.fr/professionnels/reglementation/canadafrance--accord-de-coproduction-du-28-juillet-2021_2131203",
         source_desc="CNC — Accord France-Canada, 28 July 2021",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–Germany Coproduction Treaty",
@@ -4559,7 +4557,7 @@ treaties = [
         notes="Min 20% financial share each. Replaces 2001 agreement.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Allemagne",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–Italy Coproduction Treaty",
@@ -4568,7 +4566,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Italie",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–Belgium Coproduction Treaty",
@@ -4577,7 +4575,7 @@ treaties = [
         notes="Min 20% share each. Covers both French-speaking and Flemish Belgian communities.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Belgique",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–UK Coproduction Treaty",
@@ -4586,7 +4584,7 @@ treaties = [
         notes="Min 20% financial share each. Post-Brexit: UK-France treaty remains in force.",
         source_url="https://www.bfi.org.uk/apply-british-certification-tax-relief/co-production",
         source_desc="BFI — Co-Production treaties; CNC — Accord France-UK",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–Spain Coproduction Treaty",
@@ -4595,7 +4593,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Espagne",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -4609,7 +4607,7 @@ treaties = [
         min_third=10,
         source_url="https://www.bfi.org.uk/apply-british-certification-tax-relief/co-production",
         source_desc="BFI — UK-Canada co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "UK–Australia Coproduction Treaty",
@@ -4618,7 +4616,7 @@ treaties = [
         notes="Min 20% financial and creative share each.",
         source_url="https://www.bfi.org.uk/apply-british-certification-tax-relief/co-production",
         source_desc="BFI — UK-Australia co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "UK–New Zealand Coproduction Treaty",
@@ -4627,7 +4625,7 @@ treaties = [
         notes="Min 20% financial and creative share each.",
         source_url="https://www.bfi.org.uk/apply-british-certification-tax-relief/co-production",
         source_desc="BFI — UK-New Zealand co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "UK–Israel Coproduction Treaty",
@@ -4635,7 +4633,7 @@ treaties = [
         auth_a="BFI", auth_b="Israel Film Fund",
         source_url="https://www.bfi.org.uk/apply-british-certification-tax-relief/co-production",
         source_desc="BFI — UK-Israel co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -4648,7 +4646,7 @@ treaties = [
         notes="Min 15% financial share each. One of the more flexible bilateral treaties.",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-Australia treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Canada–Germany Coproduction Treaty",
@@ -4656,7 +4654,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="FFA / BKM",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-Germany treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Canada–Italy Coproduction Treaty",
@@ -4664,7 +4662,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="MiC",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-Italy treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Canada–Netherlands Coproduction Treaty",
@@ -4672,7 +4670,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="Netherlands Film Fund",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-Netherlands treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Canada–South Korea Coproduction Treaty",
@@ -4680,7 +4678,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="KOFIC",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-South Korea treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -4692,7 +4690,7 @@ treaties = [
         auth_a="Screen Australia", auth_b="FFA / BKM",
         source_url="https://www.screenaustralia.gov.au/co-production/co-production-program",
         source_desc="Screen Australia — Co-Production Program",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Australia–Italy Coproduction Treaty",
@@ -4700,7 +4698,7 @@ treaties = [
         auth_a="Screen Australia", auth_b="MiC",
         source_url="https://www.screenaustralia.gov.au/co-production/co-production-program",
         source_desc="Screen Australia — Co-Production Program",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Australia–South Korea Coproduction Treaty",
@@ -4708,7 +4706,7 @@ treaties = [
         auth_a="Screen Australia", auth_b="KOFIC",
         source_url="https://www.screenaustralia.gov.au/co-production/co-production-program",
         source_desc="Screen Australia — Co-Production Program",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -4720,7 +4718,7 @@ treaties = [
         auth_a="FFA / BKM", auth_b="NFVF",
         source_url="https://www.ffa.de/foerderungen/koproduktionsabkommen/",
         source_desc="FFA — Germany-South Africa co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Italy–Spain Coproduction Treaty",
@@ -4728,7 +4726,7 @@ treaties = [
         auth_a="MiC", auth_b="ICAA",
         source_url="https://cinema.cultura.gov.it/en/co-productions/",
         source_desc="MiC — Italy-Spain bilateral treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Germany–Netherlands Coproduction Treaty",
@@ -4736,7 +4734,7 @@ treaties = [
         auth_a="FFA / BKM", auth_b="Netherlands Film Fund",
         source_url="https://www.ffa.de/foerderungen/koproduktionsabkommen/",
         source_desc="FFA — Germany-Netherlands co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Ireland–Canada Coproduction Treaty",
@@ -4744,7 +4742,7 @@ treaties = [
         auth_a="Screen Ireland", auth_b="Telefilm Canada",
         source_url="https://www.screenireland.ie/co-production",
         source_desc="Screen Ireland — Ireland-Canada co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Belgium–Canada Coproduction Treaty",
@@ -4752,7 +4750,7 @@ treaties = [
         auth_a="Centre du Cinéma (FWB) / VAF", auth_b="Telefilm Canada",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-Belgium treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Netherlands–South Africa Coproduction Treaty",
@@ -4760,7 +4758,7 @@ treaties = [
         auth_a="Netherlands Film Fund", auth_b="NFVF",
         source_url="https://www.filmfonds.nl/page/co-productions",
         source_desc="Netherlands Film Fund — NL-South Africa treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -4773,7 +4771,7 @@ treaties = [
         notes="Min 20% financial share each. Covers cinema and TV.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Brésil",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–Argentina Coproduction Treaty",
@@ -4782,7 +4780,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Argentine",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–India Coproduction Treaty",
@@ -4792,7 +4790,7 @@ treaties = [
         notes="Min 20% financial share each. Signed during President Macron's visit to India.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Inde",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–Israel Coproduction Treaty",
@@ -4801,7 +4799,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Israël",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–Morocco Coproduction Treaty",
@@ -4810,7 +4808,7 @@ treaties = [
         notes="Min 20% financial share each. One of France's oldest bilateral treaties.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Maroc",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–Tunisia Coproduction Treaty",
@@ -4819,7 +4817,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Tunisie",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–China Coproduction Treaty",
@@ -4829,7 +4827,7 @@ treaties = [
         notes="Min 20% financial share each. Chinese side requires China Film Administration approval.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Chine",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–South Korea Coproduction Treaty",
@@ -4838,7 +4836,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Corée du Sud",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–Australia Coproduction Treaty",
@@ -4847,7 +4845,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Australie",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–New Zealand Coproduction Treaty",
@@ -4856,7 +4854,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Nouvelle-Zélande",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–South Africa Coproduction Treaty",
@@ -4866,7 +4864,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Afrique du Sud",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–Switzerland Coproduction Treaty",
@@ -4875,7 +4873,7 @@ treaties = [
         notes="Min 20% financial share each. Among France's most active treaty partnerships.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Suisse",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–Portugal Coproduction Treaty",
@@ -4884,7 +4882,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Portugal",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–Romania Coproduction Treaty",
@@ -4893,7 +4891,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Roumanie",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–Poland Coproduction Treaty",
@@ -4902,7 +4900,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Pologne",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–Chile Coproduction Treaty",
@@ -4911,7 +4909,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Chili",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–Colombia Coproduction Treaty",
@@ -4920,7 +4918,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Colombie",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–Mexico Coproduction Treaty",
@@ -4929,7 +4927,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Mexique",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–Japan Coproduction Treaty",
@@ -4938,7 +4936,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Japon",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "France–Greece Coproduction Treaty",
@@ -4947,7 +4945,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.fr/professionnels/reglementation/accords-de-coproduction",
         source_desc="CNC — Accord France-Grèce",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -5100,7 +5098,7 @@ treaties = [
         notes="Min 20% financial and creative share each. One of the UK's most active treaty partnerships.",
         source_url="https://www.bfi.org.uk/apply-british-certification-tax-relief/co-production",
         source_desc="BFI — UK-India co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "UK–China Coproduction Treaty",
@@ -5110,7 +5108,7 @@ treaties = [
         notes="Min 20% financial share each. Chinese approval required via China Film Administration.",
         source_url="https://www.bfi.org.uk/apply-british-certification-tax-relief/co-production",
         source_desc="BFI — UK-China co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "UK–South Africa Coproduction Treaty",
@@ -5119,7 +5117,7 @@ treaties = [
         notes="Min 20% financial and creative share each.",
         source_url="https://www.bfi.org.uk/apply-british-certification-tax-relief/co-production",
         source_desc="BFI — UK-South Africa co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "UK–France Coproduction Treaty (Mini-Treaty)",
@@ -5129,7 +5127,7 @@ treaties = [
               "Allows more flexible structures than the main FR-UK treaty.",
         source_url="https://www.bfi.org.uk/apply-british-certification-tax-relief/co-production",
         source_desc="BFI — UK-France mini-treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "UK–Jamaica Coproduction Treaty",
@@ -5138,7 +5136,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.bfi.org.uk/apply-british-certification-tax-relief/co-production",
         source_desc="BFI — UK-Jamaica co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "UK–Brazil Coproduction Treaty",
@@ -5148,7 +5146,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.bfi.org.uk/apply-british-certification-tax-relief/co-production",
         source_desc="BFI — UK-Brazil co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "UK–Morocco Coproduction Treaty",
@@ -5157,7 +5155,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.bfi.org.uk/apply-british-certification-tax-relief/co-production",
         source_desc="BFI — UK-Morocco co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -5170,7 +5168,7 @@ treaties = [
         notes="Min 20% financial share each. (Also accessible via France–Italy entry.)",
         source_url="https://cinema.cultura.gov.it/en/co-productions/",
         source_desc="MiC — Italy-France bilateral treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Italy–Argentina Coproduction Treaty",
@@ -5179,7 +5177,7 @@ treaties = [
         notes="Min 20% financial share each. Strong historical link between Italian and Argentine cinema.",
         source_url="https://cinema.cultura.gov.it/en/co-productions/",
         source_desc="MiC — Italy-Argentina bilateral treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Italy–Brazil Coproduction Treaty",
@@ -5188,7 +5186,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://cinema.cultura.gov.it/en/co-productions/",
         source_desc="MiC — Italy-Brazil bilateral treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Italy–Tunisia Coproduction Treaty",
@@ -5197,7 +5195,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://cinema.cultura.gov.it/en/co-productions/",
         source_desc="MiC — Italy-Tunisia bilateral treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Italy–South Africa Coproduction Treaty",
@@ -5206,7 +5204,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://cinema.cultura.gov.it/en/co-productions/",
         source_desc="MiC — Italy-South Africa bilateral treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Italy–Germany Coproduction Treaty",
@@ -5215,7 +5213,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://cinema.cultura.gov.it/en/co-productions/",
         source_desc="MiC — Italy-Germany bilateral treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Italy–Canada Coproduction Treaty",
@@ -5224,7 +5222,7 @@ treaties = [
         notes="Min 15% financial share each. (Also accessible via Canada–Italy entry.)",
         source_url="https://cinema.cultura.gov.it/en/co-productions/",
         source_desc="MiC — Italy-Canada bilateral treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Italy–Switzerland Coproduction Treaty",
@@ -5233,7 +5231,7 @@ treaties = [
         notes="Min 20% financial share each. Active treaty given shared Italian-language region (Ticino).",
         source_url="https://cinema.cultura.gov.it/en/co-productions/",
         source_desc="MiC — Italy-Switzerland bilateral treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -5246,7 +5244,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.ffa.de/foerderungen/koproduktionsabkommen/",
         source_desc="FFA — Germany-Brazil co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Germany–India Coproduction Treaty",
@@ -5255,7 +5253,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.ffa.de/foerderungen/koproduktionsabkommen/",
         source_desc="FFA — Germany-India co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Germany–Canada Coproduction Treaty",
@@ -5264,7 +5262,7 @@ treaties = [
         notes="Min 15% financial share each. (Also accessible via Canada–Germany entry.)",
         source_url="https://www.ffa.de/foerderungen/koproduktionsabkommen/",
         source_desc="FFA — Germany-Canada co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Germany–Switzerland Coproduction Treaty",
@@ -5273,7 +5271,7 @@ treaties = [
         notes="Min 20% financial share each. Very active given shared German language.",
         source_url="https://www.ffa.de/foerderungen/koproduktionsabkommen/",
         source_desc="FFA — Germany-Switzerland co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Germany–Austria Coproduction Treaty",
@@ -5282,7 +5280,7 @@ treaties = [
         notes="Min 20% financial share each. One of the most active European bilateral treaties.",
         source_url="https://www.ffa.de/foerderungen/koproduktionsabkommen/",
         source_desc="FFA — Germany-Austria co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Germany–France Coproduction Treaty",
@@ -5291,7 +5289,7 @@ treaties = [
         notes="Min 20% financial share each. (Also accessible via France–Germany entry.)",
         source_url="https://www.ffa.de/foerderungen/koproduktionsabkommen/",
         source_desc="FFA — Germany-France co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Germany–Turkey Coproduction Treaty",
@@ -5300,7 +5298,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.ffa.de/foerderungen/koproduktionsabkommen/",
         source_desc="FFA — Germany-Turkey co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Germany–Israel Coproduction Treaty",
@@ -5309,7 +5307,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.ffa.de/foerderungen/koproduktionsabkommen/",
         source_desc="FFA — Germany-Israel co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -5321,7 +5319,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="NZFC",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-New Zealand treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Canada–Brazil Coproduction Treaty",
@@ -5329,7 +5327,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="ANCINE",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-Brazil treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Canada–Chile Coproduction Treaty",
@@ -5337,7 +5335,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="CNCA Chile",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-Chile treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Canada–China Coproduction Treaty",
@@ -5345,7 +5343,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="China Film Administration",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-China treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Canada–Colombia Coproduction Treaty",
@@ -5353,7 +5351,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="Proimágenes Colombia",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-Colombia treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Canada–India Coproduction Treaty",
@@ -5361,7 +5359,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="Ministry of Information and Broadcasting",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-India treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Canada–Israel Coproduction Treaty",
@@ -5369,7 +5367,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="Israel Film Fund",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-Israel treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Canada–Japan Coproduction Treaty",
@@ -5377,7 +5375,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="UNIJAPAN",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-Japan treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Canada–South Africa Coproduction Treaty",
@@ -5385,7 +5383,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="NFVF",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-South Africa treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Canada–Switzerland Coproduction Treaty",
@@ -5393,7 +5391,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="BAK",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-Switzerland treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Canada–Morocco Coproduction Treaty",
@@ -5401,7 +5399,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="CCM",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-Morocco treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Canada–Uruguay Coproduction Treaty",
@@ -5409,7 +5407,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="ICAU",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-Uruguay treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Canada–Mexico Coproduction Treaty",
@@ -5417,7 +5415,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="IMCINE",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-Mexico treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Canada–Cuba Coproduction Treaty",
@@ -5425,7 +5423,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="ICAIC",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-Cuba treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Canada–Argentina Coproduction Treaty",
@@ -5433,7 +5431,7 @@ treaties = [
         auth_a="Telefilm Canada", auth_b="INCAA",
         source_url="https://telefilm.ca/en/co-productions/co-production-treaties",
         source_desc="Telefilm Canada — Canada-Argentina treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -5447,7 +5445,7 @@ treaties = [
         notes="Min 20% financial share each. Chinese approval required.",
         source_url="https://www.screenaustralia.gov.au/co-production/co-production-program",
         source_desc="Screen Australia — Australia-China treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Australia–Canada Coproduction Treaty",
@@ -5456,7 +5454,7 @@ treaties = [
         notes="Min 15% financial share each. (Also accessible via Canada–Australia entry.)",
         source_url="https://www.screenaustralia.gov.au/co-production/co-production-program",
         source_desc="Screen Australia — Australia-Canada treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Australia–India Coproduction Treaty",
@@ -5465,7 +5463,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.screenaustralia.gov.au/co-production/co-production-program",
         source_desc="Screen Australia — Australia-India treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Australia–Israel Coproduction Treaty",
@@ -5473,7 +5471,7 @@ treaties = [
         auth_a="Screen Australia", auth_b="Israel Film Fund",
         source_url="https://www.screenaustralia.gov.au/co-production/co-production-program",
         source_desc="Screen Australia — Australia-Israel treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Australia–Singapore Coproduction Treaty",
@@ -5481,7 +5479,7 @@ treaties = [
         auth_a="Screen Australia", auth_b="IMDA Singapore",
         source_url="https://www.screenaustralia.gov.au/co-production/co-production-program",
         source_desc="Screen Australia — Australia-Singapore treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Australia–South Africa Coproduction Treaty",
@@ -5489,7 +5487,7 @@ treaties = [
         auth_a="Screen Australia", auth_b="NFVF",
         source_url="https://www.screenaustralia.gov.au/co-production/co-production-program",
         source_desc="Screen Australia — Australia-South Africa treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Australia–Ireland Coproduction Treaty",
@@ -5497,7 +5495,7 @@ treaties = [
         auth_a="Screen Australia", auth_b="Screen Ireland",
         source_url="https://www.screenaustralia.gov.au/co-production/co-production-program",
         source_desc="Screen Australia — Australia-Ireland treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Australia–France Coproduction Treaty",
@@ -5506,7 +5504,7 @@ treaties = [
         notes="Min 20% financial share each. (Also accessible via France–Australia entry.)",
         source_url="https://www.screenaustralia.gov.au/co-production/co-production-program",
         source_desc="Screen Australia — Australia-France treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -5519,7 +5517,7 @@ treaties = [
         notes="Min 20% financial share each. One of Spain's most active bilateral partnerships.",
         source_url="https://www.culturaydeporte.gob.es/cultura/areas/cine/industria-cine/convenios-coproduccion-internacional.html",
         source_desc="ICAA — Spain-Argentina co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Spain–Brazil Coproduction Treaty",
@@ -5527,7 +5525,7 @@ treaties = [
         auth_a="ICAA", auth_b="ANCINE",
         source_url="https://www.culturaydeporte.gob.es/cultura/areas/cine/industria-cine/convenios-coproduccion-internacional.html",
         source_desc="ICAA — Spain-Brazil co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Spain–Chile Coproduction Treaty",
@@ -5535,7 +5533,7 @@ treaties = [
         auth_a="ICAA", auth_b="CNCA Chile",
         source_url="https://www.culturaydeporte.gob.es/cultura/areas/cine/industria-cine/convenios-coproduccion-internacional.html",
         source_desc="ICAA — Spain-Chile co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Spain–Colombia Coproduction Treaty",
@@ -5543,7 +5541,7 @@ treaties = [
         auth_a="ICAA", auth_b="Proimágenes Colombia",
         source_url="https://www.culturaydeporte.gob.es/cultura/areas/cine/industria-cine/convenios-coproduccion-internacional.html",
         source_desc="ICAA — Spain-Colombia co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Spain–Mexico Coproduction Treaty",
@@ -5551,7 +5549,7 @@ treaties = [
         auth_a="ICAA", auth_b="IMCINE",
         source_url="https://www.culturaydeporte.gob.es/cultura/areas/cine/industria-cine/convenios-coproduccion-internacional.html",
         source_desc="ICAA — Spain-Mexico co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Spain–Portugal Coproduction Treaty",
@@ -5560,7 +5558,7 @@ treaties = [
         notes="Min 20% financial share each. Iberian co-productions benefit from shared cultural proximity.",
         source_url="https://www.culturaydeporte.gob.es/cultura/areas/cine/industria-cine/convenios-coproduccion-internacional.html",
         source_desc="ICAA — Spain-Portugal co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Spain–Cuba Coproduction Treaty",
@@ -5568,7 +5566,7 @@ treaties = [
         auth_a="ICAA", auth_b="ICAIC",
         source_url="https://www.culturaydeporte.gob.es/cultura/areas/cine/industria-cine/convenios-coproduccion-internacional.html",
         source_desc="ICAA — Spain-Cuba co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Spain–Morocco Coproduction Treaty",
@@ -5576,7 +5574,7 @@ treaties = [
         auth_a="ICAA", auth_b="CCM",
         source_url="https://www.culturaydeporte.gob.es/cultura/areas/cine/industria-cine/convenios-coproduccion-internacional.html",
         source_desc="ICAA — Spain-Morocco co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Spain–India Coproduction Treaty",
@@ -5586,7 +5584,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.culturaydeporte.gob.es/cultura/areas/cine/industria-cine/convenios-coproduccion-internacional.html",
         source_desc="ICAA — Spain-India co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -5599,7 +5597,7 @@ treaties = [
         notes="Min 20% financial share each. Very active Benelux partnership.",
         source_url="https://www.filmfonds.nl/page/co-productions",
         source_desc="Netherlands Film Fund — Belgium-Netherlands treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Belgium–Luxembourg Coproduction Treaty",
@@ -5608,7 +5606,7 @@ treaties = [
         notes="Min 20% financial share each. Benelux partnership.",
         source_url="https://filmfund.lu/en/co-productions",
         source_desc="Film Fund Luxembourg — Belgium-Luxembourg treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Netherlands–Luxembourg Coproduction Treaty",
@@ -5617,7 +5615,7 @@ treaties = [
         notes="Min 20% financial share each. Benelux partnership.",
         source_url="https://filmfund.lu/en/co-productions",
         source_desc="Film Fund Luxembourg — Netherlands-Luxembourg treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Austria–Switzerland Coproduction Treaty",
@@ -5626,7 +5624,7 @@ treaties = [
         notes="Min 20% financial share each. Active German-language coproduction corridor.",
         source_url="https://filminstitut.at/en/funding/co-productions/",
         source_desc="Austrian Film Institute — Austria-Switzerland treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Sweden–Norway Coproduction Treaty",
@@ -5635,7 +5633,7 @@ treaties = [
         notes="Min 20% financial share each. Active Nordic partnership.",
         source_url="https://www.coe.int/en/web/conventions/full-list/-/conventions/treaty/220",
         source_desc="European Convention on Cinematographic Co-Production (Nordic framework)",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Sweden–Denmark Coproduction Treaty",
@@ -5644,7 +5642,7 @@ treaties = [
         notes="Min 20% financial share each. Active Nordic partnership.",
         source_url="https://www.coe.int/en/web/conventions/full-list/-/conventions/treaty/220",
         source_desc="European Convention on Cinematographic Co-Production (Nordic framework)",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Denmark–Norway Coproduction Treaty",
@@ -5653,7 +5651,7 @@ treaties = [
         notes="Min 20% financial share each. Active Nordic partnership.",
         source_url="https://www.coe.int/en/web/conventions/full-list/-/conventions/treaty/220",
         source_desc="European Convention on Cinematographic Co-Production (Nordic framework)",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Finland–Norway Coproduction Treaty",
@@ -5661,7 +5659,7 @@ treaties = [
         auth_a="Finnish Film Foundation", auth_b="NFI",
         source_url="https://www.coe.int/en/web/conventions/full-list/-/conventions/treaty/220",
         source_desc="European Convention on Cinematographic Co-Production (Nordic framework)",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Finland–Sweden Coproduction Treaty",
@@ -5669,7 +5667,7 @@ treaties = [
         auth_a="Finnish Film Foundation", auth_b="Swedish Film Institute",
         source_url="https://www.coe.int/en/web/conventions/full-list/-/conventions/treaty/220",
         source_desc="European Convention on Cinematographic Co-Production (Nordic framework)",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Finland–Denmark Coproduction Treaty",
@@ -5677,7 +5675,7 @@ treaties = [
         auth_a="Finnish Film Foundation", auth_b="DFI",
         source_url="https://www.coe.int/en/web/conventions/full-list/-/conventions/treaty/220",
         source_desc="European Convention on Cinematographic Co-Production (Nordic framework)",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Poland–Germany Coproduction Treaty",
@@ -5686,7 +5684,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://pisf.pl/en/co-productions/",
         source_desc="PISF — Poland-Germany co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Poland–France Coproduction Treaty",
@@ -5695,7 +5693,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://pisf.pl/en/co-productions/",
         source_desc="PISF — Poland-France co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Czech Republic–Germany Coproduction Treaty",
@@ -5704,7 +5702,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.fondkinematografie.cz/co-productions",
         source_desc="Czech Film Fund — CZ-Germany treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Czech Republic–France Coproduction Treaty",
@@ -5713,7 +5711,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.fondkinematografie.cz/co-productions",
         source_desc="Czech Film Fund — CZ-France treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Hungary–Germany Coproduction Treaty",
@@ -5722,7 +5720,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.filmalap.hu/en/co-productions",
         source_desc="Hungarian National Film Institute — HU-Germany treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Romania–France Coproduction Treaty",
@@ -5731,7 +5729,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.gov.ro/en/co-productions/",
         source_desc="CNC Romania — Romania-France treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Romania–Germany Coproduction Treaty",
@@ -5740,7 +5738,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.cnc.gov.ro/en/co-productions/",
         source_desc="CNC Romania — Romania-Germany treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Greece–France Coproduction Treaty",
@@ -5749,7 +5747,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.ekome.media/co-productions/",
         source_desc="EKOME — Greece-France treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Croatia–Germany Coproduction Treaty",
@@ -5758,7 +5756,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.havc.hr/eng/co-productions",
         source_desc="HAVC — Croatia-Germany treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Croatia–France Coproduction Treaty",
@@ -5767,7 +5765,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.havc.hr/eng/co-productions",
         source_desc="HAVC — Croatia-France treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Serbia–France Coproduction Treaty",
@@ -5776,7 +5774,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.fcs.rs/en/co-productions/",
         source_desc="Film Center Serbia — Serbia-France treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Serbia–Germany Coproduction Treaty",
@@ -5785,7 +5783,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.fcs.rs/en/co-productions/",
         source_desc="Film Center Serbia — Serbia-Germany treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Serbia–Italy Coproduction Treaty",
@@ -5794,7 +5792,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.fcs.rs/en/co-productions/",
         source_desc="Film Center Serbia — Serbia-Italy treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Ireland–Australia Coproduction Treaty",
@@ -5803,7 +5801,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.screenireland.ie/co-production",
         source_desc="Screen Ireland — Ireland-Australia treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Ireland–UK Coproduction Treaty",
@@ -5812,7 +5810,7 @@ treaties = [
         notes="Min 20% financial share each. Very active cross-border partnership.",
         source_url="https://www.screenireland.ie/co-production",
         source_desc="Screen Ireland — Ireland-UK treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Ireland–France Coproduction Treaty",
@@ -5821,7 +5819,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.screenireland.ie/co-production",
         source_desc="Screen Ireland — Ireland-France treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Ireland–Germany Coproduction Treaty",
@@ -5830,7 +5828,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.screenireland.ie/co-production",
         source_desc="Screen Ireland — Ireland-Germany treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Switzerland–France Coproduction Treaty",
@@ -5839,7 +5837,7 @@ treaties = [
         notes="Min 20% financial share each. (Also accessible via France–Switzerland entry.)",
         source_url="https://www.bak.admin.ch/bak/en/home/cultural-creation/film/international.html",
         source_desc="BAK — Switzerland-France treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Switzerland–Italy Coproduction Treaty",
@@ -5848,7 +5846,7 @@ treaties = [
         notes="Min 20% financial share each. Active given shared Italian-language region.",
         source_url="https://www.bak.admin.ch/bak/en/home/cultural-creation/film/international.html",
         source_desc="BAK — Switzerland-Italy treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Luxembourg–France Coproduction Treaty",
@@ -5857,7 +5855,7 @@ treaties = [
         notes="Min 20% financial share each. Very active partnership.",
         source_url="https://filmfund.lu/en/co-productions",
         source_desc="Film Fund Luxembourg — Luxembourg-France treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Luxembourg–Germany Coproduction Treaty",
@@ -5866,7 +5864,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://filmfund.lu/en/co-productions",
         source_desc="Film Fund Luxembourg — Luxembourg-Germany treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Luxembourg–Belgium Coproduction Treaty",
@@ -5875,7 +5873,7 @@ treaties = [
         notes="Min 20% financial share each. Benelux partnership.",
         source_url="https://filmfund.lu/en/co-productions",
         source_desc="Film Fund Luxembourg — Luxembourg-Belgium treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Iceland–Denmark Coproduction Treaty",
@@ -5884,7 +5882,7 @@ treaties = [
         notes="Min 20% financial share each. Nordic partnership.",
         source_url="https://www.coe.int/en/web/conventions/full-list/-/conventions/treaty/220",
         source_desc="European Convention on Cinematographic Co-Production (Nordic framework)",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Iceland–Norway Coproduction Treaty",
@@ -5893,7 +5891,7 @@ treaties = [
         notes="Min 20% financial share each. Nordic partnership.",
         source_url="https://www.coe.int/en/web/conventions/full-list/-/conventions/treaty/220",
         source_desc="European Convention on Cinematographic Co-Production (Nordic framework)",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Portugal–Brazil Coproduction Treaty",
@@ -5902,7 +5900,7 @@ treaties = [
         notes="Min 20% financial share each. Lusophone partnership.",
         source_url="https://www.ica-ip.pt/en/co-productions/",
         source_desc="ICA — Portugal-Brazil co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "Portugal–France Coproduction Treaty",
@@ -5911,7 +5909,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.ica-ip.pt/en/co-productions/",
         source_desc="ICA — Portugal-France co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -5924,7 +5922,7 @@ treaties = [
         notes="Min 20% financial share each. Trans-Tasman partnership.",
         source_url="https://www.nzfilm.co.nz/international/co-production",
         source_desc="NZFC — NZ-Australia co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "New Zealand–France Coproduction Treaty",
@@ -5933,7 +5931,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.nzfilm.co.nz/international/co-production",
         source_desc="NZFC — NZ-France co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "New Zealand–South Korea Coproduction Treaty",
@@ -5942,7 +5940,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.nzfilm.co.nz/international/co-production",
         source_desc="NZFC — NZ-South Korea co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "New Zealand–Singapore Coproduction Treaty",
@@ -5950,7 +5948,7 @@ treaties = [
         auth_a="NZFC", auth_b="IMDA Singapore",
         source_url="https://www.nzfilm.co.nz/international/co-production",
         source_desc="NZFC — NZ-Singapore co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -5963,7 +5961,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.koreanfilm.or.kr/eng/support/copro.jsp",
         source_desc="KOFIC — Korea-France co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "South Korea–India Coproduction Treaty",
@@ -5972,7 +5970,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.koreanfilm.or.kr/eng/support/copro.jsp",
         source_desc="KOFIC — Korea-India co-production treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -5985,7 +5983,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.nfvf.co.za/co-productions/",
         source_desc="NFVF — South Africa-France treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "South Africa–Italy Coproduction Treaty",
@@ -5994,7 +5992,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.nfvf.co.za/co-productions/",
         source_desc="NFVF — South Africa-Italy treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "South Africa–Ireland Coproduction Treaty",
@@ -6002,7 +6000,7 @@ treaties = [
         auth_a="NFVF", auth_b="Screen Ireland",
         source_url="https://www.nfvf.co.za/co-productions/",
         source_desc="NFVF — South Africa-Ireland treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "South Africa–Australia Coproduction Treaty",
@@ -6011,7 +6009,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://www.nfvf.co.za/co-productions/",
         source_desc="NFVF — South Africa-Australia treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
@@ -6024,7 +6022,7 @@ treaties = [
         notes="Min 20% financial share each.",
         source_url="https://ffo.gov.in/en/co-production-agreements",
         source_desc="Film Facilitation Office India — India-Italy treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "India–Brazil Coproduction Treaty",
@@ -6032,7 +6030,7 @@ treaties = [
         auth_a="Ministry of Information and Broadcasting", auth_b="ANCINE",
         source_url="https://ffo.gov.in/en/co-production-agreements",
         source_desc="Film Facilitation Office India — India-Brazil treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "India–Israel Coproduction Treaty",
@@ -6040,7 +6038,7 @@ treaties = [
         auth_a="Ministry of Information and Broadcasting", auth_b="Israel Film Fund",
         source_url="https://ffo.gov.in/en/co-production-agreements",
         source_desc="Film Facilitation Office India — India-Israel treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
     bilateral(
         "India–China Coproduction Treaty",
@@ -6048,7 +6046,7 @@ treaties = [
         auth_a="Ministry of Information and Broadcasting", auth_b="China Film Administration",
         source_url="https://ffo.gov.in/en/co-production-agreements",
         source_desc="Film Facilitation Office India — India-China treaty",
-        last_verified="2025-03",
+        last_verified="2026-04",
     ),
 ]
 
@@ -6088,7 +6086,7 @@ convention = Treaty(
     ),
     source_url="https://www.coe.int/en/web/conventions/full-list/-/conventions/treaty/220",
     source_description="Council of Europe — European Convention on Cinematographic Co-Production (Revised), CETS No. 220",
-    last_verified="2025-03",
+    last_verified="2026-04",
 )
 db.add(convention)
 db.commit()

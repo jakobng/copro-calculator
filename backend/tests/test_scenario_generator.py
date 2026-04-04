@@ -292,6 +292,99 @@ class TestDocumentaryProjects:
 
 
 class TestScenarioPresentationSafeguards:
+    def test_conditional_incentive_not_counted_in_headline_total(self):
+        db = SessionLocal()
+        project = _make_project(
+            shoot_locations=[ShootLocation(country="United Kingdom", percent=100)],
+            director_nationalities=[],
+            producer_nationalities=[],
+            production_company_countries=[],
+        )
+        scenarios = generate_scenarios(project, db)
+        db.close()
+
+        uk_scenarios = [s for s in scenarios if any(p.country_code == "GB" for p in s.partners)]
+        assert uk_scenarios
+        top = uk_scenarios[0]
+        assert top.estimated_total_financing_percent == 0
+        assert top.estimated_conditional_financing_percent > 0
+        uk_incentives = [
+            inc for p in top.partners for inc in p.eligible_incentives if inc.country_code == "GB" and "AVEC" in inc.name
+        ]
+        assert uk_incentives
+        assert uk_incentives[0].estimated_contribution_percent == 0
+        assert uk_incentives[0].potential_contribution_percent > 0
+        assert uk_incentives[0].counted_in_totals is False
+
+    def test_future_stage_incentive_stays_visible_but_not_counted_now(self):
+        db = SessionLocal()
+        project = _make_project(
+            stage="development",
+            stages=["production"],
+            shoot_locations=[ShootLocation(country="France", percent=100)],
+            director_nationalities=["France"],
+            producer_nationalities=[],
+            production_company_countries=[],
+        )
+        scenarios = generate_scenarios(project, db)
+        db.close()
+
+        france_scenarios = [s for s in scenarios if any(p.country_code == "FR" for p in s.partners)]
+        assert france_scenarios
+        top = france_scenarios[0]
+        assert top.estimated_total_financing_percent == 0
+        assert top.estimated_conditional_financing_percent > 0
+        assert any(req.category == "stage" for req in top.requirements)
+
+    def test_add_copro_suggestions_respect_user_refusal(self):
+        db = SessionLocal()
+        project = _make_project(
+            shoot_locations=[ShootLocation(country="France", percent=100)],
+            director_nationalities=["France"],
+            producer_nationalities=[],
+            production_company_countries=[],
+            willing_add_coproducer=False,
+        )
+        scenarios = generate_scenarios(project, db)
+        db.close()
+
+        assert scenarios
+        assert not any(s.suggestion_type == "add_copro" for s in scenarios[0].suggestions)
+
+    def test_domestic_incentive_preferred_over_foreign_service_when_project_is_local(self):
+        db = SessionLocal()
+        db.add(Incentive(
+            name="France Crédit d'impôt Cinéma (domestic)",
+            country_code="FR",
+            incentive_type="tax_credit",
+            rebate_percent=25.0,
+            rebate_applies_to="qualifying_spend",
+            eligible_formats=["feature_fiction"],
+            eligible_stages=["production"],
+            local_producer_required=True,
+            max_cap_currency="EUR",
+            source_url="https://example.com/fr-domestic",
+            source_description="Domestic source",
+            mutually_exclusive_with=["France TRIP"],
+            notes="Domestic credit for French-initiated or official coproduction projects.",
+        ))
+        db.commit()
+        project = _make_project(
+            shoot_locations=[ShootLocation(country="France", percent=100)],
+            director_nationalities=["France"],
+            producer_nationalities=[],
+            production_company_countries=["France"],
+        )
+        scenarios = generate_scenarios(project, db)
+        db.close()
+
+        france_scenarios = [s for s in scenarios if any(p.country_code == "FR" for p in s.partners)]
+        assert france_scenarios
+        top = france_scenarios[0]
+        france_incentives = [inc.name for p in top.partners if p.country_code == "FR" for inc in p.eligible_incentives]
+        assert "France Crédit d'impôt Cinéma (domestic)" in france_incentives
+        assert "France TRIP (Tax Rebate for International Production)" not in france_incentives
+
     def test_selected_incentive_does_not_also_appear_as_near_miss(self):
         db = SessionLocal()
         db.add(Incentive(

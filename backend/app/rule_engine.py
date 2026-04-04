@@ -59,11 +59,44 @@ _STATIC_RATES_TO_EUR: dict[str, float] = {
     "ZAR": 0.051,
     "KRW": 0.00069,
     "ARS": 0.00088,
+    "BBD": 0.46,
+    "BDT": 0.0076,
+    "BHD": 2.44,
+    "BND": 0.70,
+    "BOB": 0.13,
     "COP": 0.00023,
     "BRL": 0.17,
+    "BSD": 0.92,
+    "BTN": 0.011,
+    "BZD": 0.46,
     "CLP": 0.00098,
+    "FJD": 0.41,
+    "GNF": 0.00011,
+    "GTQ": 0.12,
+    "GYD": 0.0044,
+    "IQD": 0.00070,
+    "KES": 0.0071,
+    "KHR": 0.00022,
+    "KMF": 0.0020,
+    "KWD": 2.99,
+    "KZT": 0.0018,
+    "LAK": 0.000042,
+    "LKR": 0.0031,
+    "LSL": 0.051,
+    "LYD": 0.19,
+    "MGA": 0.00020,
+    "MMK": 0.00022,
+    "MNT": 0.00027,
     "PEN": 0.25,
     "MXN": 0.053,
+    "MRU": 0.023,
+    "MWK": 0.00053,
+    "MZN": 0.014,
+    "NAD": 0.051,
+    "NPR": 0.0069,
+    "OMR": 2.39,
+    "PGK": 0.24,
+    "PKR": 0.0033,
     "DOP": 0.016,
     "UYU": 0.022,
     "JMD": 0.006,
@@ -88,11 +121,22 @@ _STATIC_RATES_TO_EUR: dict[str, float] = {
     "CNY": 0.13,
     "TWD": 0.029,
     "HKD": 0.12,
+    "SCR": 0.063,
+    "SDG": 0.0015,
+    "SSP": 0.0070,
+    "SZL": 0.051,
+    "TTD": 0.14,
+    "UZS": 0.000072,
+    "VES": 0.011,
+    "VUV": 0.0077,
     # Other
     "MDL": 0.051,
     "NGN": 0.00058,
     "BAM": 0.51,
     "UAH": 0.023,
+    "XAF": 0.00152,
+    "XCD": 0.34,
+    "XOF": 0.00152,
 }
 
 # In-memory cache for live rates
@@ -398,22 +442,33 @@ def check_incentive_eligibility(
             category="format", source=source,
         )], 0.0, None
 
-    # --- Stage check (HARD block) ---
+    # --- Stage check ---
     active_stages = [project.stage]
     if project.stages:
         for s in project.stages:
             if s not in active_stages:
                 active_stages.append(s)
-    
+
+    eligible_stages = incentive.eligible_stages or []
     stage_mismatch = bool(
-        incentive.eligible_stages and
-        not any(s in incentive.eligible_stages for s in active_stages)
+        eligible_stages and
+        not any(s in eligible_stages for s in active_stages)
     )
     if stage_mismatch:
         return False, [Requirement(
             description=f"This programme is for {', '.join(incentive.eligible_stages)}, not {', '.join(active_stages)}.",
             category="stage", source=source,
         )], 0.0, None
+    if eligible_stages and project.stage not in eligible_stages:
+        future_stages = [s for s in active_stages if s != project.stage and s in eligible_stages]
+        if future_stages:
+            requirements.append(Requirement(
+                description=(
+                    f"This programme is not available at the current {project.stage} stage. "
+                    f"It becomes relevant once the project reaches {', '.join(future_stages)}."
+                ),
+                category="stage", source=source,
+            ))
 
     # --- Region-specific incentives cannot be auto-confirmed from country-only inputs ---
     if incentive.region:
@@ -491,31 +546,44 @@ def check_incentive_eligibility(
         ))
 
     if incentive.local_crew_min_percent:
-        requirements.append(Requirement(
-            description=f"You would likely need at least {incentive.local_crew_min_percent}% local crew in {country_name}.",
-            category="crew", source=source,
-        ))
+        if project.local_crew_percent is None:
+            requirements.append(Requirement(
+                description=f"You would likely need at least {incentive.local_crew_min_percent}% local crew in {country_name}.",
+                category="crew", source=source,
+            ))
+        elif project.local_crew_percent < incentive.local_crew_min_percent:
+            requirements.append(Requirement(
+                description=(
+                    f"You would likely need at least {incentive.local_crew_min_percent}% local crew in {country_name}. "
+                    f"Current input: {project.local_crew_percent}%."
+                ),
+                category="crew", source=source,
+            ))
 
     if incentive.post_production_local_required:
-        requirements.append(Requirement(
-            description=f"Some post-production would need to happen in {country_name}.",
-            category="production", source=source,
-        ))
+        post_cc = countries.resolve_or_keep(project.post_production_country) if project.post_production_country else None
+        if post_cc and post_cc.upper() == cc.upper():
+            pass
+        elif project.post_flexible:
+            requirements.append(Requirement(
+                description=f"Some post-production would need to happen in {country_name}, which is still possible because you marked post-production as flexible.",
+                category="production", source=source,
+            ))
+        else:
+            requirements.append(Requirement(
+                description=f"Some post-production would need to happen in {country_name}.",
+                category="production", source=source,
+            ))
 
     if incentive.cultural_test_required:
         score_info = ""
         if incentive.cultural_test_min_score and incentive.cultural_test_total_score:
             score_info = f" (min {incentive.cultural_test_min_score}/{incentive.cultural_test_total_score} points)"
-        requirements.append(Requirement(
-            description=f"You would need to pass the {country_name} cultural test{score_info}.",
-            category="cultural", source=source,
-        ))
-
-    if incentive.min_spend_percent:
-        requirements.append(Requirement(
-            description=f"You would need to spend at least {incentive.min_spend_percent}% of the budget in {country_name}.",
-            category="spend", source=source,
-        ))
+        if cc.upper() not in passed_codes:
+            requirements.append(Requirement(
+                description=f"You would need to pass the {country_name} cultural test{score_info}.",
+                category="cultural", source=source,
+            ))
 
     # --- Benefit calculation ---
 
@@ -551,6 +619,17 @@ def check_incentive_eligibility(
             ),
             category="spend", source=source,
         ))
+
+    if incentive.min_spend_percent:
+        estimated_spend_percent = (estimated_qualifying_spend / project.budget * 100.0) if project.budget else 0.0
+        if estimated_spend_percent + 1e-9 < incentive.min_spend_percent:
+            requirements.append(Requirement(
+                description=(
+                    f"You would need to spend at least {incentive.min_spend_percent}% of the budget in {country_name}. "
+                    f"Current plan looks closer to {estimated_spend_percent:.1f}%."
+                ),
+                category="spend", source=source,
+            ))
 
     sources = [source] if source else []
     has_local_for_summary = has_local or not incentive.local_producer_required
@@ -711,8 +790,9 @@ def check_incentive_eligibility(
         if incentive.max_cap_amount:
             cap_proj = _convert(incentive.max_cap_amount, native_ccy, project.budget_currency)
             cap_note = f" If successful, the award can go up to about {currency} {cap_proj:,.0f}."
+        fund_label = "selective grant" if incentive.incentive_type == "grant" else "selective fund"
         explanation = (
-            f"{criteria} This is a selective fund, not an automatic rebate, so the calculator does not assign it a cash value.{cap_note}"
+            f"{criteria} This is a {fund_label}, not an automatic rebate, so the calculator does not assign it a cash value.{cap_note}"
         )
         benefit = IncentiveBenefit(
             criteria_summary=criteria,
@@ -722,7 +802,7 @@ def check_incentive_eligibility(
             benefit_amount=0.0,
             benefit_currency=currency,
             benefit_explanation=explanation,
-            calculation_notes="This is a selective fund, so the award amount depends on the application and cannot be modeled as an automatic rebate.",
+            calculation_notes=f"This is a {fund_label}, so the award amount depends on the application and cannot be modeled as an automatic rebate.",
             calculation_steps=[],
             sources=sources,
         )

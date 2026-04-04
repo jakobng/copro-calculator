@@ -175,17 +175,25 @@ def _evaluate_country(
         else:
             ineligible_incs.append(inc)
 
-    # Second pass: handle mutual exclusivity
-    # Sort by rebate_pct descending so we keep the best one if they conflict
-    candidates.sort(key=lambda x: -x["rebate_pct"])
+    # Second pass: handle mutual exclusivity and fit
+    candidates.sort(key=lambda x: _candidate_sort_key(project, x["inc"], x["rebate_pct"]), reverse=True)
 
     selected_names = set()
     excluded_names = set()
+    selected_orientations: dict[str, str] = {}
 
     for cand in candidates:
         name = cand["inc"].name
         if name in excluded_names:
             continue
+
+        orientation = _incentive_market_orientation(cand["inc"])
+        orientation_key = cand["inc"].country_code.upper()
+        if orientation and selected_orientations.get(orientation_key) not in (None, orientation):
+            continue
+
+        counted_in_totals = _counts_toward_bankable_total(cand["reqs"])
+        counted_pct = cand["rebate_pct"] if counted_in_totals else 0.0
 
         eligible.append(EligibleIncentive(
             name=cand["inc"].name,
@@ -196,11 +204,15 @@ def _evaluate_country(
             rebate_percent=cand["inc"].rebate_percent,
             requirements=cand["reqs"],
             benefit=cand["benefit"],
-            estimated_contribution_percent=cand["rebate_pct"],
+            estimated_contribution_percent=counted_pct,
+            potential_contribution_percent=cand["rebate_pct"],
+            counted_in_totals=counted_in_totals,
         ))
-        total_pct += cand["rebate_pct"]
+        total_pct += counted_pct
         all_reqs.extend(cand["reqs"])
         selected_names.add(name)
+        if orientation:
+            selected_orientations[orientation_key] = orientation
 
         # Mark mutually exclusive ones as excluded
         if cand["inc"].mutually_exclusive_with:
@@ -280,6 +292,7 @@ def _build_scenario(
     all_requirements: list[Requirement] = []
     treaty_basis: list[TreatyInfo] = []
     total_pct = 0.0
+    potential_total_pct = 0.0
     seen_treaties: set[int] = set()
 
     all_near_misses: list[NearMiss] = []
@@ -311,6 +324,7 @@ def _build_scenario(
             applicable_treaties=partner_treaties,
         ))
         total_pct += pct
+        potential_total_pct += sum(inc.potential_contribution_percent for inc in eligible)
         all_requirements.extend(reqs)
 
     # Check there's at least some incentive data for these countries
@@ -331,10 +345,12 @@ def _build_scenario(
             unique_reqs.append(r)
 
     amount = (project.budget * total_pct / 100) if project.budget else 0
+    conditional_pct = max(potential_total_pct - total_pct, 0.0)
+    conditional_amount = (project.budget * conditional_pct / 100) if project.budget else 0
     currency = project.budget_currency or "EUR"
 
     suggestions = _build_suggestions(project, country_codes, by_country, db, currency)
-    rationale = _build_rationale(partners, treaty_basis, total_pct, currency, amount)
+    rationale = _build_rationale(partners, treaty_basis, total_pct, conditional_pct, currency, amount, conditional_amount)
 
     # Sort near-misses by potential benefit (highest first), limit to top 5
     all_near_misses.sort(key=lambda nm: -(nm.potential_benefit_amount or 0))
@@ -344,6 +360,8 @@ def _build_scenario(
         partners=partners,
         estimated_total_financing_percent=round(total_pct, 1),
         estimated_total_financing_amount=round(amount, 0),
+        estimated_conditional_financing_percent=round(conditional_pct, 1),
+        estimated_conditional_financing_amount=round(conditional_amount, 0),
         financing_currency=currency,
         requirements=unique_reqs,
         suggestions=suggestions,
@@ -357,8 +375,10 @@ def _build_rationale(
     partners: list[CoproductionPartner],
     treaties: list[TreatyInfo],
     total_pct: float,
+    conditional_pct: float,
     currency: str,
     amount: float,
+    conditional_amount: float,
 ) -> str:
     """Generate a human-readable explanation of why this scenario works."""
     parts = []
@@ -374,13 +394,26 @@ def _build_rationale(
         parts.append(f"Possible treaty route: {'; '.join(treaty_names)}.")
 
     incentive_count = sum(len(p.eligible_incentives) for p in partners)
-    if incentive_count > 0 and total_pct > 0:
+    if incentive_count > 0 and total_pct > 0 and conditional_pct > 0:
         parts.append(
             f"The calculator found {incentive_count} relevant incentive(s), "
-            f"with modeled upside of about {total_pct:.1f}% of budget ({currency} {amount:,.0f})."
+            f"with about {total_pct:.1f}% of budget ({currency} {amount:,.0f}) looking available from the current inputs, "
+            f"plus conditional upside of {conditional_pct:.1f}% ({currency} {conditional_amount:,.0f}) if the remaining requirements are satisfied."
+        )
+    elif incentive_count > 0 and total_pct > 0:
+        parts.append(
+            f"The calculator found {incentive_count} relevant incentive(s), "
+            f"with about {total_pct:.1f}% of budget ({currency} {amount:,.0f}) looking available from the current inputs."
+        )
+    elif incentive_count > 0 and conditional_pct > 0:
+        parts.append(
+            f"The calculator found {incentive_count} relevant incentive(s), "
+            f"but none look bankable from the current inputs yet. "
+            f"If the remaining conditions are resolved, modeled upside could reach about {conditional_pct:.1f}% "
+            f"of budget ({currency} {conditional_amount:,.0f})."
         )
     elif incentive_count > 0:
-        parts.append(f"The calculator found {incentive_count} relevant incentive(s), but the value still depends on how spend is allocated and whether the remaining conditions are met.")
+        parts.append(f"The calculator found {incentive_count} relevant incentive(s), but they remain too conditional to model as available financing yet.")
     else:
         parts.append("No incentives clearly match yet. The treaty structure may still be useful, but more changes would be needed.")
 
@@ -426,6 +459,9 @@ def _build_suggestions(
                     source=source,
                 ))
                 break
+
+    if not project.willing_add_coproducer:
+        return suggestions[:5]
 
     # Suggest treaty partners not currently in the scenario
     partner_suggestions: list[Suggestion] = []
@@ -478,6 +514,66 @@ def _build_suggestions(
     suggestions.extend(partner_suggestions)
 
     return suggestions[:5]
+
+
+def _counts_toward_bankable_total(requirements: list[Requirement]) -> bool:
+    """Return True when remaining requirements are light enough to count in headline totals."""
+    for req in requirements:
+        if req.category in {"budget", "spend", "producer", "cultural", "stage", "region"}:
+            return False
+        if req.category == "production" and "Right now your inputs do not leave room for that" in req.description:
+            return False
+    return True
+
+
+def _project_has_local_ties(project: ProjectInput, country_code: str) -> bool:
+    cc = country_code.upper()
+    if _percent_in_country(project, cc) > 0:
+        return True
+    for nat in (project.director_nationalities or []) + (project.producer_nationalities or []):
+        if nat and countries.resolve_or_keep(nat).upper() == cc:
+            return True
+    for prod_cc in project.production_company_countries or []:
+        if prod_cc and countries.resolve_or_keep(prod_cc).upper() == cc:
+            return True
+    return any(countries.resolve_or_keep(c).upper() == cc for c in (project.has_coproducer or []))
+
+
+def _incentive_market_orientation(incentive: Incentive) -> str | None:
+    text = " ".join(filter(None, [incentive.name, incentive.source_description, incentive.notes])).lower()
+    foreign_markers = (
+        "tax rebate for international production",
+        "international production",
+        "foreign productions",
+        "foreign production",
+        "service production",
+        "services tax credit",
+    )
+    domestic_markers = (
+        "(domestic)",
+        " domestic ",
+        "domestic credit",
+        "canadian film or video production",
+        "french-initiated",
+        "official coproduction",
+    )
+    if any(marker in text for marker in foreign_markers):
+        return "foreign"
+    if any(marker in text for marker in domestic_markers):
+        return "domestic"
+    return None
+
+
+def _candidate_sort_key(project: ProjectInput, incentive: Incentive, rebate_pct: float) -> tuple[float, float]:
+    """Higher is better. Bias toward incentives that fit the project's domestic/foreign posture."""
+    fit_score = 0.0
+    orientation = _incentive_market_orientation(incentive)
+    local_ties = _project_has_local_ties(project, incentive.country_code)
+    if orientation == "domestic":
+        fit_score = 1.0 if local_ties else -1.0
+    elif orientation == "foreign":
+        fit_score = 1.0 if not local_ties else -1.0
+    return (fit_score, rebate_pct)
 
 
 def generate_scenarios(project: ProjectInput, db: Session) -> list[Scenario]:

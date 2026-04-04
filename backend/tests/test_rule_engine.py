@@ -270,6 +270,25 @@ class TestCulturalTest:
         assert any("cultural test" in r.description.lower() for r in reqs)
         assert any("18/35" in r.description for r in reqs)
 
+    def test_cultural_test_passed_removes_requirement(self):
+        project = _make_project(cultural_test_passed=["ES"])
+        inc = _make_incentive(cultural_test_required=True, cultural_test_min_score=18, cultural_test_total_score=35)
+        ok, reqs, _, _ = check_incentive_eligibility(project, inc)
+        assert ok
+        assert not any("cultural test" in r.description.lower() for r in reqs)
+
+
+class TestSoftRequirementPrecision:
+    def test_min_spend_percent_not_added_when_current_plan_already_meets_it(self):
+        project = _make_project(
+            budget=5_000_000,
+            shoot_locations=[ShootLocation(country="Spain", percent=100)],
+        )
+        inc = _make_incentive(country_code="ES", min_spend_percent=10.0)
+        ok, reqs, _, _ = check_incentive_eligibility(project, inc)
+        assert ok
+        assert not any(r.category == "spend" and "10.0% of the budget" in r.description for r in reqs)
+
 
 class TestSourceReferences:
     def test_source_attached_to_requirements(self):

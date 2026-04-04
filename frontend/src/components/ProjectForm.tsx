@@ -216,24 +216,6 @@ export function ProjectForm({ project, onChange, onAnalyze, loading, error }: Pr
         </Field>
       </section>
 
-      {/* Cultural Tests */}
-      <section className="space-y-5">
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Cultural Test Status</span>
-        </div>
-        <p className="text-[10px] text-neutral-400 leading-relaxed italic">
-          Many incentives require passing a points-based cultural test.
-          If you know your status for a specific region, mark it here.
-        </p>
-        <div className="space-y-4">
-          <CulturalTestSection
-            project={project}
-            countries={countries}
-            onChange={onChange}
-          />
-        </div>
-      </section>
-
       {/* Logic */}
       <section className="space-y-4 pt-4 border-t border-neutral-100">
         <Toggle
@@ -348,79 +330,6 @@ function Toggle({ checked, onChange, label }: {
       </div>
       <span className={`text-xs font-bold uppercase tracking-wide transition-colors ${checked ? 'text-gallery-text' : 'text-neutral-400 hover:text-neutral-600'}`}>{label}</span>
     </button>
-  )
-}
-
-function CulturalTestSection({ project, countries, onChange }: {
-  project: ProjectInput
-  countries: CountryOption[]
-  onChange: (p: ProjectInput) => void
-}) {
-  const [adding, setAdding] = useState(false)
-
-  const remove = (code: string, type: 'passed' | 'failed') => {
-    const key = type === 'passed' ? 'cultural_test_passed' : 'cultural_test_failed'
-    onChange({ ...project, [key]: project[key].filter(c => c !== code) })
-  }
-
-  const add = (name: string, type: 'passed' | 'failed') => {
-    const code = countries.find(c => c.name.toLowerCase() === name.toLowerCase())?.code
-    if (!code) return
-    const key = type === 'passed' ? 'cultural_test_passed' : 'cultural_test_failed'
-    const other = type === 'passed' ? 'cultural_test_failed' : 'cultural_test_passed'
-
-    onChange({
-      ...project,
-      [key]: Array.from(new Set([...project[key], code])),
-      [other]: project[other].filter(c => c !== code)
-    })
-    setAdding(false)
-  }
-
-  return (
-    <div className="space-y-3">
-      <div className="flex flex-wrap gap-2">
-        {project.cultural_test_passed.map(code => (
-          <span key={code} className="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-2 py-1 rounded-sm text-[10px] font-black border border-emerald-100">
-            {countries.find(c => c.code === code)?.name || code} PASS
-            <button onClick={() => remove(code, 'passed')} className="hover:text-emerald-900"><X className="h-3 w-3" /></button>
-          </span>
-        ))}
-        {project.cultural_test_failed.map(code => (
-          <span key={code} className="flex items-center gap-1.5 bg-red-50 text-red-700 px-2 py-1 rounded-sm text-[10px] font-black border border-red-100">
-            {countries.find(c => c.code === code)?.name || code} FAIL
-            <button onClick={() => remove(code, 'failed')} className="hover:text-red-900"><X className="h-3 w-3" /></button>
-          </span>
-        ))}
-      </div>
-
-      {!adding ? (
-        <button
-          onClick={() => setAdding(true)}
-          className="text-[10px] font-bold text-gallery-accent border-b border-gallery-accent border-dotted hover:text-gallery-accent-dark"
-        >
-          + ADD MANUAL STATUS
-        </button>
-      ) : (
-        <div className="flex items-center gap-2 p-3 bg-neutral-50 border border-neutral-100 rounded-sm">        
-          <div className="flex-1">
-            <CountryInput
-              value=""
-              onChange={(v) => {}}
-              onSelect={(v) => {
-                // We'll show a small sub-menu or just default to pass?
-                // Let's do a simple prompt-like choice
-                const type = window.confirm(`Mark ${v} as PASS? (Cancel for FAIL)`) ? 'passed' : 'failed'       
-                add(v, type)
-              }}
-              countries={countries}
-              placeholder="Search region..."
-            />
-          </div>
-          <button onClick={() => setAdding(false)} className="text-xs text-neutral-400">Cancel</button>
-        </div>
-      )}
-    </div>
   )
 }
 

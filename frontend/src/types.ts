@@ -144,6 +144,8 @@ export interface EligibleIncentive {
   requirements: Requirement[]
   benefit?: IncentiveBenefit | null
   estimated_contribution_percent: number
+  potential_contribution_percent: number
+  counted_in_totals: boolean
 }
 
 export interface TreatyInfo {
@@ -196,6 +198,8 @@ export interface Scenario {
   partners: CoproductionPartner[]
   estimated_total_financing_percent: number
   estimated_total_financing_amount: number
+  estimated_conditional_financing_percent: number
+  estimated_conditional_financing_amount: number
   financing_currency: string
   requirements: Requirement[]
   suggestions: Suggestion[]

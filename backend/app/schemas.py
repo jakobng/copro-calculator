@@ -166,6 +166,8 @@ class EligibleIncentive(BaseModel):
     requirements: list[Requirement] = Field(default_factory=list)
     benefit: Optional[IncentiveBenefit] = None
     estimated_contribution_percent: float = 0.0
+    potential_contribution_percent: float = 0.0
+    counted_in_totals: bool = True
 
 
 class TreatyInfo(BaseModel):
@@ -205,6 +207,8 @@ class Scenario(BaseModel):
     partners: list[CoproductionPartner] = Field(default_factory=list)
     estimated_total_financing_percent: float = 0.0
     estimated_total_financing_amount: float = 0.0
+    estimated_conditional_financing_percent: float = 0.0
+    estimated_conditional_financing_amount: float = 0.0
     financing_currency: str = "EUR"
     requirements: list[Requirement] = Field(default_factory=list)
     suggestions: list[Suggestion] = Field(default_factory=list)
