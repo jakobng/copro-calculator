@@ -116,8 +116,24 @@ function CulturalTestRow({
     return res.json()
   }
 
+  const updateLocalStatus = (action: 'pass' | 'fail') => {
+    onProjectUpdate({
+      ...project,
+      cultural_test_passed: action === 'pass'
+        ? Array.from(new Set([...(project.cultural_test_passed || []), country.country_code]))
+        : (project.cultural_test_passed || []).filter(c => c !== country.country_code),
+      cultural_test_failed: action === 'fail'
+        ? Array.from(new Set([...(project.cultural_test_failed || []), country.country_code]))
+        : (project.cultural_test_failed || []).filter(c => c !== country.country_code),
+    })
+    onReanalyze()
+  }
+
   const markStatus = async (action: 'pass' | 'fail') => {
-    if (!sessionId) return
+    if (!sessionId) {
+      updateLocalStatus(action)
+      return
+    }
     setLoading(true)
     try {
       const data = await callEndpoint('/api/intake/cultural-test', {
@@ -218,13 +234,15 @@ function CulturalTestRow({
             >
               [Fail]
             </button>
-            <button
-              onClick={startReview}
-              className="text-[10px] font-black tracking-widest px-4 py-1.5 bg-gallery-text text-white hover:bg-gallery-accent transition-all uppercase flex items-center gap-2"
-            >
-              <MessageSquare className="h-3 w-3" />
-              Start Review
-            </button>
+            {sessionId && (
+              <button
+                onClick={startReview}
+                className="text-[10px] font-black tracking-widest px-4 py-1.5 bg-gallery-text text-white hover:bg-gallery-accent transition-all uppercase flex items-center gap-2"
+              >
+                <MessageSquare className="h-3 w-3" />
+                Start Review
+              </button>
+            )}
           </div>
         )}
 

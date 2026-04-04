@@ -3,10 +3,9 @@ import { API_BASE_URL } from './config'
 import type { ProjectInput, AnalyzeResponse } from './types'
 import { ProjectForm } from './components/ProjectForm'
 import { ScenarioList } from './components/ScenarioList'
-import { IntakeChat } from './components/IntakeChat'
 import { CulturalTestPanel } from './components/CulturalTestPanel'
 import { DocumentPanel } from './components/DocumentPanel'
-import { Calculator, MessageSquare, Info, ArrowRight } from 'lucide-react'
+import { Info, ArrowRight } from 'lucide-react'
 
 const DEFAULT_PROJECT: ProjectInput = {
   title: '',
@@ -40,16 +39,12 @@ const DEFAULT_PROJECT: ProjectInput = {
   cultural_test_failed: [],
 }
 
-type InputMode = 'form' | 'interview'
-
 function App() {
   const [project, setProject] = useState<ProjectInput>(DEFAULT_PROJECT)
   const [response, setResponse] = useState<AnalyzeResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [stats, setStats] = useState({ countries: 0, incentives: 0, treaties: 0 })
-  const [inputMode, setInputMode] = useState<InputMode>('interview')
-  const [sessionId, setSessionId] = useState<string | null>(null)
   const [docViewer, setDocViewer] = useState<{ documentId: number; annotationId?: number | null } | null>(null) 
 
   const handleDocumentOpen = useCallback((documentId: number, annotationId?: number | null) => {
@@ -114,7 +109,7 @@ function App() {
             Input your project details to find the international film funds and tax credits you qualify for today.
             The calculator also identifies additional financing you could unlock through minor logistical changes or by adding a co-production partner.
             Every scenario is transparent: click any result to inspect the underlying math and cited treaty texts.
-            Start a <strong>Chat</strong> to walk through your project details (or upload a treatment), or use <strong>Manual</strong> mode to input all your data directly.
+            Use the project form to input your data directly and compare financing scenarios.
           </p>
         </section>
 
@@ -127,43 +122,14 @@ function App() {
                 <p className="mt-2 text-sm text-neutral-500">Provide your film's basics to see available financing.</p>
               </div>
 
-              <div className="flex p-1 bg-neutral-100 rounded-sm">
-                <button
-                  onClick={() => setInputMode('interview')}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-[11px] font-bold transition-all ${
-                    inputMode === 'interview' ? 'bg-white text-gallery-text shadow-sm' : 'text-neutral-400 hover:text-neutral-600'
-                  }`}
-                >
-                  <MessageSquare className="h-3.5 w-3.5" />
-                  CHAT
-                </button>
-                <button
-                  onClick={() => setInputMode('form')}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-[11px] font-bold transition-all ${
-                    inputMode === 'form' ? 'bg-white text-gallery-text shadow-sm' : 'text-neutral-400 hover:text-neutral-600'
-                  }`}
-                >
-                  <Calculator className="h-3.5 w-3.5" />
-                  MANUAL
-                </button>
-              </div>
-
               <div className="card p-6">
-                {inputMode === 'form' ? (
-                  <ProjectForm
-                    project={project}
-                    onChange={setProject}
-                    onAnalyze={analyze}
-                    loading={loading}
-                    error={error}
-                  />
-                ) : (
-                  <IntakeChat
-                    onProjectReady={(draft) => setProject(draft)}
-                    onAnalyze={analyze}
-                    onSessionStart={setSessionId}
-                  />
-                )}
+                <ProjectForm
+                  project={project}
+                  onChange={setProject}
+                  onAnalyze={analyze}
+                  loading={loading}
+                  error={error}
+                />
               </div>
             </div>
           </section>
@@ -204,7 +170,7 @@ function App() {
                 <CulturalTestPanel
                   scenarios={response.scenarios}
                   project={project}
-                  sessionId={sessionId}
+                  sessionId={null}
                   onProjectUpdate={setProject}
                   onReanalyze={analyze}
                 />
