@@ -16,6 +16,42 @@ const STAGES = [
   { value: 'post', label: 'Post-Production' },
 ]
 
+const COMMON_BUDGET_CURRENCIES = ['EUR', 'USD', 'GBP'] as const
+
+const ALL_BUDGET_CURRENCIES = [
+  { value: 'EUR', label: 'Euro' },
+  { value: 'USD', label: 'US Dollar' },
+  { value: 'GBP', label: 'British Pound' },
+  { value: 'AUD', label: 'Australian Dollar' },
+  { value: 'CAD', label: 'Canadian Dollar' },
+  { value: 'CHF', label: 'Swiss Franc' },
+  { value: 'JPY', label: 'Japanese Yen' },
+  { value: 'CNY', label: 'Chinese Yuan' },
+  { value: 'INR', label: 'Indian Rupee' },
+  { value: 'BRL', label: 'Brazilian Real' },
+  { value: 'MXN', label: 'Mexican Peso' },
+  { value: 'ZAR', label: 'South African Rand' },
+  { value: 'KRW', label: 'South Korean Won' },
+  { value: 'SGD', label: 'Singapore Dollar' },
+  { value: 'NZD', label: 'New Zealand Dollar' },
+] as const
+
+const SUGGESTED_CURRENCY_BY_COUNTRY: Record<string, string> = {
+  AU: 'AUD',
+  CA: 'CAD',
+  CH: 'CHF',
+  CN: 'CNY',
+  GB: 'GBP',
+  IN: 'INR',
+  JP: 'JPY',
+  KR: 'KRW',
+  MX: 'MXN',
+  NZ: 'NZD',
+  SG: 'SGD',
+  US: 'USD',
+  ZA: 'ZAR',
+}
+
 interface Props {
   project: ProjectInput
   onChange: (project: ProjectInput) => void
@@ -28,6 +64,9 @@ interface Props {
 export function ProjectForm({ project, onChange, onAnalyze, loading, error, backendReady }: Props) {
   const [countries, setCountries] = useState<CountryOption[]>([])
   const [regionsByCountryCode, setRegionsByCountryCode] = useState<Record<string, string[]>>({})
+  const [showMoreCurrencies, setShowMoreCurrencies] = useState(false)
+  const [currencyTouched, setCurrencyTouched] = useState(false)
+  const [lastAutoCurrency, setLastAutoCurrency] = useState<string | null>(null)
 
   useEffect(() => {
     if (!backendReady) return
@@ -67,8 +106,43 @@ export function ProjectForm({ project, onChange, onAnalyze, loading, error, back
     })
   }, [backendReady, countries, project.shoot_locations, regionsByCountryCode])
 
+  const getCountryCode = (countryName: string) =>
+    countries.find((country) => country.name.toLowerCase() === countryName.toLowerCase())?.code
+
+  const getCountryName = (countryCode: string) =>
+    countries.find((country) => country.code === countryCode)?.name || countryCode
+
+  const currencyContextCountryCode =
+    project.shoot_locations
+      .map((loc) => getCountryCode(loc.country))
+      .find((code): code is string => Boolean(code))
+    || project.production_company_countries
+      .map((countryName) => getCountryCode(countryName))
+      .find((code): code is string => Boolean(code))
+    || project.producer_nationalities
+      .map((countryName) => getCountryCode(countryName))
+      .find((code): code is string => Boolean(code))
+
+  const suggestedCurrency = currencyContextCountryCode
+    ? SUGGESTED_CURRENCY_BY_COUNTRY[currencyContextCountryCode]
+    : undefined
+
+  useEffect(() => {
+    if (!suggestedCurrency || currencyTouched) return
+    if (suggestedCurrency === project.budget_currency) return
+    if (project.budget_currency !== 'EUR' && project.budget_currency !== lastAutoCurrency) return
+
+    onChange({ ...project, budget_currency: suggestedCurrency })
+    setLastAutoCurrency(suggestedCurrency)
+  }, [currencyTouched, lastAutoCurrency, onChange, project, suggestedCurrency])
+
   const update = <K extends keyof ProjectInput>(key: K, value: ProjectInput[K]) => {
     onChange({ ...project, [key]: value })
+  }
+
+  const setBudgetCurrency = (currency: string) => {
+    setCurrencyTouched(true)
+    update('budget_currency', currency)
   }
 
   const addShootLocation = () => {
@@ -95,9 +169,6 @@ export function ProjectForm({ project, onChange, onAnalyze, loading, error, back
   }
 
   const totalShootPct = project.shoot_locations.reduce((sum, l) => sum + l.percent, 0)
-
-  const getCountryCode = (countryName: string) =>
-    countries.find((country) => country.name.toLowerCase() === countryName.toLowerCase())?.code
 
   const getRegionOptions = (countryName: string) => {
     const countryCode = getCountryCode(countryName)
@@ -139,7 +210,8 @@ export function ProjectForm({ project, onChange, onAnalyze, loading, error, back
 {/* Finance */}
 <section className="space-y-5">
   <Field label="Total Budget">
-    <div className="flex gap-2">
+    <div className="space-y-3">
+      <div className="flex gap-2">
       <div className="relative flex-1">
         <input
           type="number"
@@ -150,29 +222,50 @@ export function ProjectForm({ project, onChange, onAnalyze, loading, error, back
           className="input font-bold"
         />
       </div>
-      <div className="w-24">
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {COMMON_BUDGET_CURRENCIES.map((currency) => (
+          <button
+            key={currency}
+            type="button"
+            onClick={() => setBudgetCurrency(currency)}
+            className={`px-3 py-2 text-[10px] font-black uppercase tracking-widest border transition-all ${
+              project.budget_currency === currency
+                ? 'border-gallery-text bg-gallery-text text-white'
+                : 'border-neutral-200 bg-white text-neutral-500 hover:border-neutral-300 hover:text-neutral-900'
+            }`}
+          >
+            {currency}
+          </button>
+        ))}
+        <button
+          type="button"
+          onClick={() => setShowMoreCurrencies((current) => !current)}
+          className={`px-3 py-2 text-[10px] font-black uppercase tracking-widest border transition-all ${
+            !COMMON_BUDGET_CURRENCIES.includes(project.budget_currency as typeof COMMON_BUDGET_CURRENCIES[number]) || showMoreCurrencies
+              ? 'border-neutral-900 bg-neutral-100 text-neutral-900'
+              : 'border-neutral-200 bg-white text-neutral-500 hover:border-neutral-300 hover:text-neutral-900'
+          }`}
+        >
+          {COMMON_BUDGET_CURRENCIES.includes(project.budget_currency as typeof COMMON_BUDGET_CURRENCIES[number]) ? 'More' : project.budget_currency}
+        </button>
+      </div>
+      {showMoreCurrencies && (
         <select
           value={project.budget_currency}
-          onChange={(e) => update('budget_currency', e.target.value)}
+          onChange={(e) => setBudgetCurrency(e.target.value)}
           className="input bg-white font-bold"
         >
-          <option value="EUR">EUR</option>
-          <option value="USD">USD</option>
-          <option value="GBP">GBP</option>
-          <option value="AUD">AUD</option>
-          <option value="CAD">CAD</option>
-          <option value="CHF">CHF</option>
-          <option value="JPY">JPY</option>
-          <option value="CNY">CNY</option>
-          <option value="INR">INR</option>
-          <option value="BRL">BRL</option>
-          <option value="MXN">MXN</option>
-          <option value="ZAR">ZAR</option>
-          <option value="KRW">KRW</option>
-          <option value="SGD">SGD</option>
-          <option value="NZD">NZD</option>
+          {ALL_BUDGET_CURRENCIES.map((currency) => (
+            <option key={currency.value} value={currency.value}>{currency.value} · {currency.label}</option>
+          ))}
         </select>
-      </div>
+      )}
+      {suggestedCurrency && currencyContextCountryCode && (
+        <p className="text-[10px] font-medium text-neutral-400">
+          Suggested from {getCountryName(currencyContextCountryCode)}: {suggestedCurrency}
+        </p>
+      )}
     </div>
   </Field>
 
