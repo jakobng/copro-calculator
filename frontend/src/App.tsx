@@ -4,7 +4,7 @@ import type { ProjectInput, AnalyzeResponse } from './types'
 import { ProjectForm } from './components/ProjectForm'
 import { ScenarioList } from './components/ScenarioList'
 import { DocumentPanel } from './components/DocumentPanel'
-import { Info, ArrowRight, Clock3, Sparkles } from 'lucide-react'
+import { Info, ArrowRight, Clock3 } from 'lucide-react'
 
 const EXPECTED_WAKE_UP_SECONDS = 30
 const WAKE_UP_POLL_INTERVAL_MS = 4000
@@ -173,7 +173,7 @@ function App() {
           ) : (
             <div className="hidden lg:flex items-center gap-4 text-[10px] font-bold text-amber-600">
               <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
-              DEMO WAKING UP &middot; FIRST VISIT CAN TAKE ~30 SECONDS
+              STARTING DEMO &middot; PLEASE WAIT ~30 SECONDS
             </div>
           )}
         </div>
@@ -188,12 +188,6 @@ function App() {
             Every scenario is transparent: click any result to inspect the underlying math and cited treaty texts.
             Use the project form to input your data directly and compare financing scenarios.
           </p>
-          {!backendReady && (
-            <div className="mt-6 inline-flex items-center gap-3 rounded-sm border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-bold uppercase tracking-[0.22em] text-amber-700">
-              <Clock3 className="h-4 w-4" />
-              The backend is spinning up now. The form unlocks automatically when the live demo is ready.
-            </div>
-          )}
         </section>
 
         <div className="grid gap-16 lg:grid-cols-12">
@@ -238,47 +232,15 @@ function App() {
                 </div>
               ) : (
                 <div className="rounded-sm border border-neutral-200 bg-white p-8 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
-                  <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
-                    <div className="max-w-2xl space-y-5">
-                      <div className="inline-flex items-center gap-2 rounded-sm border border-amber-200 bg-amber-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.28em] text-amber-700">
-                        <Sparkles className="h-3.5 w-3.5" />
-                        Demo waking up
-                      </div>
-                      <div className="space-y-3">
-                        <h3 className="text-3xl font-bold font-serif tracking-tight text-gallery-text">The calculator is loading live data behind the scenes.</h3>
-                        <p className="max-w-xl text-sm leading-relaxed text-neutral-600">
-                          This demo runs on Render, so the first visit after inactivity needs a short wake-up period.
-                          Rather than letting you click into a dead interface, we unlock the form the moment the backend is fully ready.
-                        </p>
-                      </div>
+                  <div className="max-w-2xl space-y-5">
+                    <div className="inline-flex items-center gap-3 rounded-sm border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-bold uppercase tracking-[0.22em] text-amber-700">
+                      <Clock3 className="h-4 w-4" />
+                      Please wait about {remainingWarmupSeconds > 0 ? remainingWarmupSeconds : 10} seconds while the demo starts up.
                     </div>
-
-                    <div className="min-w-[220px] rounded-sm border border-neutral-200 bg-neutral-50 p-5">
-                      <p className="text-[10px] font-black uppercase tracking-[0.28em] text-neutral-400">Expected wait</p>
-                      <div className="mt-3 text-4xl font-serif font-bold tracking-tight text-gallery-text">
-                        {remainingWarmupSeconds > 0 ? remainingWarmupSeconds : '<10'}s
-                      </div>
-                      <p className="mt-2 text-xs text-neutral-500">The form will become interactive automatically.</p>
-                    </div>
-                  </div>
-
-                  <div className="mt-8 grid gap-4 md:grid-cols-3">
-                    <div className="rounded-sm border border-neutral-100 bg-neutral-50 p-5">
-                      <p className="text-[10px] font-black uppercase tracking-[0.24em] text-neutral-400">What to prepare</p>
-                      <p className="mt-3 text-sm leading-relaxed text-neutral-600">
-                        Have your total budget, currency, and a rough shooting split by territory ready.
-                      </p>
-                    </div>
-                    <div className="rounded-sm border border-neutral-100 bg-neutral-50 p-5">
-                      <p className="text-[10px] font-black uppercase tracking-[0.24em] text-neutral-400">How it works</p>
-                      <p className="mt-3 text-sm leading-relaxed text-neutral-600">
-                        The calculator compares incentives, treaty routes, and lighter-touch production changes that could improve financing.
-                      </p>
-                    </div>
-                    <div className="rounded-sm border border-neutral-100 bg-neutral-50 p-5">
-                      <p className="text-[10px] font-black uppercase tracking-[0.24em] text-neutral-400">What you'll get</p>
-                      <p className="mt-3 text-sm leading-relaxed text-neutral-600">
-                        Ranked scenarios with transparent math, source citations, and document links for each route.
+                    <div className="space-y-3">
+                      <h3 className="text-3xl font-bold font-serif tracking-tight text-gallery-text">Co-production calculator</h3>
+                      <p className="max-w-xl text-sm leading-relaxed text-neutral-600">
+                        Compare film financing scenarios, treaty routes, and incentive options. The form will unlock automatically when the demo is ready.
                       </p>
                     </div>
                   </div>
