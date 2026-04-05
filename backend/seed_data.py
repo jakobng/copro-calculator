@@ -115,6 +115,58 @@ incentives = [
               "Replaced old Film Tax Relief from 1 Jan 2024.",
         last_verified="2026-04",
     ),
+    inc(
+        name="BFI National Lottery Development Funding",
+        country_code="GB",
+        incentive_type="fund",
+        rebate_percent=None,
+        max_cap_currency="GBP",
+        eligible_formats=["feature_fiction"],
+        eligible_stages=["development"],
+        cultural_test_required=True,
+        source_url="https://www.bfi.org.uk/get-funding-support/create-films-tv-or-new-formats-storytelling/development-funding/applying-bfi-national-lottery-development-funding",
+        source_description="BFI - Applying for BFI National Lottery Development funding",
+        notes="National Lottery development funding for distinctive fiction feature projects. "
+              "Applications must be made by a UK limited company through the lead producer, and the project must be capable of qualifying as a British film or official co-production. "
+              "BFI funds development in stages; once a project has received an accumulated total of GBP 60,000 from BFI development funding, BFI expects a clear route to production before supporting further stages.",
+        stacking_allowed=True,
+        last_verified="2026-04",
+    ),
+    inc(
+        name="BFI Filmmaking Fund - Discovery and Impact Feature Funding",
+        country_code="GB",
+        incentive_type="fund",
+        rebate_percent=None,
+        max_cap_amount=1_250_000,
+        max_cap_currency="GBP",
+        min_total_budget=1_000_000,
+        eligible_formats=["feature_fiction", "animation"],
+        eligible_stages=["production"],
+        cultural_test_required=True,
+        source_url="https://www.bfi.org.uk/get-funding-support/create-films-tv-or-new-formats-storytelling/production-fund",
+        source_description="BFI - Discovery and Impact feature funding (guidelines updated 5 March 2026)",
+        notes="National Lottery production funding for British-certifiable live action and animated features. "
+              "This entry combines the two current BFI production routes because the programme is split by director experience and budget profile: Discovery supports debut directors with budgets between GBP 1,000,000 and GBP 3,500,000 and awards up to GBP 1,000,000; Impact supports experienced directors with budgets above GBP 1,000,000, plus debut directors above GBP 3,500,000, and awards up to GBP 1,250,000. "
+              "Impact is open on a rolling basis; Discovery is periodic and the current page lists the next 2026 round dates.",
+        stacking_allowed=True,
+        last_verified="2026-04",
+    ),
+    inc(
+        name="BFI Doc Society Fund",
+        country_code="GB",
+        incentive_type="fund",
+        rebate_percent=None,
+        max_cap_currency="GBP",
+        eligible_formats=["documentary"],
+        eligible_stages=["development", "production"],
+        source_url="https://bfi.docsociety.org/",
+        source_description="BFI Doc Society - 2026 relaunch overview",
+        notes="Current UK documentary funding partnership between BFI and Doc Society. "
+              "The official 2026 relaunch page says BFI has committed GBP 7.2m over 2026-2029 for documentary funding and talent development, with feature development support plus two feature production strands. "
+              "The same page says the fund is reopening in Spring 2026; current public pages do not yet publish new strand award caps, so the calculator treats this as a strategic fund to explore rather than a fixed-rate programme.",
+        stacking_allowed=True,
+        last_verified="2026-04",
+    ),
 
     # -------------------------------------------------------------------------
     # IRELAND
@@ -1737,22 +1789,42 @@ incentives = [
     ),
 
     # -------------------------------------------------------------------------
-    # UNITED KINGDOM — Nations / Regions
+    # UNITED KINGDOM - Nations / Regions
     # -------------------------------------------------------------------------
+    inc(
+        name="Screen Scotland Film Development and Production Fund",
+        country_code="GB",
+        region="Scotland",
+        incentive_type="grant",
+        rebate_percent=None,
+        max_cap_amount=500_000,
+        max_cap_currency="GBP",
+        eligible_formats=["feature_fiction", "documentary", "animation"],
+        eligible_stages=["development", "production"],
+        source_url="https://www.screen.scot/funding-and-support/funding/film-development-and-production-fund",
+        source_description="Screen Scotland - Film Development and Production Fund page and 2025 funding overview",
+        notes="For feature-length films and documentaries by filmmakers based in Scotland. "
+              "Screen Scotland's 2025 official funding overview gives development awards of GBP 3,000-GBP 50,000 per project and production awards of GBP 100,000-GBP 500,000 per project. "
+              "The fund supports live-action, animation and documentary projects and applies the BFI Diversity Standards pilot to applications.",
+        stacking_allowed=True,
+        last_verified="2026-04",
+    ),
     inc(
         name="Screen Scotland Production Growth Fund",
         country_code="GB",
         region="Scotland",
         incentive_type="grant",
         rebate_percent=None,
-        max_cap_amount=None,
+        max_cap_amount=500_000,
         max_cap_currency="GBP",
-        eligible_formats=["feature_fiction", "documentary", "series", "animation"],
+        min_qualifying_spend=2_000_000,
+        min_spend_currency="GBP",
+        eligible_formats=["feature_fiction", "series", "animation"],
         source_url="https://www.screen.scot/funding-and-support/funding/production-growth-fund",
-        source_description="Screen Scotland — Production Growth Fund",
-        notes="Selective grant with no fixed project cap published. "
-              "Annual budget ?2M. Projects must demonstrate at least ?2M Scottish spend. "
-              "Examples of awards range from roughly ?90k to ?370k. Stackable with UK AVEC tax credit.",
+        source_description="Screen Scotland - Production Growth Fund page and 2025 funding overview",
+        notes="For large-scale productions filming in Scotland. "
+              "The programme page requires at least GBP 2,000,000 Scottish spend, and Screen Scotland's 2025 official funding overview states a funding range of GBP 200,000-GBP 500,000 per project with a 10:1 Scottish spend ratio. "
+              "Covers live-action and animated features plus qualifying high-end television drama or factual returnable series.",
         stacking_allowed=True,
         last_verified="2026-04",
     ),
@@ -1764,29 +1836,64 @@ incentives = [
         rebate_percent=None,
         max_cap_amount=600_000,
         max_cap_currency="GBP",
-        eligible_formats=["feature_fiction", "documentary", "series", "animation"],
+        eligible_formats=["feature_fiction", "documentary", "animation"],
         source_url="https://ffilmcymruwales.com/funding-and-training/feature-film-production",
-        source_description="Ffilm Cymru Wales — Feature Film Production Fund",
-        notes="Up to £600k per project (£400k Creative Wales grant + £200k Ffilm Cymru lottery). "
-              "Most awards £150k-£400k. Not more than 50% of total budget. "
-              "Stackable with UK AVEC tax credit.",
+        source_description="Ffilm Cymru Wales - Feature Film Production Fund",
+        notes="Feature film production funding combining National Lottery support delegated via Arts Council of Wales and Welsh Government support delegated via Creative Wales. "
+              "The current programme page says awards can be up to GBP 600,000, with most awards in the GBP 150,000-GBP 400,000 range, and that support would not ordinarily exceed 50% of the budget. "
+              "The same page notes Arts Council of Wales production funding is fully allocated for the financial year ending April 2026, while Creative Wales production funding remains available and prioritises Welsh spend.",
         stacking_allowed=True,
         last_verified="2026-04",
     ),
     inc(
-        name="Northern Ireland Screen Fund",
+        name="Northern Ireland Screen Development Funding",
         country_code="GB",
         region="Northern Ireland",
-        incentive_type="grant",
+        incentive_type="fund",
+        rebate_percent=None,
+        max_cap_amount=100_000,
+        max_cap_currency="GBP",
+        eligible_formats=["feature_fiction", "series"],
+        eligible_stages=["development"],
+        source_url="https://northernirelandscreen.co.uk/funding/development/",
+        source_description="Northern Ireland Screen - Development",
+        notes="Development support for companies developing feature film and television projects. "
+              "The official development page says script development for one project can award companies up to GBP 40,000 or 50% of total development costs, while project and slate development awards use a 90% / 75% / 50% sliding contribution and can go up to GBP 100,000. "
+              "All development awards are recoupable and are aimed at Northern Ireland-based independent production companies or European companies with office and staff based in Northern Ireland.",
+        stacking_allowed=True,
+        last_verified="2026-04",
+    ),
+    inc(
+        name="Northern Ireland Screen Production Funding",
+        country_code="GB",
+        region="Northern Ireland",
+        incentive_type="fund",
         rebate_percent=None,
         max_cap_amount=None,
         max_cap_currency="GBP",
         eligible_formats=["feature_fiction", "documentary", "series", "animation"],
         source_url="https://northernirelandscreen.co.uk/funding/production-funding/",
-        source_description="Northern Ireland Screen — Funding",
-        notes="Recoupable loan up to £800k (max 25% of overall budget). "
-              "Production must have at least 65% financing in place. "
-              "Belfast studios are major draw. Stackable with UK AVEC tax credit.",
+        source_description="Northern Ireland Screen - Production funding",
+        notes="Northern Ireland Screen says production funding is offered as a recoupable award with profit participation, or in limited circumstances a grant, to help complete budgets on productions that are almost fully financed. "
+              "The official production page says projects must have at least 65% of funding already in place and must show direct economic benefit to Northern Ireland. "
+              "It covers feature films, television drama, animation, factual and entertainment television, and interactive content; this calculator surfaces the film and screen-applicable routes only.",
+        stacking_allowed=True,
+        last_verified="2026-04",
+    ),
+    inc(
+        name="Screen Yorkshire Content Fund",
+        country_code="GB",
+        region="Yorkshire and Humber",
+        incentive_type="fund",
+        rebate_percent=None,
+        max_cap_amount=500_000,
+        max_cap_currency="GBP",
+        eligible_formats=["feature_fiction", "series", "animation"],
+        source_url="https://www.screenyorkshire.co.uk/content-funding/",
+        source_description="Screen Yorkshire - Yorkshire Content Fund and FAQ",
+        notes="Regional production co-investment fund for film, television, games and digital projects in Yorkshire and Humber. "
+              "Screen Yorkshire's content funding page says up to GBP 500,000 is available per project, and the FAQ says YCF normally invests no more than 10-15% of the production budget and can only invest alongside at least equal private match finance on identical terms. "
+              "The FAQ also says the project must take place in the region and be managed by a company located in Yorkshire and Humber, or by a new entity established there before investment closes.",
         stacking_allowed=True,
         last_verified="2026-04",
     ),
