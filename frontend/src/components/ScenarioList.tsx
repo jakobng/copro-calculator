@@ -13,7 +13,7 @@ interface Props {
   budget: number
   currency: string
   onProjectUpdate: (project: ProjectInput) => void
-  onReanalyze: () => void
+  onReanalyze: (projectOverride?: ProjectInput) => void
   onDocumentOpen?: DocOpenHandler
 }
 
@@ -1304,10 +1304,11 @@ function ScenarioCard({
   budget: number
   currency: string
   onProjectUpdate: (project: ProjectInput) => void
-  onReanalyze: () => void
+  onReanalyze: (projectOverride?: ProjectInput) => void
   onDocumentOpen?: DocOpenHandler
 }) {
   const [open, setOpen] = useState(false)
+  const [showContext, setShowContext] = useState(false)
 
   const allIncentives = scenario.partners.flatMap((p) => p.eligible_incentives)
   const confirmedIncentives = allIncentives.filter((inc) => incentiveAmount(inc) > 0 && inc.counted_in_totals)
@@ -1433,72 +1434,86 @@ function ScenarioCard({
 
       {open && (
         <div className="border-t-2 border-neutral-100 p-8 space-y-10 animate-in fade-in slide-in-from-top-1">
-          <div className="bg-neutral-50 p-6 border-l-4 border-black">
-            <p className="text-lg leading-relaxed font-medium">"{scenario.rationale}"</p>
+          <div>
+            <button
+              type="button"
+              onClick={() => setShowContext((current) => !current)}
+              className="text-[10px] font-black tracking-widest px-4 py-2 border border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300 hover:text-neutral-900 transition-all uppercase"
+            >
+              {showContext ? 'Hide Scenario Notes' : 'Show Scenario Notes'}
+            </button>
           </div>
 
-          {scenario.near_misses && scenario.near_misses.length > 0 && (
-            <section className="space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center">
-                  <AlertCircle size={20} />
-                </div>
-                <h4 className="text-xl font-bold">Almost There</h4>
-                <span className="text-sm text-neutral-400 font-medium">(Options that are mainly being blocked by one threshold)</span>
+          {showContext && (
+            <>
+              <div className="bg-neutral-50 p-6 border-l-4 border-black">
+                <p className="text-lg leading-relaxed font-medium">"{scenario.rationale}"</p>
               </div>
 
-              <div className="grid gap-4 pl-11">
-                {scenario.near_misses.map((nm, i) => (
-                  <div key={i} className="border-2 border-amber-100 bg-amber-50/20 p-6">
-                    <div className="flex justify-between items-start mb-6">
-                      <div>
-                        <p className="font-bold text-lg uppercase tracking-tight text-amber-800">{nm.incentive_name}</p>
-                        <p className="text-sm text-amber-700 font-medium">Gap: {nm.gap_category}</p>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-xl font-bold text-amber-600">+{fmt(nm.potential_benefit_amount || 0, nm.potential_benefit_currency || currency)}</span>
-                        <span className="block text-xs font-bold text-neutral-400 mt-1">IF YOU FIX THIS GAP</span>
-                      </div>
+              {scenario.near_misses && scenario.near_misses.length > 0 && (
+                <section className="space-y-6">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center">
+                      <AlertCircle size={20} />
                     </div>
-
-                    <div className="bg-white border border-amber-200 p-4 flex items-center gap-4">
-                      <div className="bg-amber-600 text-white text-[10px] font-black px-2 py-1 uppercase">Gap</div>
-                      <p className="font-bold text-neutral-800">{nm.gap_description}</p>
-                    </div>
+                    <h4 className="text-xl font-bold">Almost There</h4>
+                    <span className="text-sm text-neutral-400 font-medium">(Options that are mainly being blocked by one threshold)</span>
                   </div>
-                ))}
-              </div>
-            </section>
-          )}
 
-          {(thresholdRequirements.length > 0 || adminRequirements.length > 0) && (
-            <section className="space-y-6 pt-6 border-t border-neutral-100">
-              <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-neutral-100 text-neutral-700 flex items-center justify-center">
-                  <HelpCircle size={20} />
-                </div>
-                <h4 className="text-xl font-bold">What You Would Need To Change</h4>
-                <span className="text-sm text-neutral-400 font-medium">(Grouped into budget/spend issues and practical next steps)</span>
-              </div>
+                  <div className="grid gap-4 pl-11">
+                    {scenario.near_misses.map((nm, i) => (
+                      <div key={i} className="border-2 border-amber-100 bg-amber-50/20 p-6">
+                        <div className="flex justify-between items-start mb-6">
+                          <div>
+                            <p className="font-bold text-lg uppercase tracking-tight text-amber-800">{nm.incentive_name}</p>
+                            <p className="text-sm text-amber-700 font-medium">Gap: {nm.gap_category}</p>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-xl font-bold text-amber-600">+{fmt(nm.potential_benefit_amount || 0, nm.potential_benefit_currency || currency)}</span>
+                            <span className="block text-xs font-bold text-neutral-400 mt-1">IF YOU FIX THIS GAP</span>
+                          </div>
+                        </div>
 
-              {thresholdRequirements.length > 0 && (
-                <div className="pl-11">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">Budget / Spend Problems</p>
-                  <div className="mt-3">
-                    <RequirementList requirements={thresholdRequirements} />
+                        <div className="bg-white border border-amber-200 p-4 flex items-center gap-4">
+                          <div className="bg-amber-600 text-white text-[10px] font-black px-2 py-1 uppercase">Gap</div>
+                          <p className="font-bold text-neutral-800">{nm.gap_description}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
+                </section>
               )}
 
-              {adminRequirements.length > 0 && (
-                <div className="pl-11">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">Practical Next Steps</p>
-                  <div className="mt-3">
-                    <RequirementList requirements={adminRequirements} />
+              {(thresholdRequirements.length > 0 || adminRequirements.length > 0) && (
+                <section className="space-y-6 pt-6 border-t border-neutral-100">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-neutral-100 text-neutral-700 flex items-center justify-center">
+                      <HelpCircle size={20} />
+                    </div>
+                    <h4 className="text-xl font-bold">What You Would Need To Change</h4>
+                    <span className="text-sm text-neutral-400 font-medium">(Grouped into budget/spend issues and practical next steps)</span>
                   </div>
-                </div>
+
+                  {thresholdRequirements.length > 0 && (
+                    <div className="pl-11">
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">Budget / Spend Problems</p>
+                      <div className="mt-3">
+                        <RequirementList requirements={thresholdRequirements} />
+                      </div>
+                    </div>
+                  )}
+
+                  {adminRequirements.length > 0 && (
+                    <div className="pl-11">
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">Practical Next Steps</p>
+                      <div className="mt-3">
+                        <RequirementList requirements={adminRequirements} />
+                      </div>
+                    </div>
+                  )}
+                </section>
               )}
-            </section>
+            </>
           )}
         </div>
       )}
@@ -1522,7 +1537,7 @@ function IncentiveCard({
   accent: 'emerald' | 'sky' | 'violet'
   compact?: boolean
   onProjectUpdate: (project: ProjectInput) => void
-  onReanalyze: () => void
+  onReanalyze: (projectOverride?: ProjectInput) => void
   onDocumentOpen?: DocOpenHandler
 }) {
   const amountColor =
@@ -1587,7 +1602,7 @@ function CulturalTestControl({
   inc: EligibleIncentive
   project: ProjectInput
   onProjectUpdate: (project: ProjectInput) => void
-  onReanalyze: () => void
+  onReanalyze: (projectOverride?: ProjectInput) => void
   onDocumentOpen?: DocOpenHandler
 }) {
   const [showAssessment, setShowAssessment] = useState(false)
@@ -1611,9 +1626,10 @@ function CulturalTestControl({
   if (!needsCulturalTest) return null
 
   const applyStatus = (nextStatus: Exclude<CulturalStatus, 'unknown'> | 'clear') => {
-    onProjectUpdate(buildUpdatedProject(project, inc.country_code, nextStatus))
+    const updatedProject = buildUpdatedProject(project, inc.country_code, nextStatus)
+    onProjectUpdate(updatedProject)
     setShowAssessment(false)
-    onReanalyze()
+    onReanalyze(updatedProject)
   }
 
   return (
@@ -1638,6 +1654,28 @@ function CulturalTestControl({
         </div>
 
         <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => applyStatus('pass')}
+            className={`text-[10px] font-black tracking-widest px-3 py-1.5 border transition-all uppercase ${
+              status === 'pass'
+                ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                : 'border-neutral-200 bg-white text-neutral-500 hover:border-emerald-300 hover:text-emerald-700'
+            }`}
+          >
+            We Pass
+          </button>
+          <button
+            type="button"
+            onClick={() => applyStatus('fail')}
+            className={`text-[10px] font-black tracking-widest px-3 py-1.5 border transition-all uppercase ${
+              status === 'fail'
+                ? 'border-amber-500 bg-amber-50 text-amber-700'
+                : 'border-neutral-200 bg-white text-neutral-500 hover:border-amber-300 hover:text-amber-700'
+            }`}
+          >
+            We Fail
+          </button>
           <button
             type="button"
             onClick={() => setShowAssessment((current) => !current)}

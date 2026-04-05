@@ -120,12 +120,14 @@ function App() {
     }
   }, [backendReady])
 
-  const analyze = async () => {
+  const analyze = async (projectOverride?: ProjectInput) => {
+    const activeProject = projectOverride ?? project
+
     if (!backendReady) {
       setError('The demo is still waking up. Give it a few seconds and the form will unlock automatically.')
       return
     }
-    if (!project.budget || project.budget <= 0) {
+    if (!activeProject.budget || activeProject.budget <= 0) {
       setError('Please enter a budget to begin.')
       return
     }
@@ -136,7 +138,7 @@ function App() {
       const res = await fetch(`${API_BASE_URL}/api/projects/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(project),
+        body: JSON.stringify(activeProject),
       })
       if (!res.ok) throw new Error(await res.text())
       const data: AnalyzeResponse = await res.json()
