@@ -22,17 +22,20 @@ interface Props {
   onAnalyze: () => void
   loading: boolean
   error: string | null
+  backendReady: boolean
 }
 
-export function ProjectForm({ project, onChange, onAnalyze, loading, error }: Props) {
+export function ProjectForm({ project, onChange, onAnalyze, loading, error, backendReady }: Props) {
   const [countries, setCountries] = useState<CountryOption[]>([])
 
   useEffect(() => {
+    if (!backendReady) return
+
     fetch(`${API_BASE_URL}/api/countries`)
       .then((r) => r.json())
       .then(setCountries)
       .catch(() => {})
-  }, [])
+  }, [backendReady])
 
   const update = <K extends keyof ProjectInput>(key: K, value: ProjectInput[K]) => {
     onChange({ ...project, [key]: value })
@@ -235,10 +238,10 @@ export function ProjectForm({ project, onChange, onAnalyze, loading, error }: Pr
         <button
           type="button"
           onClick={onAnalyze}
-          disabled={loading || !project.budget}
+          disabled={loading || !project.budget || !backendReady}
           className="btn-primary"
         >
-          {loading ? 'PROCESSING...' : 'FIND CO-PRODUCTION OPTIONS'}
+          {loading ? 'PROCESSING...' : backendReady ? 'FIND CO-PRODUCTION OPTIONS' : 'WAKING UP DEMO...'}
         </button>
 
         {error && (
