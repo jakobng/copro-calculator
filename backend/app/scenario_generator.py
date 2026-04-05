@@ -8,6 +8,7 @@ Key design principles:
 """
 from __future__ import annotations
 
+from itertools import combinations
 from sqlalchemy.orm import Session
 from app.models import Incentive, Treaty, MultilateralMember, DocumentAnnotation
 from app.schemas import (
@@ -54,49 +55,58 @@ def _get_incentives_by_country(db: Session) -> dict[str, list[Incentive]]:
     return by_country
 
 
-def _get_treaties_for_pair(db: Session, code_a: str, code_b: str) -> list[Treaty]:
-    """Find treaties between two countries (bilateral or multilateral covering both)."""
+def _pair_key(code_a: str, code_b: str) -> tuple[str, str]:
+    """Return a normalized treaty pair key."""
     a, b = code_a.upper(), code_b.upper()
-    bilateral = db.query(Treaty).filter(
-        Treaty.is_active == True,
-        Treaty.treaty_type == "bilateral",
-        (
-            ((Treaty.country_a_code == a) & (Treaty.country_b_code == b)) |
-            ((Treaty.country_a_code == b) & (Treaty.country_b_code == a))
-        )
-    ).all()
-
-    multilateral_ids_a = {m.treaty_id for m in db.query(MultilateralMember).filter(MultilateralMember.country_code == a).all()}
-    multilateral_ids_b = {m.treaty_id for m in db.query(MultilateralMember).filter(MultilateralMember.country_code == b).all()}
-    shared = multilateral_ids_a & multilateral_ids_b
-    multilateral = db.query(Treaty).filter(Treaty.id.in_(shared), Treaty.is_active == True).all() if shared else []
-
-    return bilateral + multilateral
+    return (a, b) if a <= b else (b, a)
 
 
-def _get_all_treaty_partners(db: Session, code: str) -> list[str]:
+def _build_treaty_lookups(db: Session) -> tuple[dict[tuple[str, str], list[Treaty]], dict[str, list[str]]]:
+    """Precompute treaty pair and partner lookups to avoid repeated DB queries."""
+    treaties = db.query(Treaty).filter(Treaty.is_active == True).all()
+    members = db.query(MultilateralMember).all()
+
+    members_by_treaty: dict[int, list[str]] = {}
+    for member in members:
+        members_by_treaty.setdefault(member.treaty_id, []).append(member.country_code.upper())
+
+    treaties_by_pair: dict[tuple[str, str], list[Treaty]] = {}
+    partner_sets: dict[str, set[str]] = {}
+
+    def add_pair(code_a: str, code_b: str, treaty: Treaty) -> None:
+        a, b = code_a.upper(), code_b.upper()
+        treaties_by_pair.setdefault(_pair_key(a, b), []).append(treaty)
+        partner_sets.setdefault(a, set()).add(b)
+        partner_sets.setdefault(b, set()).add(a)
+
+    for treaty in treaties:
+        if treaty.treaty_type == "bilateral" and treaty.country_b_code:
+            add_pair(treaty.country_a_code, treaty.country_b_code, treaty)
+            continue
+
+        member_codes = sorted(set(members_by_treaty.get(treaty.id, [])))
+        for code_a, code_b in combinations(member_codes, 2):
+            add_pair(code_a, code_b, treaty)
+
+    partners_by_country = {
+        code: sorted(partners)
+        for code, partners in partner_sets.items()
+    }
+    return treaties_by_pair, partners_by_country
+
+
+def _get_treaties_for_pair(
+    treaties_by_pair: dict[tuple[str, str], list[Treaty]],
+    code_a: str,
+    code_b: str,
+) -> list[Treaty]:
+    """Find treaties between two countries from the precomputed lookup."""
+    return treaties_by_pair.get(_pair_key(code_a, code_b), [])
+
+
+def _get_all_treaty_partners(partners_by_country: dict[str, list[str]], code: str) -> list[str]:
     """All countries that have a treaty relationship with the given country."""
-    c = code.upper()
-    bilateral = db.query(Treaty).filter(
-        Treaty.is_active == True,
-        Treaty.treaty_type == "bilateral",
-        ((Treaty.country_a_code == c) | (Treaty.country_b_code == c))
-    ).all()
-    partners = set()
-    for t in bilateral:
-        other = t.country_b_code if t.country_a_code.upper() == c else t.country_a_code
-        partners.add(other.upper())
-
-    my_treaties = {m.treaty_id for m in db.query(MultilateralMember).filter(MultilateralMember.country_code == c).all()}
-    if my_treaties:
-        co_members = db.query(MultilateralMember).filter(
-            MultilateralMember.treaty_id.in_(my_treaties),
-            MultilateralMember.country_code != c
-        ).all()
-        for m in co_members:
-            partners.add(m.country_code.upper())
-
-    return list(partners)
+    return partners_by_country.get(code.upper(), [])
 
 
 def _treaty_to_info(
@@ -150,8 +160,13 @@ def _evaluate_country(
     country_code: str,
     by_country: dict[str, list[Incentive]],
     doc_by_incentive: dict[int, list[DocumentAnnotation]] | None = None,
+    cache: dict[str, tuple[list[EligibleIncentive], list[Requirement], float, list[NearMiss]]] | None = None,
 ) -> tuple[list[EligibleIncentive], list[Requirement], float, list[NearMiss]]:
     """Evaluate all incentives for a country. Returns (eligible_incentives, requirements, total_pct, near_misses)."""
+    country_key = country_code.upper()
+    if cache is not None and country_key in cache:
+        return cache[country_key]
+
     eligible: list[EligibleIncentive] = []
     all_reqs: list[Requirement] = []
     near_misses: list[NearMiss] = []
@@ -161,7 +176,7 @@ def _evaluate_country(
     # First pass: evaluate everything
     candidates = []
     ineligible_incs = []
-    for inc in by_country.get(country_code.upper(), []):
+    for inc in by_country.get(country_key, []):
         anns = doc_by_incentive.get(inc.id)
         doc_ref = _first_doc_ref(anns) if anns else None
         ok, reqs, rebate_pct, benefit = check_incentive_eligibility(project, inc, doc_ref)
@@ -227,7 +242,10 @@ def _evaluate_country(
         if nm and nm.incentive_name not in selected_names and nm.incentive_name not in excluded_names:
             near_misses.append(nm)
 
-    return eligible, all_reqs, total_pct, near_misses
+    result = (eligible, all_reqs, total_pct, near_misses)
+    if cache is not None:
+        cache[country_key] = result
+    return result
 
 
 def _count_changes_needed(
@@ -268,9 +286,11 @@ def _build_scenario(
     project: ProjectInput,
     country_codes: list[str],
     by_country: dict[str, list[Incentive]],
-    db: Session,
+    treaties_by_pair: dict[tuple[str, str], list[Treaty]],
+    partners_by_country: dict[str, list[str]],
     doc_by_incentive: dict[int, list[DocumentAnnotation]] | None = None,
     doc_by_treaty: dict[int, list[DocumentAnnotation]] | None = None,
+    country_eval_cache: dict[str, tuple[list[EligibleIncentive], list[Requirement], float, list[NearMiss]]] | None = None,
 ) -> Scenario | None:
     """Build a scenario from a list of country codes. Returns None only if zero incentives exist in DB for these countries."""
     # Pre-sort countries to determine "majority" vs "minority"
@@ -279,7 +299,7 @@ def _build_scenario(
     # 2. If no shoot locations (or tied), the one with highest incentive benefit is majority.
     country_stats = []
     for cc in country_codes:
-        eligible, _, pct, _ = _evaluate_country(project, cc, by_country, doc_by_incentive)
+        eligible, _, pct, _ = _evaluate_country(project, cc, by_country, doc_by_incentive, country_eval_cache)
         shoot_pct = _percent_in_country(project, cc)
         # Sort key: (shoot_pct, total_incentive_pct, num_incentives)
         score = (shoot_pct, pct, len(eligible))
@@ -298,7 +318,7 @@ def _build_scenario(
     all_near_misses: list[NearMiss] = []
 
     for i, cc in enumerate(sorted_codes):
-        eligible, reqs, pct, near_misses = _evaluate_country(project, cc, by_country, doc_by_incentive)
+        eligible, reqs, pct, near_misses = _evaluate_country(project, cc, by_country, doc_by_incentive, country_eval_cache)
         all_near_misses.extend(near_misses)
         shoot_pct = _percent_in_country(project, cc)
 
@@ -308,7 +328,7 @@ def _build_scenario(
         for other_cc in country_codes:
             if other_cc == cc:
                 continue
-            for treaty in _get_treaties_for_pair(db, cc, other_cc):
+            for treaty in _get_treaties_for_pair(treaties_by_pair, cc, other_cc):
                 if treaty.id not in seen_treaties:
                     seen_treaties.add(treaty.id)
                     info = _treaty_to_info(treaty, doc_by_treaty)
@@ -349,7 +369,7 @@ def _build_scenario(
     conditional_amount = (project.budget * conditional_pct / 100) if project.budget else 0
     currency = project.budget_currency or "EUR"
 
-    suggestions = _build_suggestions(project, country_codes, by_country, db, currency)
+    suggestions = _build_suggestions(project, country_codes, by_country, treaties_by_pair, partners_by_country, currency)
     rationale = _build_rationale(partners, treaty_basis, total_pct, conditional_pct, currency, amount, conditional_amount)
 
     # Sort near-misses by potential benefit (highest first), limit to top 5
@@ -424,7 +444,8 @@ def _build_suggestions(
     project: ProjectInput,
     current_codes: list[str],
     by_country: dict[str, list[Incentive]],
-    db: Session,
+    treaties_by_pair: dict[tuple[str, str], list[Treaty]],
+    partners_by_country: dict[str, list[str]],
     currency: str,
 ) -> list[Suggestion]:
     """Suggest ways to unlock more funding."""
@@ -467,7 +488,7 @@ def _build_suggestions(
     partner_suggestions: list[Suggestion] = []
     seen_partner_codes: set[str] = set()
     for cc in current_codes:
-        treaty_partners = _get_all_treaty_partners(db, cc)
+        treaty_partners = _get_all_treaty_partners(partners_by_country, cc)
         for partner_code in treaty_partners:
             if partner_code in current_codes or partner_code in seen_partner_codes:
                 continue
@@ -482,7 +503,7 @@ def _build_suggestions(
             best = max((i for i in incs if i.rebate_percent), key=lambda i: i.rebate_percent or 0, default=None)
             if best and best.rebate_percent:
                 partner_name = countries.display_name(partner_code)
-                treaties = _get_treaties_for_pair(db, cc, partner_code)
+                treaties = _get_treaties_for_pair(treaties_by_pair, cc, partner_code)
                 treaty_note = ""
                 if treaties:
                     treaty_note = f" ({treaties[0].name})"
@@ -583,7 +604,9 @@ def generate_scenarios(project: ProjectInput, db: Session) -> list[Scenario]:
     then rank by (financing_amount DESC, changes_needed ASC). Always returns results.
     """
     by_country = _get_incentives_by_country(db)
+    treaties_by_pair, partners_by_country = _build_treaty_lookups(db)
     doc_by_incentive, doc_by_treaty = _build_doc_lookup(db)
+    country_eval_cache: dict[str, tuple[list[EligibleIncentive], list[Requirement], float, list[NearMiss]]] = {}
     shoot_sorted = _shoot_countries_sorted(project)
     scenarios: list[Scenario] = []
     seen_combos: set[tuple[str, ...]] = set()
@@ -598,7 +621,16 @@ def generate_scenarios(project: ProjectInput, db: Session) -> list[Scenario]:
             return
         seen_combos.add(key)
         # print(f"Trying scenario for codes: {codes}")
-        s = _build_scenario(project, codes, by_country, db, doc_by_incentive, doc_by_treaty)
+        s = _build_scenario(
+            project,
+            codes,
+            by_country,
+            treaties_by_pair,
+            partners_by_country,
+            doc_by_incentive,
+            doc_by_treaty,
+            country_eval_cache,
+        )
         if s:
             # print(f"  Success: {s.estimated_total_financing_percent}%")
             scenarios.append(s)
@@ -640,7 +672,7 @@ def generate_scenarios(project: ProjectInput, db: Session) -> list[Scenario]:
 
     # Treaty partners of shoot countries
     for shoot_code, _ in shoot_sorted[:3]:
-        treaty_partners = _get_all_treaty_partners(db, shoot_code)
+        treaty_partners = _get_all_treaty_partners(partners_by_country, shoot_code)
         for partner_code in treaty_partners:
             if partner_code not in shoot_codes:
                 _try_scenario(shoot_codes[:3] + [partner_code])
@@ -675,7 +707,7 @@ def generate_scenarios(project: ProjectInput, db: Session) -> list[Scenario]:
                 code = countries.resolve_or_keep(nat).upper()
                 _try_scenario([code])
                 # Also try this country with its top treaty partners
-                for partner in _get_all_treaty_partners(db, code)[:5]:
+                for partner in _get_all_treaty_partners(partners_by_country, code)[:5]:
                     _try_scenario([code, partner])
 
     # --- Phase 3: If we still have nothing, generate single-country fallbacks ---

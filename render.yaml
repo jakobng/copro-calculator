@@ -11,6 +11,6 @@ services:
       - key: DATABASE_URL
         value: sqlite:///backend/coproduction.db
       - key: FRONTEND_URL
-        value: "https://www.leonelki.com"
+        value: "https://www.leonelki.com,https://jakobng.github.io"
       - key: PYTHONPATH
         value: "backend"
