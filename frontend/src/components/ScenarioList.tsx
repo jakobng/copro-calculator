@@ -1313,11 +1313,16 @@ function ScenarioCard({
   const confirmedIncentives = allIncentives.filter((inc) => incentiveAmount(inc) > 0 && inc.counted_in_totals)
   const conditionalIncentives = allIncentives.filter((inc) => incentiveAmount(inc) > 0 && !inc.counted_in_totals)
   const strategicFunds = allIncentives.filter((inc) => incentiveAmount(inc) <= 0)
-  const previewIncentives = [...confirmedIncentives, ...conditionalIncentives, ...strategicFunds]
 
   const confirmedTotal = scenario.estimated_total_financing_amount
   const conditionalTotal = scenario.estimated_conditional_financing_amount
   const nearMissTotal = scenario.near_misses?.reduce((sum, nm) => sum + (nm.potential_benefit_amount || 0), 0) || 0
+  const headlineAmount = confirmedTotal > 0 ? confirmedTotal : conditionalTotal
+  const headlineLabel = confirmedTotal > 0
+    ? 'Money you can model now'
+    : conditionalTotal > 0
+      ? 'Potential financing with checks'
+      : 'No bankable incentives yet'
 
   const thresholdRequirements = scenario.requirements.filter((r) => ['budget', 'spend', 'shoot', 'region'].includes(r.category))
   const adminRequirements = scenario.requirements.filter((r) => !['budget', 'spend', 'shoot', 'region', 'cultural'].includes(r.category))
@@ -1337,7 +1342,7 @@ function ScenarioCard({
               {scenario.partners.map((p) => p.country_name).join(' + ')}
             </h3>
             <p className="text-sm text-neutral-500 font-medium">
-              Money you can model now: <span className="text-black font-bold">{fmt(confirmedTotal, currency)}</span> ({budgetPercent(confirmedTotal, budget)}% of budget)
+              {headlineLabel}: <span className="text-black font-bold">{fmt(headlineAmount, currency)}</span> ({budgetPercent(headlineAmount, budget)}% of budget)
             </p>
           </div>
         </div>
@@ -1345,7 +1350,9 @@ function ScenarioCard({
         <div className="flex items-center gap-8">
           {conditionalTotal > 0 && (
             <div className="text-right px-4 border-r border-neutral-200">
-              <span className="block text-[10px] font-black uppercase text-sky-700 tracking-widest">Possible Extra</span>
+              <span className="block text-[10px] font-black uppercase text-sky-700 tracking-widest">
+                {confirmedTotal > 0 ? 'Possible Extra' : 'Needs Checks'}
+              </span>
               <span className="text-lg font-bold text-sky-700">+{fmt(conditionalTotal, currency)}</span>
             </div>
           )}
@@ -1359,145 +1366,76 @@ function ScenarioCard({
         </div>
       </button>
 
-      {previewIncentives.length > 0 && (
-        <div className="border-t border-neutral-100 px-6 py-3">
-          <div className="grid gap-2">
-            {previewIncentives.map((inc, i) => (
-              <div key={`${inc.name}-${i}`} className="flex items-center justify-between gap-4 border border-neutral-200 bg-white px-4 py-3">
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-bold text-neutral-900">
-                    {inc.name} ({incentiveLocationLabel(inc)})
-                  </p>
-                </div>
-                <div className="shrink-0 text-right">
-                  {incentiveAmount(inc) > 0 && (
-                    <span className="block text-sm font-bold text-neutral-900">
-                      +{fmt(inc.benefit?.benefit_amount || 0, inc.benefit?.benefit_currency || currency)}
-                    </span>
-                  )}
-                  <span className="block text-[10px] font-black uppercase tracking-widest text-neutral-400">
-                    {incentiveHeadlineLabel(inc)}
-                  </span>
-                </div>
-              </div>
-            ))}
+      <div className="border-t border-neutral-100 px-6 py-4 space-y-5">
+        {confirmedIncentives.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-[10px] font-black uppercase tracking-widest text-emerald-700">Usable Now</p>
+            <div className="grid gap-2">
+              {confirmedIncentives.map((inc, i) => (
+                <IncentiveCard
+                  key={`confirmed-${i}`}
+                  inc={inc}
+                  project={project}
+                  currency={currency}
+                  accent="emerald"
+                  compact
+                  onProjectUpdate={onProjectUpdate}
+                  onReanalyze={onReanalyze}
+                  onDocumentOpen={onDocumentOpen}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {conditionalIncentives.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-[10px] font-black uppercase tracking-widest text-sky-700">Needs Checks Or Tweaks</p>
+            <div className="grid gap-2">
+              {conditionalIncentives.map((inc, i) => (
+                <IncentiveCard
+                  key={`conditional-${i}`}
+                  inc={inc}
+                  project={project}
+                  currency={currency}
+                  accent="sky"
+                  compact
+                  onProjectUpdate={onProjectUpdate}
+                  onReanalyze={onReanalyze}
+                  onDocumentOpen={onDocumentOpen}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {strategicFunds.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-[10px] font-black uppercase tracking-widest text-violet-700">Funds To Explore</p>
+            <div className="grid gap-2">
+              {strategicFunds.map((inc, i) => (
+                <IncentiveCard
+                  key={`strategic-${i}`}
+                  inc={inc}
+                  project={project}
+                  currency={currency}
+                  accent="violet"
+                  compact
+                  onProjectUpdate={onProjectUpdate}
+                  onReanalyze={onReanalyze}
+                  onDocumentOpen={onDocumentOpen}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
 
       {open && (
-        <div className="border-t-2 border-neutral-100 p-8 space-y-12 animate-in fade-in slide-in-from-top-1">
+        <div className="border-t-2 border-neutral-100 p-8 space-y-10 animate-in fade-in slide-in-from-top-1">
           <div className="bg-neutral-50 p-6 border-l-4 border-black">
             <p className="text-lg leading-relaxed font-medium">"{scenario.rationale}"</p>
           </div>
-
-          <section className="space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
-                <CheckCircle2 size={20} />
-              </div>
-              <h4 className="text-xl font-bold">Looks Usable Now</h4>
-              <span className="text-sm text-neutral-400 font-medium">(The cleanest matches from the inputs you already gave)</span>
-            </div>
-
-            {confirmedIncentives.length > 0 ? (
-              <div className="grid gap-4 pl-11">
-                {confirmedIncentives.map((inc, i) => (
-                  <IncentiveCard
-                    key={i}
-                    inc={inc}
-                    project={project}
-                    currency={currency}
-                    accent="emerald"
-                    onProjectUpdate={onProjectUpdate}
-                    onReanalyze={onReanalyze}
-                    onDocumentOpen={onDocumentOpen}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="pl-11">
-                <div className="border border-neutral-200 bg-neutral-50 p-5 text-neutral-600">
-                  Nothing here looks cleanly unlocked yet from the current inputs.
-                </div>
-              </div>
-            )}
-          </section>
-
-          {conditionalIncentives.length > 0 && (
-            <section className="space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center">
-                  <AlertCircle size={20} />
-                </div>
-                <h4 className="text-xl font-bold">Could Work, But Not Yet</h4>
-                <span className="text-sm text-neutral-400 font-medium">(Relevant options that still need a check, a partner, or a spending change)</span>
-              </div>
-
-              <div className="grid gap-4 pl-11">
-                {conditionalIncentives.map((inc, i) => (
-                  <div key={i} className="border border-sky-200 bg-sky-50/30 p-5 space-y-4">
-                    <IncentiveCard
-                      inc={inc}
-                      project={project}
-                      currency={currency}
-                      accent="sky"
-                      compact
-                      onProjectUpdate={onProjectUpdate}
-                      onReanalyze={onReanalyze}
-                      onDocumentOpen={onDocumentOpen}
-                    />
-                    {inc.requirements.some((requirement) => requirement.category !== 'cultural') && (
-                      <div className="border border-sky-200 bg-white p-4">
-                        <p className="text-[11px] font-bold uppercase tracking-wider text-sky-700">What Still Needs To Be True</p>
-                        <div className="mt-3">
-                          <RequirementList requirements={inc.requirements.filter((requirement) => requirement.category !== 'cultural')} />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {strategicFunds.length > 0 && (
-            <section className="space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-violet-100 text-violet-700 flex items-center justify-center">
-                  <HelpCircle size={20} />
-                </div>
-                <h4 className="text-xl font-bold">Funds To Explore</h4>
-                <span className="text-sm text-neutral-400 font-medium">(Relevant programmes, but not automatic cash rebates)</span>
-              </div>
-
-              <div className="grid gap-4 pl-11">
-                {strategicFunds.map((inc, i) => (
-                  <div key={i} className="border border-violet-200 bg-violet-50/20 p-5">
-                    <p className="font-bold text-lg uppercase tracking-tight">{inc.name} ({inc.country_name})</p>
-                    <p className="text-neutral-600 mt-1 max-w-xl">{inc.benefit?.benefit_explanation}</p>
-                    <CulturalTestControl
-                      inc={inc}
-                      project={project}
-                      onProjectUpdate={onProjectUpdate}
-                      onReanalyze={onReanalyze}
-                      onDocumentOpen={onDocumentOpen}
-                    />
-                    {inc.requirements.some((requirement) => requirement.category !== 'cultural') && (
-                      <div className="mt-4">
-                        <RequirementList requirements={inc.requirements.filter((requirement) => requirement.category !== 'cultural')} />
-                      </div>
-                    )}
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {inc.benefit?.sources.map((s, idx) => (
-                        <SourceBadge key={idx} source={s} onDocumentOpen={onDocumentOpen} />
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
 
           {scenario.near_misses && scenario.near_misses.length > 0 && (
             <section className="space-y-6">
@@ -1581,13 +1519,18 @@ function IncentiveCard({
   inc: EligibleIncentive
   project: ProjectInput
   currency: string
-  accent: 'emerald' | 'sky'
+  accent: 'emerald' | 'sky' | 'violet'
   compact?: boolean
   onProjectUpdate: (project: ProjectInput) => void
   onReanalyze: () => void
   onDocumentOpen?: DocOpenHandler
 }) {
-  const amountColor = accent === 'emerald' ? 'text-emerald-600' : 'text-sky-700'
+  const amountColor =
+    accent === 'emerald'
+      ? 'text-emerald-600'
+      : accent === 'sky'
+        ? 'text-sky-700'
+        : 'text-violet-700'
   const [open, setOpen] = useState(false)
 
   return (
