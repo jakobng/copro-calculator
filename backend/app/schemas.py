@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 
 class ShootLocation(BaseModel):
     country: str
+    region: Optional[str] = None
     percent: float = Field(..., ge=0, le=100)
 
 

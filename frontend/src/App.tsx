@@ -29,7 +29,7 @@ const DEFAULT_PROJECT: ProjectInput = {
   post_production_btl_fraction: 0.25,
   other_fraction: 0.10,
   post_production_country: undefined,
-  shoot_locations: [{ country: '', percent: 0 }],
+  shoot_locations: [{ country: '', region: undefined, percent: 0 }],
   spend_allocations: [],
   stages: [],
   post_flexible: false,

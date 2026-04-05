@@ -133,6 +133,20 @@ def list_countries():
     return countries.all_countries()
 
 
+@router.get("/regions/{country_code}")
+def list_regions(country_code: str, db: Session = Depends(get_db)):
+    """Return distinct region names for incentives in a given country."""
+    normalized_country_code = country_code.upper()
+    items = (
+        db.query(Incentive.region)
+        .filter(Incentive.country_code == normalized_country_code)
+        .filter(Incentive.region.isnot(None))
+        .all()
+    )
+    regions = sorted({region.strip() for (region,) in items if region and region.strip()})
+    return {"country_code": normalized_country_code, "regions": regions}
+
+
 @router.get("/incentives")
 def list_incentives(db: Session = Depends(get_db)):
     """Return all incentives with full provenance."""

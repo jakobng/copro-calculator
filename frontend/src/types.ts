@@ -2,6 +2,7 @@
 
 export interface ShootLocation {
   country: string
+  region?: string
   percent: number
 }
 

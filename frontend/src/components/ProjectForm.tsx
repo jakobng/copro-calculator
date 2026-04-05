@@ -27,6 +27,7 @@ interface Props {
 
 export function ProjectForm({ project, onChange, onAnalyze, loading, error, backendReady }: Props) {
   const [countries, setCountries] = useState<CountryOption[]>([])
+  const [regionsByCountryCode, setRegionsByCountryCode] = useState<Record<string, string[]>>({})
 
   useEffect(() => {
     if (!backendReady) return
@@ -37,6 +38,35 @@ export function ProjectForm({ project, onChange, onAnalyze, loading, error, back
       .catch(() => {})
   }, [backendReady])
 
+  useEffect(() => {
+    if (!backendReady || countries.length === 0) return
+
+    const selectedCountryCodes = Array.from(new Set(
+      project.shoot_locations
+        .map((loc) => countries.find((country) => country.name.toLowerCase() === loc.country.toLowerCase())?.code)
+        .filter((code): code is string => Boolean(code))
+    ))
+
+    selectedCountryCodes.forEach((countryCode) => {
+      if (countryCode in regionsByCountryCode) return
+
+      fetch(`${API_BASE_URL}/api/regions/${countryCode}`)
+        .then((r) => r.json())
+        .then((data) => {
+          setRegionsByCountryCode((current) => {
+            if (countryCode in current) return current
+            return { ...current, [countryCode]: data.regions || [] }
+          })
+        })
+        .catch(() => {
+          setRegionsByCountryCode((current) => {
+            if (countryCode in current) return current
+            return { ...current, [countryCode]: [] }
+          })
+        })
+    })
+  }, [backendReady, countries, project.shoot_locations, regionsByCountryCode])
+
   const update = <K extends keyof ProjectInput>(key: K, value: ProjectInput[K]) => {
     onChange({ ...project, [key]: value })
   }
@@ -44,7 +74,7 @@ export function ProjectForm({ project, onChange, onAnalyze, loading, error, back
   const addShootLocation = () => {
     onChange({
       ...project,
-      shoot_locations: [...project.shoot_locations, { country: '', percent: 0 }],
+      shoot_locations: [...project.shoot_locations, { country: '', region: undefined, percent: 0 }],
     })
   }
 
@@ -65,6 +95,15 @@ export function ProjectForm({ project, onChange, onAnalyze, loading, error, back
   }
 
   const totalShootPct = project.shoot_locations.reduce((sum, l) => sum + l.percent, 0)
+
+  const getCountryCode = (countryName: string) =>
+    countries.find((country) => country.name.toLowerCase() === countryName.toLowerCase())?.code
+
+  const getRegionOptions = (countryName: string) => {
+    const countryCode = getCountryCode(countryName)
+    if (!countryCode) return []
+    return regionsByCountryCode[countryCode] || []
+  }
 
   return (
     <div className="space-y-10">
@@ -151,14 +190,29 @@ export function ProjectForm({ project, onChange, onAnalyze, loading, error, back
 
         <div className="space-y-3">
           {project.shoot_locations.map((loc, i) => (
-            <div key={i} className="flex items-center gap-2 group">
-              <div className="flex-1">
+            <div key={i} className="flex items-start gap-2 group">
+              <div className="flex-1 space-y-2">
                 <CountryInput
                   value={loc.country}
-                  onChange={(v) => updateShootLocation(i, { country: v })}
+                  onChange={(v) => updateShootLocation(i, { country: v, region: undefined })}
                   countries={countries}
-                  placeholder="Region"
+                  placeholder="Country"
                 />
+                {loc.country && getRegionOptions(loc.country).length > 0 && (
+                  <div className="space-y-1">
+                    <select
+                      value={loc.region || ''}
+                      onChange={(e) => updateShootLocation(i, { region: e.target.value || undefined })}
+                      className="input bg-white text-xs"
+                    >
+                      <option value="">No specific region</option>
+                      {getRegionOptions(loc.country).map((region) => (
+                        <option key={region} value={region}>{region}</option>
+                      ))}
+                    </select>
+                    <p className="text-[10px] font-medium text-neutral-400">Select a region only if you plan to shoot there.</p>
+                  </div>
+                )}
               </div>
               <div className="relative w-20">
                 <input

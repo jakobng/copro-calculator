@@ -78,6 +78,15 @@ function incentiveAmount(inc: EligibleIncentive) {
   return inc.benefit?.benefit_amount || 0
 }
 
+function incentiveLocationLabel(inc: EligibleIncentive) {
+  return inc.region ? `${inc.region}, ${inc.country_name}` : inc.country_name
+}
+
+function incentiveHeadlineLabel(inc: EligibleIncentive) {
+  if (inc.rebate_percent) return `${inc.rebate_percent}% REBATE`
+  return inc.incentive_type.replace(/_/g, ' ').toUpperCase()
+}
+
 function countryAliases(countryCode: string, countryName: string) {
   const aliases = new Set([countryCode.trim().toLowerCase(), countryName.trim().toLowerCase()])
 
@@ -1298,12 +1307,13 @@ function ScenarioCard({
   onReanalyze: () => void
   onDocumentOpen?: DocOpenHandler
 }) {
-  const [open, setOpen] = useState(index === 0)
+  const [open, setOpen] = useState(false)
 
   const allIncentives = scenario.partners.flatMap((p) => p.eligible_incentives)
   const confirmedIncentives = allIncentives.filter((inc) => incentiveAmount(inc) > 0 && inc.counted_in_totals)
   const conditionalIncentives = allIncentives.filter((inc) => incentiveAmount(inc) > 0 && !inc.counted_in_totals)
   const strategicFunds = allIncentives.filter((inc) => incentiveAmount(inc) <= 0)
+  const previewIncentives = [...confirmedIncentives, ...conditionalIncentives, ...strategicFunds]
 
   const confirmedTotal = scenario.estimated_total_financing_amount
   const conditionalTotal = scenario.estimated_conditional_financing_amount
@@ -1348,6 +1358,32 @@ function ScenarioCard({
           {open ? <ChevronUp /> : <ChevronDown />}
         </div>
       </button>
+
+      {previewIncentives.length > 0 && (
+        <div className="border-t border-neutral-100 px-6 py-3">
+          <div className="grid gap-2">
+            {previewIncentives.map((inc, i) => (
+              <div key={`${inc.name}-${i}`} className="flex items-center justify-between gap-4 border border-neutral-200 bg-white px-4 py-3">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-bold text-neutral-900">
+                    {inc.name} ({incentiveLocationLabel(inc)})
+                  </p>
+                </div>
+                <div className="shrink-0 text-right">
+                  {incentiveAmount(inc) > 0 && (
+                    <span className="block text-sm font-bold text-neutral-900">
+                      +{fmt(inc.benefit?.benefit_amount || 0, inc.benefit?.benefit_currency || currency)}
+                    </span>
+                  )}
+                  <span className="block text-[10px] font-black uppercase tracking-widest text-neutral-400">
+                    {incentiveHeadlineLabel(inc)}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {open && (
         <div className="border-t-2 border-neutral-100 p-8 space-y-12 animate-in fade-in slide-in-from-top-1">
@@ -1552,31 +1588,48 @@ function IncentiveCard({
   onDocumentOpen?: DocOpenHandler
 }) {
   const amountColor = accent === 'emerald' ? 'text-emerald-600' : 'text-sky-700'
+  const [open, setOpen] = useState(false)
 
   return (
-    <div className="border border-neutral-200 p-5 flex justify-between items-start gap-6">
-      <div className="min-w-0">
-        <p className="font-bold text-lg uppercase tracking-tight">{inc.name} ({inc.country_name})</p>
-        <p className="text-neutral-500 mt-1 max-w-xl">{inc.benefit?.benefit_explanation}</p>
-        <CulturalTestControl
-          inc={inc}
-          project={project}
-          onProjectUpdate={onProjectUpdate}
-          onReanalyze={onReanalyze}
-          onDocumentOpen={onDocumentOpen}
-        />
-        <div className="mt-4 flex flex-wrap gap-2">
-          {inc.benefit?.sources.map((s, idx) => (
-            <SourceBadge key={idx} source={s} onDocumentOpen={onDocumentOpen} />
-          ))}
+    <div className="border border-neutral-200">
+      <button
+        type="button"
+        onClick={() => setOpen((current) => !current)}
+        className="flex w-full items-center justify-between gap-6 px-5 py-4 text-left"
+      >
+        <div className="min-w-0">
+          <p className="font-bold text-base tracking-tight text-neutral-900">{inc.name} ({incentiveLocationLabel(inc)})</p>
         </div>
-      </div>
-      <div className="text-right shrink-0">
-        <span className={`text-xl font-bold ${amountColor}`}>+{fmt(inc.benefit?.benefit_amount || 0, inc.benefit?.benefit_currency || currency)}</span>
-        <span className="block text-xs font-bold text-neutral-400 mt-1">
-          {compact ? 'MODELED AMOUNT' : `${inc.rebate_percent}% REBATE`}
-        </span>
-      </div>
+        <div className="flex shrink-0 items-center gap-4 text-right">
+          <div>
+            {incentiveAmount(inc) > 0 && (
+              <span className={`block text-lg font-bold ${amountColor}`}>+{fmt(inc.benefit?.benefit_amount || 0, inc.benefit?.benefit_currency || currency)}</span>
+            )}
+            <span className="block text-xs font-bold text-neutral-400 mt-1">
+              {incentiveHeadlineLabel(inc)}
+            </span>
+          </div>
+          {open ? <ChevronUp className="h-4 w-4 text-neutral-400" /> : <ChevronDown className="h-4 w-4 text-neutral-400" />}
+        </div>
+      </button>
+
+      {open && (
+        <div className="border-t border-neutral-100 px-5 pb-5 pt-1">
+          <p className="text-neutral-500 mt-3 max-w-xl">{inc.benefit?.benefit_explanation}</p>
+          <CulturalTestControl
+            inc={inc}
+            project={project}
+            onProjectUpdate={onProjectUpdate}
+            onReanalyze={onReanalyze}
+            onDocumentOpen={onDocumentOpen}
+          />
+          <div className="mt-4 flex flex-wrap gap-2">
+            {inc.benefit?.sources.map((s, idx) => (
+              <SourceBadge key={idx} source={s} onDocumentOpen={onDocumentOpen} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

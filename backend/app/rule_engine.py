@@ -307,6 +307,25 @@ def _percent_in_country(project: ProjectInput, country_code: str) -> float:
     return total
 
 
+def _normalize_region_name(value: str | None) -> str:
+    return (value or "").strip().lower()
+
+
+def _has_region_in_country(project: ProjectInput, country_code: str, region: str) -> bool:
+    """Return True when a shoot location explicitly names the incentive's region."""
+    target_region = _normalize_region_name(region)
+    if not target_region:
+        return False
+
+    for loc in project.shoot_locations:
+        loc_code = countries.resolve_or_keep(loc.country)
+        if loc_code.upper() != country_code.upper():
+            continue
+        if _normalize_region_name(getattr(loc, "region", None)) == target_region:
+            return True
+    return False
+
+
 def _spend_in_country(project: ProjectInput, country_code: str) -> float | None:
     """Return explicit spend allocation for a country, or None if not specified."""
     for alloc in project.spend_allocations:
@@ -470,16 +489,17 @@ def check_incentive_eligibility(
                 category="stage", source=source,
             ))
 
-    # --- Region-specific incentives cannot be auto-confirmed from country-only inputs ---
+    # --- Region-specific incentives need an explicit regional shoot selection ---
     if incentive.region:
-        requirements.append(Requirement(
-            description=(
-                f"This programme is only relevant if your work is actually based in {incentive.region}. "
-                f"The calculator only knows the country so far, not the region, so this needs a manual check."
-            ),
-            category="region",
-            source=source,
-        ))
+        if not _has_region_in_country(project, cc, incentive.region):
+            return False, [Requirement(
+                description=(
+                    f"This programme only applies when you are actually shooting in {incentive.region}. "
+                    f"Choose that region in your shooting plan to include it."
+                ),
+                category="region",
+                source=source,
+            )], 0.0, None
 
     # --- Minimum total budget (SOFT requirement) ---
     eff_min_budget = _effective_min_budget(project, incentive)
