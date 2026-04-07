@@ -146,6 +146,11 @@ _CACHE_TTL_SECONDS = 86400  # 24 hours
 _CACHE_FILE = os.path.join(os.path.dirname(__file__), "..", "exchange_rates_cache.json")
 
 
+def _is_selective_programme(incentive: Incentive) -> bool:
+    """Return True when a programme should be surfaced as discretionary/selective."""
+    return (getattr(incentive, "selection_mode", "automatic") or "automatic").lower() == "selective"
+
+
 def _fetch_live_rates() -> dict[str, float] | None:
     """Fetch latest EUR-base rates from frankfurter.app (ECB data). Returns None on failure."""
     try:
@@ -305,6 +310,25 @@ def _percent_in_country(project: ProjectInput, country_code: str) -> float:
         if loc_code.upper() == country_code.upper():
             total += loc.percent
     return total
+
+
+def _normalize_region_name(value: str | None) -> str:
+    return (value or "").strip().lower()
+
+
+def _has_region_in_country(project: ProjectInput, country_code: str, region: str) -> bool:
+    """Return True when a shoot location explicitly names the incentive's region."""
+    target_region = _normalize_region_name(region)
+    if not target_region:
+        return False
+
+    for loc in project.shoot_locations:
+        loc_code = countries.resolve_or_keep(loc.country)
+        if loc_code.upper() != country_code.upper():
+            continue
+        if _normalize_region_name(getattr(loc, "region", None)) == target_region:
+            return True
+    return False
 
 
 def _spend_in_country(project: ProjectInput, country_code: str) -> float | None:
@@ -470,16 +494,17 @@ def check_incentive_eligibility(
                 category="stage", source=source,
             ))
 
-    # --- Region-specific incentives cannot be auto-confirmed from country-only inputs ---
+    # --- Region-specific incentives need an explicit regional shoot selection ---
     if incentive.region:
-        requirements.append(Requirement(
-            description=(
-                f"This programme is only relevant if your work is actually based in {incentive.region}. "
-                f"The calculator only knows the country so far, not the region, so this needs a manual check."
-            ),
-            category="region",
-            source=source,
-        ))
+        if not _has_region_in_country(project, cc, incentive.region):
+            return False, [Requirement(
+                description=(
+                    f"This programme only applies when you are actually shooting in {incentive.region}. "
+                    f"Choose that region in your shooting plan to include it."
+                ),
+                category="region",
+                source=source,
+            )], 0.0, None
 
     # --- Minimum total budget (SOFT requirement) ---
     eff_min_budget = _effective_min_budget(project, incentive)
@@ -769,6 +794,9 @@ def check_incentive_eligibility(
             f"{criteria} {calc_notes} "
             f"This is only a planning estimate, not a guaranteed award."
         )
+        if _is_selective_programme(incentive):
+            explanation += " This programme is selective, so the indicative amount is not counted in headline financing totals."
+            calc_notes += " This programme is selective, so the indicative amount is not counted in headline financing totals."
 
         benefit = IncentiveBenefit(
             criteria_summary=criteria,
@@ -787,12 +815,16 @@ def check_incentive_eligibility(
         benefit_amount = 0.0
         estimated_rebate_pct = 0.0
         cap_note = ""
+        typical_note = ""
         if incentive.max_cap_amount:
             cap_proj = _convert(incentive.max_cap_amount, native_ccy, project.budget_currency)
             cap_note = f" If successful, the award can go up to about {currency} {cap_proj:,.0f}."
+        elif getattr(incentive, "typical_award_amount", None):
+            typical_proj = _convert(incentive.typical_award_amount, incentive.typical_award_currency or native_ccy, project.budget_currency)
+            typical_note = f" Typical published awards are around {currency} {typical_proj:,.0f}."
         fund_label = "selective grant" if incentive.incentive_type == "grant" else "selective fund"
         explanation = (
-            f"{criteria} This is a {fund_label}, not an automatic rebate, so the calculator does not assign it a cash value.{cap_note}"
+            f"{criteria} This is a {fund_label}, not an automatic rebate, so the calculator does not assign it a cash value.{cap_note}{typical_note}"
         )
         benefit = IncentiveBenefit(
             criteria_summary=criteria,

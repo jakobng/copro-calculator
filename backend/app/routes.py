@@ -133,6 +133,20 @@ def list_countries():
     return countries.all_countries()
 
 
+@router.get("/regions/{country_code}")
+def list_regions(country_code: str, db: Session = Depends(get_db)):
+    """Return distinct region names for incentives in a given country."""
+    normalized_country_code = country_code.upper()
+    items = (
+        db.query(Incentive.region)
+        .filter(Incentive.country_code == normalized_country_code)
+        .filter(Incentive.region.isnot(None))
+        .all()
+    )
+    regions = sorted({region.strip() for (region,) in items if region and region.strip()})
+    return {"country_code": normalized_country_code, "regions": regions}
+
+
 @router.get("/incentives")
 def list_incentives(db: Session = Depends(get_db)):
     """Return all incentives with full provenance."""
@@ -152,6 +166,12 @@ def list_incentives(db: Session = Depends(get_db)):
             "min_total_budget": i.min_total_budget,
             "min_qualifying_spend": i.min_qualifying_spend,
             "eligible_formats": i.eligible_formats,
+            "selection_mode": getattr(i, "selection_mode", "automatic"),
+            "operator_type": getattr(i, "operator_type", "government"),
+            "application_status": getattr(i, "application_status", "unknown"),
+            "application_note": getattr(i, "application_note", None),
+            "typical_award_amount": getattr(i, "typical_award_amount", None),
+            "typical_award_currency": getattr(i, "typical_award_currency", None),
             "local_producer_required": i.local_producer_required,
             "cultural_test_required": i.cultural_test_required,
             "notes": i.notes,

@@ -5,17 +5,17 @@ This report is generated from `backend/seed_data.py` and `backend/app/countries.
 ## Snapshot
 
 - Supported countries in catalog: **196**
-- Countries with incentives: **143** (73.0%)
+- Countries with incentives: **154** (78.6%)
 - Treaty-only countries (no incentive data yet): **0** (0.0%)
-- No coverage (no incentives or treaties): **53** (27.0%)
+- No coverage (no incentives or treaties): **42** (21.4%)
 
 ## Regional Coverage (Incentive or Treaty)
 
-- Africa: **31/54** (57.4%)
-- Americas: **31/35** (88.6%)
+- Africa: **37/54** (68.5%)
+- Americas: **34/35** (97.1%)
 - Asia: **31/41** (75.6%)
 - Europe: **42/49** (85.7%)
-- Oceania: **5/14** (35.7%)
+- Oceania: **7/14** (50.0%)
 - Other: **3/3** (100.0%)
 
 ## Highest-Priority Missing Additions
@@ -32,26 +32,26 @@ This report is generated from `backend/seed_data.py` and `backend/app/countries.
 | KG | Kyrgyzstan | Asia | no_coverage | 2 | undercovered_region |
 | IR | Iran | Asia | no_coverage | 2 | undercovered_region |
 | AF | Afghanistan | Asia | no_coverage | 2 | undercovered_region |
-| SR | Suriname | Americas | no_coverage | 2 | undercovered_region |
 | NI | Nicaragua | Americas | no_coverage | 2 | undercovered_region |
-| HT | Haiti | Americas | no_coverage | 2 | undercovered_region |
-| HN | Honduras | Americas | no_coverage | 2 | undercovered_region |
 | WS | Samoa | Oceania | no_coverage | 1 | region_gap |
-| TV | Tuvalu | Oceania | no_coverage | 1 | region_gap |
 | TO | Tonga | Oceania | no_coverage | 1 | region_gap |
-| SB | Solomon Islands | Oceania | no_coverage | 1 | region_gap |
 | PW | Palau | Oceania | no_coverage | 1 | region_gap |
 | NR | Nauru | Oceania | no_coverage | 1 | region_gap |
 | MH | Marshall Islands | Oceania | no_coverage | 1 | region_gap |
 | KI | Kiribati | Oceania | no_coverage | 1 | region_gap |
 | FM | Micronesia | Oceania | no_coverage | 1 | region_gap |
-| SO | Somalia | Africa | no_coverage | 1 | region_gap |
 | ML | Mali | Africa | no_coverage | 1 | region_gap |
-| MG | Madagascar | Africa | no_coverage | 1 | region_gap |
-| KM | Comoros | Africa | no_coverage | 1 | region_gap |
-| GQ | Equatorial Guinea | Africa | no_coverage | 1 | region_gap |
-| GN | Guinea | Africa | no_coverage | 1 | region_gap |
-| GM | Gambia | Africa | no_coverage | 1 | region_gap |
+| GH | Ghana | Africa | no_coverage | 1 | region_gap |
+| GA | Gabon | Africa | no_coverage | 1 | region_gap |
+| ET | Ethiopia | Africa | no_coverage | 1 | region_gap |
+| ER | Eritrea | Africa | no_coverage | 1 | region_gap |
+| DJ | Djibouti | Africa | no_coverage | 1 | region_gap |
+| CV | Cabo Verde | Africa | no_coverage | 1 | region_gap |
+| CM | Cameroon | Africa | no_coverage | 1 | region_gap |
+| CI | Ivory Coast | Africa | no_coverage | 1 | region_gap |
+| CG | Republic of the Congo | Africa | no_coverage | 1 | region_gap |
+| CF | Central African Republic | Africa | no_coverage | 1 | region_gap |
+| CD | DR Congo | Africa | no_coverage | 1 | region_gap |
 
 ## Treaty-Only Countries (Good Next Incentive Targets)
 
@@ -60,8 +60,8 @@ This report is generated from `backend/seed_data.py` and `backend/app/countries.
 
 ## Files
 
-- Matrix CSV: `C:/Users/User/Documents/WORK/EXPERIMENTS/CoPro_Calculator/backend/reports/coverage_matrix.csv`
-- Summary report: `C:/Users/User/Documents/WORK/EXPERIMENTS/CoPro_Calculator/backend/reports/coverage_summary.md`
+- Matrix CSV: `C:/Users/User/Documents/WORK/EXPERIMENTS/copro-calculator/backend/reports/coverage_matrix.csv`
+- Summary report: `C:/Users/User/Documents/WORK/EXPERIMENTS/copro-calculator/backend/reports/coverage_summary.md`
 
 ## Notes
 

@@ -191,7 +191,7 @@ def _evaluate_country(
             ineligible_incs.append(inc)
 
     # Second pass: handle mutual exclusivity and fit
-    candidates.sort(key=lambda x: _candidate_sort_key(project, x["inc"], x["rebate_pct"]), reverse=True)
+    candidates.sort(key=lambda x: _candidate_sort_key(project, x["inc"], x["rebate_pct"], x["reqs"]), reverse=True)
 
     selected_names = set()
     excluded_names = set()
@@ -207,8 +207,10 @@ def _evaluate_country(
         if orientation and selected_orientations.get(orientation_key) not in (None, orientation):
             continue
 
-        counted_in_totals = _counts_toward_bankable_total(cand["reqs"])
+        is_selective = _is_selective_incentive(cand["inc"])
+        counted_in_totals = (not is_selective) and _counts_toward_bankable_total(cand["reqs"])
         counted_pct = cand["rebate_pct"] if counted_in_totals else 0.0
+        selective_fit_score = _selective_fit_score(project, cand["inc"], cand["reqs"]) if is_selective else None
 
         eligible.append(EligibleIncentive(
             name=cand["inc"].name,
@@ -216,11 +218,18 @@ def _evaluate_country(
             country_name=countries.display_name(cand["inc"].country_code),
             region=cand["inc"].region,
             incentive_type=cand["inc"].incentive_type,
+            selection_mode=getattr(cand["inc"], "selection_mode", "automatic"),
+            operator_type=getattr(cand["inc"], "operator_type", "government"),
+            application_status=getattr(cand["inc"], "application_status", "unknown"),
+            application_note=getattr(cand["inc"], "application_note", None),
+            typical_award_amount=getattr(cand["inc"], "typical_award_amount", None),
+            typical_award_currency=getattr(cand["inc"], "typical_award_currency", None),
+            selective_fit_score=selective_fit_score,
             rebate_percent=cand["inc"].rebate_percent,
             requirements=cand["reqs"],
             benefit=cand["benefit"],
             estimated_contribution_percent=counted_pct,
-            potential_contribution_percent=cand["rebate_pct"],
+            potential_contribution_percent=cand["rebate_pct"] if not is_selective else 0.0,
             counted_in_totals=counted_in_totals,
         ))
         total_pct += counted_pct
@@ -246,6 +255,169 @@ def _evaluate_country(
     if cache is not None:
         cache[country_key] = result
     return result
+
+
+def _project_existing_codes(project: ProjectInput) -> set[str]:
+    """Countries already present in the project's current setup."""
+    codes: set[str] = set()
+
+    for loc in project.shoot_locations:
+        if loc.country and loc.country.strip():
+            codes.add(countries.resolve_or_keep(loc.country).upper())
+
+    for nat in (project.director_nationalities or []) + (project.producer_nationalities or []):
+        if nat and nat.strip():
+            codes.add(countries.resolve_or_keep(nat).upper())
+
+    for prod_cc in project.production_company_countries or []:
+        if prod_cc and prod_cc.strip():
+            codes.add(countries.resolve_or_keep(prod_cc).upper())
+
+    if getattr(project, "production_company_country", None):
+        codes.add(countries.resolve_or_keep(project.production_company_country).upper())
+
+    for cc in project.has_coproducer or []:
+        if cc and cc.strip():
+            codes.add(countries.resolve_or_keep(cc).upper())
+
+    return codes
+
+
+def _project_open_codes(project: ProjectInput) -> set[str]:
+    """Countries the user explicitly said they are open to exploring."""
+    return {
+        countries.resolve_or_keep(code).upper()
+        for code in (project.open_to_copro_countries or [])
+        if code and code.strip()
+    }
+
+
+def _has_explicit_spend(project: ProjectInput, country_code: str) -> bool:
+    cc = country_code.upper()
+    return any(countries.resolve_or_keep(alloc.country).upper() == cc for alloc in project.spend_allocations)
+
+
+def _has_existing_coproducer(project: ProjectInput, country_code: str) -> bool:
+    cc = country_code.upper()
+    return any(countries.resolve_or_keep(code).upper() == cc for code in (project.has_coproducer or []))
+
+
+def _is_quantified_incentive(inc: EligibleIncentive) -> bool:
+    return inc.rebate_percent is not None or inc.typical_award_amount is not None
+
+
+def _is_discretionary_incentive(inc: EligibleIncentive) -> bool:
+    return inc.selection_mode.lower() == "selective" or inc.rebate_percent is None
+
+
+def _is_quantified_programme(inc: Incentive) -> bool:
+    return inc.rebate_percent is not None or getattr(inc, "typical_award_amount", None) is not None
+
+
+def _is_discretionary_programme(inc: Incentive) -> bool:
+    return (getattr(inc, "selection_mode", "automatic") or "automatic").lower() == "selective" or inc.rebate_percent is None
+
+
+def _partner_requirement_categories(partner: CoproductionPartner) -> set[str]:
+    categories: set[str] = set()
+    for inc in partner.eligible_incentives:
+        for req in inc.requirements:
+            categories.add(req.category)
+    return categories
+
+
+def _partner_quantified_value(partner: CoproductionPartner) -> float:
+    total = 0.0
+    for inc in partner.eligible_incentives:
+        if _is_quantified_incentive(inc):
+            total += inc.estimated_contribution_percent + (0.35 * inc.potential_contribution_percent)
+    return round(total, 2)
+
+
+def _partner_has_quantified_signal(partner: CoproductionPartner) -> bool:
+    return any(_is_quantified_incentive(inc) for inc in partner.eligible_incentives)
+
+
+def _partner_is_discretionary_only(partner: CoproductionPartner) -> bool:
+    return bool(partner.eligible_incentives) and all(_is_discretionary_incentive(inc) for inc in partner.eligible_incentives)
+
+
+def _country_has_practical_signal(project: ProjectInput, country_code: str) -> bool:
+    cc = country_code.upper()
+    return (
+        _percent_in_country(project, cc) > 0
+        or _has_explicit_spend(project, cc)
+        or _project_has_local_ties(project, cc)
+        or cc in _project_open_codes(project)
+    )
+
+
+def _scenario_financial_score(scenario: Scenario) -> float:
+    return round(
+        scenario.estimated_total_financing_percent + (0.35 * scenario.estimated_conditional_financing_percent),
+        2,
+    )
+
+
+def _scenario_practical_score(
+    project: ProjectInput,
+    scenario: Scenario,
+) -> float:
+    """Score how realistic and project-specific a scenario is."""
+    existing_codes = _project_existing_codes(project)
+    open_codes = _project_open_codes(project)
+    practical_score = 0.0
+
+    for partner in scenario.partners:
+        code = partner.country_code.upper()
+        partner_value = _partner_quantified_value(partner)
+        requirement_categories = _partner_requirement_categories(partner)
+        has_signal = _country_has_practical_signal(project, code)
+        is_added_country = code not in existing_codes
+        is_explicit_override = code in open_codes
+
+        if _percent_in_country(project, code) > 0:
+            practical_score += 1.8
+        if _has_explicit_spend(project, code):
+            practical_score += 1.3
+        if _project_has_local_ties(project, code):
+            practical_score += 1.8
+        if _has_existing_coproducer(project, code):
+            practical_score += 1.0
+        if is_explicit_override:
+            practical_score += 0.9
+
+        if partner_value > 0:
+            practical_score += min(3.0, partner_value * 0.45)
+        elif _partner_has_quantified_signal(partner):
+            practical_score -= 1.0
+        else:
+            practical_score -= 2.3
+
+        if partner.applicable_treaties:
+            practical_score += 0.5
+
+        penalty_by_category = {
+            "budget": 1.2,
+            "spend": 1.2,
+            "shoot": 1.1,
+            "producer": 0.9,
+            "cultural": 0.8,
+            "region": 0.8,
+            "stage": 0.5,
+            "production": 0.5,
+        }
+        for category in requirement_categories:
+            practical_score -= penalty_by_category.get(category, 0.3)
+
+        if is_added_country and not has_signal:
+            practical_score -= 2.0
+    return round(practical_score, 2)
+
+
+def _scenario_rank_score(project: ProjectInput, scenario: Scenario) -> float:
+    """Combined deterministic rank score for ordering scenarios."""
+    return round(_scenario_financial_score(scenario) + _scenario_practical_score(project, scenario), 2)
 
 
 def _count_changes_needed(
@@ -291,6 +463,7 @@ def _build_scenario(
     doc_by_incentive: dict[int, list[DocumentAnnotation]] | None = None,
     doc_by_treaty: dict[int, list[DocumentAnnotation]] | None = None,
     country_eval_cache: dict[str, tuple[list[EligibleIncentive], list[Requirement], float, list[NearMiss]]] | None = None,
+    include_suggestions: bool = True,
 ) -> Scenario | None:
     """Build a scenario from a list of country codes. Returns None only if zero incentives exist in DB for these countries."""
     # Pre-sort countries to determine "majority" vs "minority"
@@ -369,14 +542,13 @@ def _build_scenario(
     conditional_amount = (project.budget * conditional_pct / 100) if project.budget else 0
     currency = project.budget_currency or "EUR"
 
-    suggestions = _build_suggestions(project, country_codes, by_country, treaties_by_pair, partners_by_country, currency)
     rationale = _build_rationale(partners, treaty_basis, total_pct, conditional_pct, currency, amount, conditional_amount)
 
     # Sort near-misses by potential benefit (highest first), limit to top 5
     all_near_misses.sort(key=lambda nm: -(nm.potential_benefit_amount or 0))
     top_near_misses = all_near_misses[:5]
 
-    return Scenario(
+    scenario = Scenario(
         partners=partners,
         estimated_total_financing_percent=round(total_pct, 1),
         estimated_total_financing_amount=round(amount, 0),
@@ -384,11 +556,24 @@ def _build_scenario(
         estimated_conditional_financing_amount=round(conditional_amount, 0),
         financing_currency=currency,
         requirements=unique_reqs,
-        suggestions=suggestions,
+        suggestions=[],
         near_misses=top_near_misses,
         rationale=rationale,
         treaty_basis=treaty_basis,
     )
+    if include_suggestions:
+        scenario.suggestions = _build_suggestions(
+            project,
+            scenario,
+            by_country,
+            treaties_by_pair,
+            partners_by_country,
+            currency,
+            doc_by_incentive=doc_by_incentive,
+            doc_by_treaty=doc_by_treaty,
+            country_eval_cache=country_eval_cache,
+        )
+    return scenario
 
 
 def _build_rationale(
@@ -442,21 +627,26 @@ def _build_rationale(
 
 def _build_suggestions(
     project: ProjectInput,
-    current_codes: list[str],
+    scenario: Scenario,
     by_country: dict[str, list[Incentive]],
     treaties_by_pair: dict[tuple[str, str], list[Treaty]],
     partners_by_country: dict[str, list[str]],
     currency: str,
+    doc_by_incentive: dict[int, list[DocumentAnnotation]] | None = None,
+    doc_by_treaty: dict[int, list[DocumentAnnotation]] | None = None,
+    country_eval_cache: dict[str, tuple[list[EligibleIncentive], list[Requirement], float, list[NearMiss]]] | None = None,
 ) -> list[Suggestion]:
     """Suggest ways to unlock more funding."""
     suggestions: list[Suggestion] = []
+    current_codes = [partner.country_code for partner in scenario.partners]
+    base_financial_score = _scenario_financial_score(scenario)
+    open_codes = _project_open_codes(project)
 
     # Suggest increasing shoot in countries where min_shoot_percent isn't met
     for cc in current_codes:
         shoot_pct = _percent_in_country(project, cc)
         for inc in by_country.get(cc.upper(), []):
             if inc.min_shoot_percent and shoot_pct < inc.min_shoot_percent and inc.rebate_percent:
-                # Estimate what benefit would be if threshold were met
                 total_shoot = sum(loc.percent for loc in project.shoot_locations) or 100.0
                 target_spend = project.budget * project.shooting_spend_fraction * (inc.min_shoot_percent / total_shoot)
                 est_benefit = target_spend * (inc.rebate_percent / 100.0)
@@ -484,53 +674,75 @@ def _build_suggestions(
     if not project.willing_add_coproducer:
         return suggestions[:5]
 
-    # Suggest treaty partners not currently in the scenario
     partner_suggestions: list[Suggestion] = []
     seen_partner_codes: set[str] = set()
     for cc in current_codes:
-        treaty_partners = _get_all_treaty_partners(partners_by_country, cc)
-        for partner_code in treaty_partners:
+        for partner_code in _get_all_treaty_partners(partners_by_country, cc):
             if partner_code in current_codes or partner_code in seen_partner_codes:
                 continue
             seen_partner_codes.add(partner_code)
-            if project.open_to_copro_countries:
-                open_codes = [countries.resolve_or_keep(c).upper() for c in project.open_to_copro_countries]
-                if partner_code not in open_codes:
-                    continue
-            incs = by_country.get(partner_code, [])
-            if not incs:
+            if open_codes and partner_code not in open_codes:
                 continue
-            best = max((i for i in incs if i.rebate_percent), key=lambda i: i.rebate_percent or 0, default=None)
-            if best and best.rebate_percent:
-                partner_name = countries.display_name(partner_code)
-                treaties = _get_treaties_for_pair(treaties_by_pair, cc, partner_code)
-                treaty_note = ""
-                if treaties:
-                    treaty_note = f" ({treaties[0].name})"
-                # Estimate benefit: assume 20% of shooting budget as qualifying spend in partner country
-                assumed_spend_fraction = 0.20
-                est_spend = project.budget * project.shooting_spend_fraction * assumed_spend_fraction
-                # If min qualifying spend exceeds what we'd realistically spend, skip
-                if best.min_qualifying_spend and est_spend < best.min_qualifying_spend:
-                    if best.min_qualifying_spend > project.budget * 0.5:
-                        continue  # unrealistic — min spend is more than half the budget
-                    est_spend = best.min_qualifying_spend
-                est_benefit = est_spend * (best.rebate_percent / 100.0)
-                partner_currency = best.max_cap_currency or "EUR"
-                if best.max_cap_amount and est_benefit > best.max_cap_amount:
-                    est_benefit = best.max_cap_amount
-                partner_suggestions.append(Suggestion(
-                    suggestion_type="add_copro",
-                    country=partner_name,
-                    description=f"Add {partner_name} as coproduction partner{treaty_note} to access {best.name}.",
-                    potential_benefit=f"~{partner_currency} {est_benefit:,.0f} ({best.rebate_percent}% on qualifying {partner_name} spend)",
-                    estimated_amount=round(est_benefit, 0),
-                    estimated_currency=partner_currency,
-                    effort_level="high",
-                    source=SourceReference(url=best.source_url, description=best.source_description or best.name) if best.source_url else None,
-                ))
 
-    # Sort partner suggestions by estimated benefit descending
+            incs = by_country.get(partner_code, [])
+            if not any(_is_quantified_programme(inc) and not _is_discretionary_programme(inc) for inc in incs):
+                continue
+
+            candidate = _build_scenario(
+                project,
+                current_codes + [partner_code],
+                by_country,
+                treaties_by_pair,
+                partners_by_country,
+                doc_by_incentive,
+                doc_by_treaty,
+                country_eval_cache,
+                include_suggestions=False,
+            )
+            if not candidate:
+                continue
+
+            candidate_practical_score = _scenario_practical_score(project, candidate)
+            if candidate_practical_score < -3.0 and partner_code not in open_codes:
+                continue
+
+            candidate_partner = next((p for p in candidate.partners if p.country_code == partner_code), None)
+            if not candidate_partner:
+                continue
+
+            quantified_incentives = [inc for inc in candidate_partner.eligible_incentives if _is_quantified_incentive(inc)]
+            if not quantified_incentives:
+                continue
+
+            partner_value = _partner_quantified_value(candidate_partner)
+            added_financial_score = round(_scenario_financial_score(candidate) - base_financial_score, 2)
+            if added_financial_score <= 0 and partner_value <= 0:
+                continue
+
+            best = max(
+                quantified_incentives,
+                key=lambda inc: inc.estimated_contribution_percent + (0.35 * inc.potential_contribution_percent),
+            )
+            estimated_amount = round(project.budget * max(added_financial_score, 0) / 100.0, 0) if project.budget else 0
+            if estimated_amount <= 0:
+                estimated_amount = round(project.budget * partner_value / 100.0, 0) if project.budget else 0
+            if estimated_amount <= 0:
+                continue
+
+            treaties = _get_treaties_for_pair(treaties_by_pair, cc, partner_code)
+            treaty_note = f" ({treaties[0].name})" if treaties else ""
+            source = best.benefit.sources[0] if best.benefit and best.benefit.sources else None
+            partner_suggestions.append(Suggestion(
+                suggestion_type="add_copro",
+                country=countries.display_name(partner_code),
+                description=f"Add {countries.display_name(partner_code)} as coproduction partner{treaty_note} to unlock {best.name}.",
+                potential_benefit=f"~{currency} {estimated_amount:,.0f} based on modeled scenario upside",
+                estimated_amount=estimated_amount,
+                estimated_currency=currency,
+                effort_level="high",
+                source=source,
+            ))
+
     partner_suggestions.sort(key=lambda s: -(s.estimated_amount or 0))
     suggestions.extend(partner_suggestions)
 
@@ -547,15 +759,72 @@ def _counts_toward_bankable_total(requirements: list[Requirement]) -> bool:
     return True
 
 
+def _is_selective_incentive(incentive: Incentive) -> bool:
+    return (getattr(incentive, "selection_mode", "automatic") or "automatic").lower() == "selective"
+
+
+def _project_stage_fit(project: ProjectInput, incentive: Incentive) -> float:
+    eligible_stages = incentive.eligible_stages or []
+    if not eligible_stages:
+        return 1.0
+    if project.stage in eligible_stages:
+        return 1.0
+    if any(stage in eligible_stages for stage in (project.stages or [])):
+        return 0.6
+    return 0.0
+
+
+def _selective_fit_score(project: ProjectInput, incentive: Incentive, requirements: list[Requirement]) -> float:
+    """Rank selective opportunities by fit rather than indicative cash amount."""
+    score = 0.0
+
+    score += 2.0  # format already hard-matched before this point
+    score += 3.0 * _project_stage_fit(project, incentive)
+
+    shoot_pct = _percent_in_country(project, incentive.country_code)
+    if incentive.region and any(req.category == "region" for req in requirements):
+        score += 0.5
+    elif shoot_pct > 0:
+        score += 2.0
+
+    if _project_has_local_ties(project, incentive.country_code):
+        score += 2.0
+    elif incentive.local_producer_required and project.willing_add_coproducer:
+        score += 1.0
+
+    if any(countries.resolve_or_keep(c).upper() == incentive.country_code.upper() for c in (project.open_to_copro_countries or [])):
+        score += 1.0
+
+    penalty_by_category = {
+        "budget": 1.0,
+        "spend": 1.0,
+        "shoot": 1.0,
+        "producer": 0.8,
+        "region": 0.8,
+        "cultural": 0.7,
+        "stage": 0.5,
+        "production": 0.5,
+    }
+    for req in requirements:
+        score -= penalty_by_category.get(req.category, 0.3)
+
+    return round(score, 2)
+
+
 def _project_has_local_ties(project: ProjectInput, country_code: str) -> bool:
     cc = country_code.upper()
     if _percent_in_country(project, cc) > 0:
+        return True
+    if _has_explicit_spend(project, cc):
         return True
     for nat in (project.director_nationalities or []) + (project.producer_nationalities or []):
         if nat and countries.resolve_or_keep(nat).upper() == cc:
             return True
     for prod_cc in project.production_company_countries or []:
         if prod_cc and countries.resolve_or_keep(prod_cc).upper() == cc:
+            return True
+    if getattr(project, "production_company_country", None):
+        if countries.resolve_or_keep(project.production_company_country).upper() == cc:
             return True
     return any(countries.resolve_or_keep(c).upper() == cc for c in (project.has_coproducer or []))
 
@@ -585,8 +854,16 @@ def _incentive_market_orientation(incentive: Incentive) -> str | None:
     return None
 
 
-def _candidate_sort_key(project: ProjectInput, incentive: Incentive, rebate_pct: float) -> tuple[float, float]:
+def _candidate_sort_key(
+    project: ProjectInput,
+    incentive: Incentive,
+    rebate_pct: float,
+    requirements: list[Requirement] | None = None,
+) -> tuple[float, float]:
     """Higher is better. Bias toward incentives that fit the project's domestic/foreign posture."""
+    if _is_selective_incentive(incentive):
+        return (_selective_fit_score(project, incentive, requirements or []), rebate_pct)
+
     fit_score = 0.0
     orientation = _incentive_market_orientation(incentive)
     local_ties = _project_has_local_ties(project, incentive.country_code)
@@ -716,12 +993,15 @@ def generate_scenarios(project: ProjectInput, db: Session) -> list[Scenario]:
         for cc in all_incentive_countries:
             _try_scenario([cc])
 
-    # --- Rank: best financing first, fewest changes as tiebreaker ---
-    def _score(s: Scenario) -> tuple[float, int]:
-        changes = _count_changes_needed(project, [p.country_code for p in s.partners], by_country)
-        # Primary: higher financing is better (negate for sort)
-        # Secondary: fewer changes is better
-        return (-s.estimated_total_financing_percent, changes)
+    scored_scenarios: list[tuple[Scenario, float, int]] = []
+    for scenario in scenarios:
+        recommendation_score = _scenario_rank_score(project, scenario)
+        changes = _count_changes_needed(project, [p.country_code for p in scenario.partners], by_country)
+        scored_scenarios.append((scenario, recommendation_score, changes))
 
-    scenarios.sort(key=_score)
-    return scenarios[:15]
+    def _score(item: tuple[Scenario, float, int]) -> tuple[float, float, int]:
+        scenario, recommendation_score, changes = item
+        return (-recommendation_score, -scenario.estimated_total_financing_percent, changes)
+
+    scored_scenarios.sort(key=_score)
+    return [scenario for scenario, _, _ in scored_scenarios[:15]]

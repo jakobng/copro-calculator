@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Scenario, EligibleIncentive, Requirement, ProjectInput, SourceReference } from '../types'
 import { SourceBadge } from './SourceLink'
-import { ChevronDown, ChevronUp, CheckCircle2, AlertCircle, ArrowRight, HelpCircle, RotateCcw } from 'lucide-react'
+import { ChevronDown, ChevronUp, AlertCircle, ArrowRight, HelpCircle, RotateCcw } from 'lucide-react'
 
 type DocOpenHandler = (documentId: number, annotationId?: number | null) => void
 type CulturalStatus = 'unknown' | 'pass' | 'fail'
@@ -13,7 +13,7 @@ interface Props {
   budget: number
   currency: string
   onProjectUpdate: (project: ProjectInput) => void
-  onReanalyze: () => void
+  onReanalyze: (projectOverride?: ProjectInput) => void
   onDocumentOpen?: DocOpenHandler
 }
 
@@ -76,6 +76,54 @@ function budgetPercent(amount: number, budget: number) {
 
 function incentiveAmount(inc: EligibleIncentive) {
   return inc.benefit?.benefit_amount || 0
+}
+
+function incentiveLocationLabel(inc: EligibleIncentive) {
+  return inc.region ? `${inc.region}, ${inc.country_name}` : inc.country_name
+}
+
+function incentiveHeadlineLabel(inc: EligibleIncentive) {
+  if (inc.selection_mode === 'selective') return 'SELECTIVE OPPORTUNITY'
+  if (inc.rebate_percent) return `${inc.rebate_percent}% REBATE`
+  return inc.incentive_type.replace(/_/g, ' ').toUpperCase()
+}
+
+function isSelectiveOpportunity(inc: EligibleIncentive) {
+  return inc.selection_mode === 'selective'
+}
+
+function selectiveFitLabel(inc: EligibleIncentive) {
+  const score = inc.selective_fit_score ?? 0
+  if (score >= 6) return 'Strong fit'
+  if (score >= 3) return 'Possible fit'
+  return 'Exploratory fit'
+}
+
+function operatorTypeLabel(operatorType: string) {
+  return operatorType.replace(/_/g, ' ')
+}
+
+function applicationStatusLabel(status: string) {
+  if (status === 'rolling') return 'rolling calls'
+  return status
+}
+
+function selectiveAmountInfo(inc: EligibleIncentive, currency: string) {
+  if (inc.typical_award_amount && inc.typical_award_currency) {
+    return {
+      label: 'Typical award',
+      value: fmt(inc.typical_award_amount, inc.typical_award_currency),
+    }
+  }
+
+  if (incentiveAmount(inc) > 0) {
+    return {
+      label: 'Indicative only',
+      value: fmt(inc.benefit?.benefit_amount || 0, inc.benefit?.benefit_currency || currency),
+    }
+  }
+
+  return null
 }
 
 function countryAliases(countryCode: string, countryName: string) {
@@ -1295,19 +1343,28 @@ function ScenarioCard({
   budget: number
   currency: string
   onProjectUpdate: (project: ProjectInput) => void
-  onReanalyze: () => void
+  onReanalyze: (projectOverride?: ProjectInput) => void
   onDocumentOpen?: DocOpenHandler
 }) {
-  const [open, setOpen] = useState(index === 0)
+  const [open, setOpen] = useState(false)
+  const [showContext, setShowContext] = useState(false)
 
   const allIncentives = scenario.partners.flatMap((p) => p.eligible_incentives)
-  const confirmedIncentives = allIncentives.filter((inc) => incentiveAmount(inc) > 0 && inc.counted_in_totals)
-  const conditionalIncentives = allIncentives.filter((inc) => incentiveAmount(inc) > 0 && !inc.counted_in_totals)
-  const strategicFunds = allIncentives.filter((inc) => incentiveAmount(inc) <= 0)
+  const confirmedIncentives = allIncentives.filter((inc) => !isSelectiveOpportunity(inc) && incentiveAmount(inc) > 0 && inc.counted_in_totals)
+  const conditionalIncentives = allIncentives.filter((inc) => !isSelectiveOpportunity(inc) && incentiveAmount(inc) > 0 && !inc.counted_in_totals)
+  const strategicFunds = [...allIncentives]
+    .filter((inc) => isSelectiveOpportunity(inc) || incentiveAmount(inc) <= 0)
+    .sort((a, b) => (b.selective_fit_score || 0) - (a.selective_fit_score || 0))
 
   const confirmedTotal = scenario.estimated_total_financing_amount
   const conditionalTotal = scenario.estimated_conditional_financing_amount
   const nearMissTotal = scenario.near_misses?.reduce((sum, nm) => sum + (nm.potential_benefit_amount || 0), 0) || 0
+  const headlineAmount = confirmedTotal > 0 ? confirmedTotal : conditionalTotal
+  const headlineLabel = confirmedTotal > 0
+    ? 'Money you can model now'
+    : conditionalTotal > 0
+      ? 'Potential financing with checks'
+      : 'No bankable incentives yet'
 
   const thresholdRequirements = scenario.requirements.filter((r) => ['budget', 'spend', 'shoot', 'region'].includes(r.category))
   const adminRequirements = scenario.requirements.filter((r) => !['budget', 'spend', 'shoot', 'region', 'cultural'].includes(r.category))
@@ -1327,7 +1384,7 @@ function ScenarioCard({
               {scenario.partners.map((p) => p.country_name).join(' + ')}
             </h3>
             <p className="text-sm text-neutral-500 font-medium">
-              Money you can model now: <span className="text-black font-bold">{fmt(confirmedTotal, currency)}</span> ({budgetPercent(confirmedTotal, budget)}% of budget)
+              {headlineLabel}: <span className="text-black font-bold">{fmt(headlineAmount, currency)}</span> ({budgetPercent(headlineAmount, budget)}% of budget)
             </p>
           </div>
         </div>
@@ -1335,7 +1392,9 @@ function ScenarioCard({
         <div className="flex items-center gap-8">
           {conditionalTotal > 0 && (
             <div className="text-right px-4 border-r border-neutral-200">
-              <span className="block text-[10px] font-black uppercase text-sky-700 tracking-widest">Possible Extra</span>
+              <span className="block text-[10px] font-black uppercase text-sky-700 tracking-widest">
+                {confirmedTotal > 0 ? 'Possible Extra' : 'Needs Checks'}
+              </span>
               <span className="text-lg font-bold text-sky-700">+{fmt(conditionalTotal, currency)}</span>
             </div>
           )}
@@ -1349,182 +1408,154 @@ function ScenarioCard({
         </div>
       </button>
 
+      <div className="border-t border-neutral-100 px-6 py-4 space-y-5">
+        {confirmedIncentives.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-[10px] font-black uppercase tracking-widest text-emerald-700">Usable Now</p>
+            <div className="grid gap-2">
+              {confirmedIncentives.map((inc, i) => (
+                <IncentiveCard
+                  key={`confirmed-${i}`}
+                  inc={inc}
+                  project={project}
+                  currency={currency}
+                  accent="emerald"
+                  compact
+                  onProjectUpdate={onProjectUpdate}
+                  onReanalyze={onReanalyze}
+                  onDocumentOpen={onDocumentOpen}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {conditionalIncentives.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-[10px] font-black uppercase tracking-widest text-sky-700">Needs Checks Or Tweaks</p>
+            <div className="grid gap-2">
+              {conditionalIncentives.map((inc, i) => (
+                <IncentiveCard
+                  key={`conditional-${i}`}
+                  inc={inc}
+                  project={project}
+                  currency={currency}
+                  accent="sky"
+                  compact
+                  onProjectUpdate={onProjectUpdate}
+                  onReanalyze={onReanalyze}
+                  onDocumentOpen={onDocumentOpen}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {strategicFunds.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-[10px] font-black uppercase tracking-widest text-violet-700">Selective Opportunities</p>
+            <p className="text-xs text-neutral-500">Discretionary funds and strategic programmes that match the project, but are not counted in headline financing totals.</p>
+            <div className="grid gap-2">
+              {strategicFunds.map((inc, i) => (
+                <IncentiveCard
+                  key={`strategic-${i}`}
+                  inc={inc}
+                  project={project}
+                  currency={currency}
+                  accent="violet"
+                  compact
+                  onProjectUpdate={onProjectUpdate}
+                  onReanalyze={onReanalyze}
+                  onDocumentOpen={onDocumentOpen}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
       {open && (
-        <div className="border-t-2 border-neutral-100 p-8 space-y-12 animate-in fade-in slide-in-from-top-1">
-          <div className="bg-neutral-50 p-6 border-l-4 border-black">
-            <p className="text-lg leading-relaxed font-medium">"{scenario.rationale}"</p>
+        <div className="border-t-2 border-neutral-100 p-8 space-y-10 animate-in fade-in slide-in-from-top-1">
+          <div>
+            <button
+              type="button"
+              onClick={() => setShowContext((current) => !current)}
+              className="text-[10px] font-black tracking-widest px-4 py-2 border border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300 hover:text-neutral-900 transition-all uppercase"
+            >
+              {showContext ? 'Hide Scenario Notes' : 'Show Scenario Notes'}
+            </button>
           </div>
 
-          <section className="space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
-                <CheckCircle2 size={20} />
-              </div>
-              <h4 className="text-xl font-bold">Looks Usable Now</h4>
-              <span className="text-sm text-neutral-400 font-medium">(The cleanest matches from the inputs you already gave)</span>
-            </div>
-
-            {confirmedIncentives.length > 0 ? (
-              <div className="grid gap-4 pl-11">
-                {confirmedIncentives.map((inc, i) => (
-                  <IncentiveCard
-                    key={i}
-                    inc={inc}
-                    project={project}
-                    currency={currency}
-                    accent="emerald"
-                    onProjectUpdate={onProjectUpdate}
-                    onReanalyze={onReanalyze}
-                    onDocumentOpen={onDocumentOpen}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="pl-11">
-                <div className="border border-neutral-200 bg-neutral-50 p-5 text-neutral-600">
-                  Nothing here looks cleanly unlocked yet from the current inputs.
-                </div>
-              </div>
-            )}
-          </section>
-
-          {conditionalIncentives.length > 0 && (
-            <section className="space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center">
-                  <AlertCircle size={20} />
-                </div>
-                <h4 className="text-xl font-bold">Could Work, But Not Yet</h4>
-                <span className="text-sm text-neutral-400 font-medium">(Relevant options that still need a check, a partner, or a spending change)</span>
+          {showContext && (
+            <>
+              <div className="bg-neutral-50 p-6 border-l-4 border-black">
+                <p className="text-lg leading-relaxed font-medium">"{scenario.rationale}"</p>
               </div>
 
-              <div className="grid gap-4 pl-11">
-                {conditionalIncentives.map((inc, i) => (
-                  <div key={i} className="border border-sky-200 bg-sky-50/30 p-5 space-y-4">
-                    <IncentiveCard
-                      inc={inc}
-                      project={project}
-                      currency={currency}
-                      accent="sky"
-                      compact
-                      onProjectUpdate={onProjectUpdate}
-                      onReanalyze={onReanalyze}
-                      onDocumentOpen={onDocumentOpen}
-                    />
-                    {inc.requirements.some((requirement) => requirement.category !== 'cultural') && (
-                      <div className="border border-sky-200 bg-white p-4">
-                        <p className="text-[11px] font-bold uppercase tracking-wider text-sky-700">What Still Needs To Be True</p>
-                        <div className="mt-3">
-                          <RequirementList requirements={inc.requirements.filter((requirement) => requirement.category !== 'cultural')} />
+              {scenario.near_misses && scenario.near_misses.length > 0 && (
+                <section className="space-y-6">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center">
+                      <AlertCircle size={20} />
+                    </div>
+                    <h4 className="text-xl font-bold">Almost There</h4>
+                    <span className="text-sm text-neutral-400 font-medium">(Options that are mainly being blocked by one threshold)</span>
+                  </div>
+
+                  <div className="grid gap-4 pl-11">
+                    {scenario.near_misses.map((nm, i) => (
+                      <div key={i} className="border-2 border-amber-100 bg-amber-50/20 p-6">
+                        <div className="flex justify-between items-start mb-6">
+                          <div>
+                            <p className="font-bold text-lg uppercase tracking-tight text-amber-800">{nm.incentive_name}</p>
+                            <p className="text-sm text-amber-700 font-medium">Gap: {nm.gap_category}</p>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-xl font-bold text-amber-600">+{fmt(nm.potential_benefit_amount || 0, nm.potential_benefit_currency || currency)}</span>
+                            <span className="block text-xs font-bold text-neutral-400 mt-1">IF YOU FIX THIS GAP</span>
+                          </div>
+                        </div>
+
+                        <div className="bg-white border border-amber-200 p-4 flex items-center gap-4">
+                          <div className="bg-amber-600 text-white text-[10px] font-black px-2 py-1 uppercase">Gap</div>
+                          <p className="font-bold text-neutral-800">{nm.gap_description}</p>
                         </div>
                       </div>
-                    )}
+                    ))}
                   </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {strategicFunds.length > 0 && (
-            <section className="space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-violet-100 text-violet-700 flex items-center justify-center">
-                  <HelpCircle size={20} />
-                </div>
-                <h4 className="text-xl font-bold">Funds To Explore</h4>
-                <span className="text-sm text-neutral-400 font-medium">(Relevant programmes, but not automatic cash rebates)</span>
-              </div>
-
-              <div className="grid gap-4 pl-11">
-                {strategicFunds.map((inc, i) => (
-                  <div key={i} className="border border-violet-200 bg-violet-50/20 p-5">
-                    <p className="font-bold text-lg uppercase tracking-tight">{inc.name} ({inc.country_name})</p>
-                    <p className="text-neutral-600 mt-1 max-w-xl">{inc.benefit?.benefit_explanation}</p>
-                    <CulturalTestControl
-                      inc={inc}
-                      project={project}
-                      onProjectUpdate={onProjectUpdate}
-                      onReanalyze={onReanalyze}
-                      onDocumentOpen={onDocumentOpen}
-                    />
-                    {inc.requirements.some((requirement) => requirement.category !== 'cultural') && (
-                      <div className="mt-4">
-                        <RequirementList requirements={inc.requirements.filter((requirement) => requirement.category !== 'cultural')} />
-                      </div>
-                    )}
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {inc.benefit?.sources.map((s, idx) => (
-                        <SourceBadge key={idx} source={s} onDocumentOpen={onDocumentOpen} />
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {scenario.near_misses && scenario.near_misses.length > 0 && (
-            <section className="space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center">
-                  <AlertCircle size={20} />
-                </div>
-                <h4 className="text-xl font-bold">Almost There</h4>
-                <span className="text-sm text-neutral-400 font-medium">(Options that are mainly being blocked by one threshold)</span>
-              </div>
-
-              <div className="grid gap-4 pl-11">
-                {scenario.near_misses.map((nm, i) => (
-                  <div key={i} className="border-2 border-amber-100 bg-amber-50/20 p-6">
-                    <div className="flex justify-between items-start mb-6">
-                      <div>
-                        <p className="font-bold text-lg uppercase tracking-tight text-amber-800">{nm.incentive_name}</p>
-                        <p className="text-sm text-amber-700 font-medium">Gap: {nm.gap_category}</p>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-xl font-bold text-amber-600">+{fmt(nm.potential_benefit_amount || 0, nm.potential_benefit_currency || currency)}</span>
-                        <span className="block text-xs font-bold text-neutral-400 mt-1">IF YOU FIX THIS GAP</span>
-                      </div>
-                    </div>
-
-                    <div className="bg-white border border-amber-200 p-4 flex items-center gap-4">
-                      <div className="bg-amber-600 text-white text-[10px] font-black px-2 py-1 uppercase">Gap</div>
-                      <p className="font-bold text-neutral-800">{nm.gap_description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {(thresholdRequirements.length > 0 || adminRequirements.length > 0) && (
-            <section className="space-y-6 pt-6 border-t border-neutral-100">
-              <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-full bg-neutral-100 text-neutral-700 flex items-center justify-center">
-                  <HelpCircle size={20} />
-                </div>
-                <h4 className="text-xl font-bold">What You Would Need To Change</h4>
-                <span className="text-sm text-neutral-400 font-medium">(Grouped into budget/spend issues and practical next steps)</span>
-              </div>
-
-              {thresholdRequirements.length > 0 && (
-                <div className="pl-11">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">Budget / Spend Problems</p>
-                  <div className="mt-3">
-                    <RequirementList requirements={thresholdRequirements} />
-                  </div>
-                </div>
+                </section>
               )}
 
-              {adminRequirements.length > 0 && (
-                <div className="pl-11">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">Practical Next Steps</p>
-                  <div className="mt-3">
-                    <RequirementList requirements={adminRequirements} />
+              {(thresholdRequirements.length > 0 || adminRequirements.length > 0) && (
+                <section className="space-y-6 pt-6 border-t border-neutral-100">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-neutral-100 text-neutral-700 flex items-center justify-center">
+                      <HelpCircle size={20} />
+                    </div>
+                    <h4 className="text-xl font-bold">What You Would Need To Change</h4>
+                    <span className="text-sm text-neutral-400 font-medium">(Grouped into budget/spend issues and practical next steps)</span>
                   </div>
-                </div>
+
+                  {thresholdRequirements.length > 0 && (
+                    <div className="pl-11">
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">Budget / Spend Problems</p>
+                      <div className="mt-3">
+                        <RequirementList requirements={thresholdRequirements} />
+                      </div>
+                    </div>
+                  )}
+
+                  {adminRequirements.length > 0 && (
+                    <div className="pl-11">
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">Practical Next Steps</p>
+                      <div className="mt-3">
+                        <RequirementList requirements={adminRequirements} />
+                      </div>
+                    </div>
+                  )}
+                </section>
               )}
-            </section>
+            </>
           )}
         </div>
       )}
@@ -1545,38 +1576,87 @@ function IncentiveCard({
   inc: EligibleIncentive
   project: ProjectInput
   currency: string
-  accent: 'emerald' | 'sky'
+  accent: 'emerald' | 'sky' | 'violet'
   compact?: boolean
   onProjectUpdate: (project: ProjectInput) => void
-  onReanalyze: () => void
+  onReanalyze: (projectOverride?: ProjectInput) => void
   onDocumentOpen?: DocOpenHandler
 }) {
-  const amountColor = accent === 'emerald' ? 'text-emerald-600' : 'text-sky-700'
+  const amountColor =
+    accent === 'emerald'
+      ? 'text-emerald-600'
+      : accent === 'sky'
+        ? 'text-sky-700'
+        : 'text-violet-700'
+  const [open, setOpen] = useState(false)
+  const selectiveAmount = isSelectiveOpportunity(inc) ? selectiveAmountInfo(inc, currency) : null
 
   return (
-    <div className="border border-neutral-200 p-5 flex justify-between items-start gap-6">
-      <div className="min-w-0">
-        <p className="font-bold text-lg uppercase tracking-tight">{inc.name} ({inc.country_name})</p>
-        <p className="text-neutral-500 mt-1 max-w-xl">{inc.benefit?.benefit_explanation}</p>
-        <CulturalTestControl
-          inc={inc}
-          project={project}
-          onProjectUpdate={onProjectUpdate}
-          onReanalyze={onReanalyze}
-          onDocumentOpen={onDocumentOpen}
-        />
-        <div className="mt-4 flex flex-wrap gap-2">
-          {inc.benefit?.sources.map((s, idx) => (
-            <SourceBadge key={idx} source={s} onDocumentOpen={onDocumentOpen} />
-          ))}
+    <div className="border border-neutral-200">
+      <button
+        type="button"
+        onClick={() => setOpen((current) => !current)}
+        className="flex w-full items-center justify-between gap-6 px-5 py-4 text-left"
+      >
+        <div className="min-w-0">
+          <p className="font-bold text-base tracking-tight text-neutral-900">{inc.name} ({incentiveLocationLabel(inc)})</p>
         </div>
-      </div>
-      <div className="text-right shrink-0">
-        <span className={`text-xl font-bold ${amountColor}`}>+{fmt(inc.benefit?.benefit_amount || 0, inc.benefit?.benefit_currency || currency)}</span>
-        <span className="block text-xs font-bold text-neutral-400 mt-1">
-          {compact ? 'MODELED AMOUNT' : `${inc.rebate_percent}% REBATE`}
-        </span>
-      </div>
+        <div className="flex shrink-0 items-center gap-4 text-right">
+          <div>
+            {isSelectiveOpportunity(inc) && selectiveAmount && (
+              <span className={`block text-lg font-bold ${amountColor}`}>{selectiveAmount.value}</span>
+            )}
+            {!isSelectiveOpportunity(inc) && incentiveAmount(inc) > 0 && (
+              <span className={`block text-lg font-bold ${amountColor}`}>+{fmt(inc.benefit?.benefit_amount || 0, inc.benefit?.benefit_currency || currency)}</span>
+            )}
+            <span className="block text-xs font-bold text-neutral-400 mt-1">
+              {incentiveHeadlineLabel(inc)}
+            </span>
+            {isSelectiveOpportunity(inc) && selectiveAmount && (
+              <span className="block text-[10px] font-bold text-neutral-400 mt-1 uppercase tracking-widest">
+                {selectiveAmount.label}
+              </span>
+            )}
+          </div>
+          {open ? <ChevronUp className="h-4 w-4 text-neutral-400" /> : <ChevronDown className="h-4 w-4 text-neutral-400" />}
+        </div>
+      </button>
+
+      {open && (
+        <div className="border-t border-neutral-100 px-5 pb-5 pt-1">
+          {isSelectiveOpportunity(inc) && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              <span className="px-2 py-1 text-[10px] font-black uppercase tracking-widest bg-violet-50 text-violet-700 border border-violet-200">
+                {selectiveFitLabel(inc)}
+              </span>
+              <span className="px-2 py-1 text-[10px] font-black uppercase tracking-widest bg-neutral-100 text-neutral-600 border border-neutral-200">
+                {operatorTypeLabel(inc.operator_type)}
+              </span>
+              <span className="px-2 py-1 text-[10px] font-black uppercase tracking-widest bg-neutral-100 text-neutral-600 border border-neutral-200">
+                {applicationStatusLabel(inc.application_status)}
+              </span>
+            </div>
+          )}
+          <p className="text-neutral-500 mt-3 max-w-xl">{inc.benefit?.benefit_explanation}</p>
+          {isSelectiveOpportunity(inc) && inc.application_note && (
+            <p className="text-xs text-neutral-500 mt-3 max-w-xl">
+              <span className="font-bold text-neutral-700">Application note:</span> {inc.application_note}
+            </p>
+          )}
+          <CulturalTestControl
+            inc={inc}
+            project={project}
+            onProjectUpdate={onProjectUpdate}
+            onReanalyze={onReanalyze}
+            onDocumentOpen={onDocumentOpen}
+          />
+          <div className="mt-4 flex flex-wrap gap-2">
+            {inc.benefit?.sources.map((s, idx) => (
+              <SourceBadge key={idx} source={s} onDocumentOpen={onDocumentOpen} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -1591,7 +1671,7 @@ function CulturalTestControl({
   inc: EligibleIncentive
   project: ProjectInput
   onProjectUpdate: (project: ProjectInput) => void
-  onReanalyze: () => void
+  onReanalyze: (projectOverride?: ProjectInput) => void
   onDocumentOpen?: DocOpenHandler
 }) {
   const [showAssessment, setShowAssessment] = useState(false)
@@ -1615,9 +1695,10 @@ function CulturalTestControl({
   if (!needsCulturalTest) return null
 
   const applyStatus = (nextStatus: Exclude<CulturalStatus, 'unknown'> | 'clear') => {
-    onProjectUpdate(buildUpdatedProject(project, inc.country_code, nextStatus))
+    const updatedProject = buildUpdatedProject(project, inc.country_code, nextStatus)
+    onProjectUpdate(updatedProject)
     setShowAssessment(false)
-    onReanalyze()
+    onReanalyze(updatedProject)
   }
 
   return (
@@ -1642,6 +1723,28 @@ function CulturalTestControl({
         </div>
 
         <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => applyStatus('pass')}
+            className={`text-[10px] font-black tracking-widest px-3 py-1.5 border transition-all uppercase ${
+              status === 'pass'
+                ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                : 'border-neutral-200 bg-white text-neutral-500 hover:border-emerald-300 hover:text-emerald-700'
+            }`}
+          >
+            We Pass
+          </button>
+          <button
+            type="button"
+            onClick={() => applyStatus('fail')}
+            className={`text-[10px] font-black tracking-widest px-3 py-1.5 border transition-all uppercase ${
+              status === 'fail'
+                ? 'border-amber-500 bg-amber-50 text-amber-700'
+                : 'border-neutral-200 bg-white text-neutral-500 hover:border-amber-300 hover:text-amber-700'
+            }`}
+          >
+            We Fail
+          </button>
           <button
             type="button"
             onClick={() => setShowAssessment((current) => !current)}

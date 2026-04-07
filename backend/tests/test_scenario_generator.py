@@ -2,13 +2,14 @@
 import pytest
 from app.database import SessionLocal, engine, Base
 from app.models import Incentive, Treaty, MultilateralMember
-from app.schemas import ProjectInput, ShootLocation
+from app.schemas import ProjectInput, ShootLocation, SpendAllocation
 from app.scenario_generator import generate_scenarios
 
 
 @pytest.fixture(autouse=True)
 def setup_db():
     """Create tables and seed minimal test data for each test."""
+    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
 
@@ -62,6 +63,42 @@ def setup_db():
         source_url="https://example.com/france",
         source_description="Test source",
     ))
+    db.add(Incentive(
+        name="Spain Foundation Fund",
+        country_code="ES",
+        incentive_type="fund",
+        rebate_percent=40.0,
+        rebate_applies_to="qualifying_spend",
+        selection_mode="selective",
+        operator_type="foundation",
+        application_status="open",
+        application_note="Spring round",
+        typical_award_amount=250_000,
+        typical_award_currency="EUR",
+        eligible_formats=["feature_fiction", "documentary"],
+        eligible_stages=["production"],
+        local_producer_required=False,
+        max_cap_currency="EUR",
+        source_url="https://example.com/es-foundation",
+        source_description="Selective fund source",
+    ))
+    db.add(Incentive(
+        name="Spain Selective Post Fund",
+        country_code="ES",
+        incentive_type="fund",
+        rebate_percent=None,
+        selection_mode="selective",
+        operator_type="market",
+        application_status="rolling",
+        application_note="Rolling selection",
+        eligible_formats=["feature_fiction", "documentary"],
+        eligible_stages=["production"],
+        local_producer_required=False,
+        post_production_local_required=True,
+        max_cap_currency="EUR",
+        source_url="https://example.com/es-market",
+        source_description="Selective market source",
+    ))
 
     # Add a treaty
     db.add(Treaty(
@@ -109,6 +146,41 @@ def _make_project(**overrides) -> ProjectInput:
     )
     defaults.update(overrides)
     return ProjectInput(**defaults)
+
+
+def _add_andorra_convention(db):
+    treaty = Treaty(
+        name="European Convention Test",
+        treaty_type="multilateral",
+        country_a_code="ES",
+        country_b_code=None,
+        min_share_percent=10,
+        max_share_percent=90,
+        eligible_formats=["feature_fiction", "documentary"],
+        creative_contribution_required=True,
+        requires_prior_approval=True,
+        is_active=True,
+        source_url="https://example.com/convention",
+        source_description="Convention source",
+    )
+    db.add(treaty)
+    db.flush()
+    for code in ["ES", "FR", "AD", "PT"]:
+        db.add(MultilateralMember(treaty_id=treaty.id, country_code=code))
+    db.add(Incentive(
+        name="Andorra Selective Film Aid",
+        country_code="AD",
+        incentive_type="fund",
+        rebate_percent=None,
+        selection_mode="selective",
+        eligible_formats=["feature_fiction", "documentary"],
+        eligible_stages=["production"],
+        local_producer_required=True,
+        max_cap_currency="EUR",
+        source_url="https://example.com/andorra",
+        source_description="Andorra source",
+    ))
+    db.commit()
 
 
 class TestScenarioGeneration:
@@ -292,6 +364,50 @@ class TestDocumentaryProjects:
 
 
 class TestScenarioPresentationSafeguards:
+    def test_selective_fund_stays_visible_but_out_of_totals(self):
+        db = SessionLocal()
+        project = _make_project(
+            shoot_locations=[ShootLocation(country="Spain", percent=100)],
+            director_nationalities=["Spain"],
+            producer_nationalities=[],
+            production_company_countries=[],
+        )
+        scenarios = generate_scenarios(project, db)
+        db.close()
+
+        spain_scenarios = [s for s in scenarios if any(p.country_code == "ES" for p in s.partners)]
+        assert spain_scenarios
+        top = spain_scenarios[0]
+        selective = [
+            inc for p in top.partners for inc in p.eligible_incentives
+            if inc.name == "Spain Foundation Fund"
+        ]
+        assert selective
+        assert selective[0].selection_mode == "selective"
+        assert selective[0].counted_in_totals is False
+        assert selective[0].estimated_contribution_percent == 0
+        assert selective[0].potential_contribution_percent == 0
+        assert top.estimated_total_financing_percent < 40
+
+    def test_selective_funds_rank_by_fit(self):
+        db = SessionLocal()
+        project = _make_project(
+            shoot_locations=[ShootLocation(country="Spain", percent=100)],
+            director_nationalities=["Spain"],
+            producer_nationalities=[],
+            production_company_countries=[],
+            post_production_country=None,
+            post_flexible=False,
+        )
+        scenarios = generate_scenarios(project, db)
+        db.close()
+
+        spain_scenarios = [s for s in scenarios if any(p.country_code == "ES" for p in s.partners)]
+        assert spain_scenarios
+        spain_partner = next(p for p in spain_scenarios[0].partners if p.country_code == "ES")
+        selective_names = [inc.name for inc in spain_partner.eligible_incentives if inc.selection_mode == "selective"]
+        assert selective_names.index("Spain Foundation Fund") < selective_names.index("Spain Selective Post Fund")
+
     def test_conditional_incentive_not_counted_in_headline_total(self):
         db = SessionLocal()
         project = _make_project(
@@ -421,7 +537,7 @@ class TestScenarioPresentationSafeguards:
             near_miss_names = {nm.incentive_name for nm in scenario.near_misses}
             assert eligible_names.isdisjoint(near_miss_names)
 
-    def test_regional_incentive_requires_manual_confirmation(self):
+    def test_regional_incentive_requires_explicit_region_selection(self):
         db = SessionLocal()
         db.add(Incentive(
             name="Regional Spain Fund",
@@ -457,5 +573,144 @@ class TestScenarioPresentationSafeguards:
             for inc in partner.eligible_incentives
             if inc.name == "Regional Spain Fund"
         ]
-        assert regional_incentives
-        assert any(any(req.category == "region" for req in inc.requirements) for inc in regional_incentives)
+        assert not regional_incentives
+
+
+class TestRecommendationPolicy:
+    def test_andorra_treaty_only_partner_ranks_below_core_fit(self):
+        db = SessionLocal()
+        _add_andorra_convention(db)
+        project = _make_project(
+            shoot_locations=[
+                ShootLocation(country="Spain", percent=70),
+                ShootLocation(country="France", percent=30),
+            ],
+            director_nationalities=["France"],
+            producer_nationalities=["Spain"],
+        )
+        scenarios = generate_scenarios(project, db)
+        db.close()
+
+        assert scenarios
+        assert [p.country_code for p in scenarios[0].partners] == ["ES", "FR"]
+        andorra = next((s for s in scenarios if any(p.country_code == "AD" for p in s.partners)), None)
+        if andorra is not None:
+            assert scenarios.index(andorra) > 0
+
+    def test_treaty_only_discretionary_partner_stays_below_core_fits(self):
+        db = SessionLocal()
+        _add_andorra_convention(db)
+        project = _make_project(
+            shoot_locations=[ShootLocation(country="Spain", percent=100)],
+            director_nationalities=["Spain"],
+            producer_nationalities=["Spain"],
+        )
+        scenarios = generate_scenarios(project, db)
+        db.close()
+
+        assert scenarios
+        top_codes = [tuple(p.country_code for p in scenario.partners) for scenario in scenarios[:3]]
+        assert all("AD" not in combo for combo in top_codes)
+
+    def test_explicit_open_country_can_surface_as_exploratory(self):
+        db = SessionLocal()
+        _add_andorra_convention(db)
+        baseline_project = _make_project(
+            shoot_locations=[ShootLocation(country="Spain", percent=100)],
+            director_nationalities=["Spain"],
+            producer_nationalities=["Spain"],
+        )
+        project = _make_project(
+            shoot_locations=[ShootLocation(country="Spain", percent=100)],
+            director_nationalities=["Spain"],
+            producer_nationalities=["Spain"],
+            open_to_copro_countries=["Andorra"],
+        )
+        baseline = generate_scenarios(baseline_project, db)
+        scenarios = generate_scenarios(project, db)
+        db.close()
+
+        baseline_andorra = next((i for i, s in enumerate(baseline) if any(p.country_code == "AD" for p in s.partners)), None)
+        andorra = next((s for s in scenarios if any(p.country_code == "AD" for p in s.partners)), None)
+        andorra_rank = next((i for i, s in enumerate(scenarios) if any(p.country_code == "AD" for p in s.partners)), None)
+        assert andorra_rank is not None
+        if baseline_andorra is not None:
+            assert andorra_rank <= baseline_andorra
+
+    def test_add_copro_suggestions_ignore_selective_only_partner(self):
+        db = SessionLocal()
+        _add_andorra_convention(db)
+        project = _make_project(
+            shoot_locations=[ShootLocation(country="Spain", percent=100)],
+            director_nationalities=["Spain"],
+            producer_nationalities=["Spain"],
+        )
+        scenarios = generate_scenarios(project, db)
+        db.close()
+
+        assert scenarios
+        suggestion_countries = [s.country for s in scenarios[0].suggestions if s.suggestion_type == "add_copro"]
+        assert "Andorra" not in suggestion_countries
+
+    def test_quantified_partner_with_real_project_signal_still_surfaces(self):
+        db = SessionLocal()
+        _add_andorra_convention(db)
+        db.add(Incentive(
+            name="Portugal Production Incentive",
+            country_code="PT",
+            incentive_type="tax_credit",
+            rebate_percent=30.0,
+            rebate_applies_to="qualifying_spend",
+            eligible_formats=["feature_fiction"],
+            eligible_stages=["production"],
+            local_producer_required=False,
+            max_cap_currency="EUR",
+            source_url="https://example.com/pt",
+            source_description="Portugal source",
+        ))
+        db.commit()
+
+        project = _make_project(
+            shoot_locations=[ShootLocation(country="Spain", percent=100)],
+            director_nationalities=["Spain"],
+            producer_nationalities=["Spain"],
+            spend_allocations=[SpendAllocation(country="Portugal", amount=250_000, currency="EUR")],
+        )
+        scenarios = generate_scenarios(project, db)
+        db.close()
+
+        portugal = next((s for s in scenarios if any(p.country_code == "PT" for p in s.partners)), None)
+        assert portugal is not None
+        assert scenarios.index(portugal) < 5
+
+    def test_returns_results_even_when_only_low_signal_scenarios_exist(self):
+        db = SessionLocal()
+        db.query(MultilateralMember).delete()
+        db.query(Treaty).delete()
+        db.query(Incentive).delete()
+        db.add(Incentive(
+            name="Andorra Selective Film Aid",
+            country_code="AD",
+            incentive_type="fund",
+            rebate_percent=None,
+            selection_mode="selective",
+            eligible_formats=["feature_fiction"],
+            eligible_stages=["production"],
+            local_producer_required=True,
+            max_cap_currency="EUR",
+            source_url="https://example.com/andorra",
+            source_description="Andorra source",
+        ))
+        db.commit()
+
+        project = _make_project(
+            shoot_locations=[],
+            director_nationalities=[],
+            producer_nationalities=[],
+            production_company_countries=[],
+        )
+        scenarios = generate_scenarios(project, db)
+        db.close()
+
+        assert scenarios
+        assert any(any(p.country_code == "AD" for p in s.partners) for s in scenarios)
