@@ -163,6 +163,13 @@ class EligibleIncentive(BaseModel):
     country_name: str = ""
     region: Optional[str] = None
     incentive_type: str = ""
+    selection_mode: str = "automatic"
+    operator_type: str = "government"
+    application_status: str = "unknown"
+    application_note: Optional[str] = None
+    typical_award_amount: Optional[float] = None
+    typical_award_currency: Optional[str] = None
+    selective_fit_score: Optional[float] = None
     rebate_percent: Optional[float] = None
     requirements: list[Requirement] = Field(default_factory=list)
     benefit: Optional[IncentiveBenefit] = None

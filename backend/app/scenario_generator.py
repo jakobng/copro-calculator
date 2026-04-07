@@ -191,7 +191,7 @@ def _evaluate_country(
             ineligible_incs.append(inc)
 
     # Second pass: handle mutual exclusivity and fit
-    candidates.sort(key=lambda x: _candidate_sort_key(project, x["inc"], x["rebate_pct"]), reverse=True)
+    candidates.sort(key=lambda x: _candidate_sort_key(project, x["inc"], x["rebate_pct"], x["reqs"]), reverse=True)
 
     selected_names = set()
     excluded_names = set()
@@ -207,8 +207,10 @@ def _evaluate_country(
         if orientation and selected_orientations.get(orientation_key) not in (None, orientation):
             continue
 
-        counted_in_totals = _counts_toward_bankable_total(cand["reqs"])
+        is_selective = _is_selective_incentive(cand["inc"])
+        counted_in_totals = (not is_selective) and _counts_toward_bankable_total(cand["reqs"])
         counted_pct = cand["rebate_pct"] if counted_in_totals else 0.0
+        selective_fit_score = _selective_fit_score(project, cand["inc"], cand["reqs"]) if is_selective else None
 
         eligible.append(EligibleIncentive(
             name=cand["inc"].name,
@@ -216,11 +218,18 @@ def _evaluate_country(
             country_name=countries.display_name(cand["inc"].country_code),
             region=cand["inc"].region,
             incentive_type=cand["inc"].incentive_type,
+            selection_mode=getattr(cand["inc"], "selection_mode", "automatic"),
+            operator_type=getattr(cand["inc"], "operator_type", "government"),
+            application_status=getattr(cand["inc"], "application_status", "unknown"),
+            application_note=getattr(cand["inc"], "application_note", None),
+            typical_award_amount=getattr(cand["inc"], "typical_award_amount", None),
+            typical_award_currency=getattr(cand["inc"], "typical_award_currency", None),
+            selective_fit_score=selective_fit_score,
             rebate_percent=cand["inc"].rebate_percent,
             requirements=cand["reqs"],
             benefit=cand["benefit"],
             estimated_contribution_percent=counted_pct,
-            potential_contribution_percent=cand["rebate_pct"],
+            potential_contribution_percent=cand["rebate_pct"] if not is_selective else 0.0,
             counted_in_totals=counted_in_totals,
         ))
         total_pct += counted_pct
@@ -547,6 +556,58 @@ def _counts_toward_bankable_total(requirements: list[Requirement]) -> bool:
     return True
 
 
+def _is_selective_incentive(incentive: Incentive) -> bool:
+    return (getattr(incentive, "selection_mode", "automatic") or "automatic").lower() == "selective"
+
+
+def _project_stage_fit(project: ProjectInput, incentive: Incentive) -> float:
+    eligible_stages = incentive.eligible_stages or []
+    if not eligible_stages:
+        return 1.0
+    if project.stage in eligible_stages:
+        return 1.0
+    if any(stage in eligible_stages for stage in (project.stages or [])):
+        return 0.6
+    return 0.0
+
+
+def _selective_fit_score(project: ProjectInput, incentive: Incentive, requirements: list[Requirement]) -> float:
+    """Rank selective opportunities by fit rather than indicative cash amount."""
+    score = 0.0
+
+    score += 2.0  # format already hard-matched before this point
+    score += 3.0 * _project_stage_fit(project, incentive)
+
+    shoot_pct = _percent_in_country(project, incentive.country_code)
+    if incentive.region and any(req.category == "region" for req in requirements):
+        score += 0.5
+    elif shoot_pct > 0:
+        score += 2.0
+
+    if _project_has_local_ties(project, incentive.country_code):
+        score += 2.0
+    elif incentive.local_producer_required and project.willing_add_coproducer:
+        score += 1.0
+
+    if any(countries.resolve_or_keep(c).upper() == incentive.country_code.upper() for c in (project.open_to_copro_countries or [])):
+        score += 1.0
+
+    penalty_by_category = {
+        "budget": 1.0,
+        "spend": 1.0,
+        "shoot": 1.0,
+        "producer": 0.8,
+        "region": 0.8,
+        "cultural": 0.7,
+        "stage": 0.5,
+        "production": 0.5,
+    }
+    for req in requirements:
+        score -= penalty_by_category.get(req.category, 0.3)
+
+    return round(score, 2)
+
+
 def _project_has_local_ties(project: ProjectInput, country_code: str) -> bool:
     cc = country_code.upper()
     if _percent_in_country(project, cc) > 0:
@@ -585,8 +646,16 @@ def _incentive_market_orientation(incentive: Incentive) -> str | None:
     return None
 
 
-def _candidate_sort_key(project: ProjectInput, incentive: Incentive, rebate_pct: float) -> tuple[float, float]:
+def _candidate_sort_key(
+    project: ProjectInput,
+    incentive: Incentive,
+    rebate_pct: float,
+    requirements: list[Requirement] | None = None,
+) -> tuple[float, float]:
     """Higher is better. Bias toward incentives that fit the project's domestic/foreign posture."""
+    if _is_selective_incentive(incentive):
+        return (_selective_fit_score(project, incentive, requirements or []), rebate_pct)
+
     fit_score = 0.0
     orientation = _incentive_market_orientation(incentive)
     local_ties = _project_has_local_ties(project, incentive.country_code)

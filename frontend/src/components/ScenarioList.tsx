@@ -83,8 +83,47 @@ function incentiveLocationLabel(inc: EligibleIncentive) {
 }
 
 function incentiveHeadlineLabel(inc: EligibleIncentive) {
+  if (inc.selection_mode === 'selective') return 'SELECTIVE OPPORTUNITY'
   if (inc.rebate_percent) return `${inc.rebate_percent}% REBATE`
   return inc.incentive_type.replace(/_/g, ' ').toUpperCase()
+}
+
+function isSelectiveOpportunity(inc: EligibleIncentive) {
+  return inc.selection_mode === 'selective'
+}
+
+function selectiveFitLabel(inc: EligibleIncentive) {
+  const score = inc.selective_fit_score ?? 0
+  if (score >= 6) return 'Strong fit'
+  if (score >= 3) return 'Possible fit'
+  return 'Exploratory fit'
+}
+
+function operatorTypeLabel(operatorType: string) {
+  return operatorType.replace(/_/g, ' ')
+}
+
+function applicationStatusLabel(status: string) {
+  if (status === 'rolling') return 'rolling calls'
+  return status
+}
+
+function selectiveAmountInfo(inc: EligibleIncentive, currency: string) {
+  if (inc.typical_award_amount && inc.typical_award_currency) {
+    return {
+      label: 'Typical award',
+      value: fmt(inc.typical_award_amount, inc.typical_award_currency),
+    }
+  }
+
+  if (incentiveAmount(inc) > 0) {
+    return {
+      label: 'Indicative only',
+      value: fmt(inc.benefit?.benefit_amount || 0, inc.benefit?.benefit_currency || currency),
+    }
+  }
+
+  return null
 }
 
 function countryAliases(countryCode: string, countryName: string) {
@@ -1311,9 +1350,11 @@ function ScenarioCard({
   const [showContext, setShowContext] = useState(false)
 
   const allIncentives = scenario.partners.flatMap((p) => p.eligible_incentives)
-  const confirmedIncentives = allIncentives.filter((inc) => incentiveAmount(inc) > 0 && inc.counted_in_totals)
-  const conditionalIncentives = allIncentives.filter((inc) => incentiveAmount(inc) > 0 && !inc.counted_in_totals)
-  const strategicFunds = allIncentives.filter((inc) => incentiveAmount(inc) <= 0)
+  const confirmedIncentives = allIncentives.filter((inc) => !isSelectiveOpportunity(inc) && incentiveAmount(inc) > 0 && inc.counted_in_totals)
+  const conditionalIncentives = allIncentives.filter((inc) => !isSelectiveOpportunity(inc) && incentiveAmount(inc) > 0 && !inc.counted_in_totals)
+  const strategicFunds = [...allIncentives]
+    .filter((inc) => isSelectiveOpportunity(inc) || incentiveAmount(inc) <= 0)
+    .sort((a, b) => (b.selective_fit_score || 0) - (a.selective_fit_score || 0))
 
   const confirmedTotal = scenario.estimated_total_financing_amount
   const conditionalTotal = scenario.estimated_conditional_financing_amount
@@ -1412,7 +1453,8 @@ function ScenarioCard({
 
         {strategicFunds.length > 0 && (
           <div className="space-y-2">
-            <p className="text-[10px] font-black uppercase tracking-widest text-violet-700">Funds To Explore</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-violet-700">Selective Opportunities</p>
+            <p className="text-xs text-neutral-500">Discretionary funds and strategic programmes that match the project, but are not counted in headline financing totals.</p>
             <div className="grid gap-2">
               {strategicFunds.map((inc, i) => (
                 <IncentiveCard
@@ -1547,6 +1589,7 @@ function IncentiveCard({
         ? 'text-sky-700'
         : 'text-violet-700'
   const [open, setOpen] = useState(false)
+  const selectiveAmount = isSelectiveOpportunity(inc) ? selectiveAmountInfo(inc, currency) : null
 
   return (
     <div className="border border-neutral-200">
@@ -1560,12 +1603,20 @@ function IncentiveCard({
         </div>
         <div className="flex shrink-0 items-center gap-4 text-right">
           <div>
-            {incentiveAmount(inc) > 0 && (
+            {isSelectiveOpportunity(inc) && selectiveAmount && (
+              <span className={`block text-lg font-bold ${amountColor}`}>{selectiveAmount.value}</span>
+            )}
+            {!isSelectiveOpportunity(inc) && incentiveAmount(inc) > 0 && (
               <span className={`block text-lg font-bold ${amountColor}`}>+{fmt(inc.benefit?.benefit_amount || 0, inc.benefit?.benefit_currency || currency)}</span>
             )}
             <span className="block text-xs font-bold text-neutral-400 mt-1">
               {incentiveHeadlineLabel(inc)}
             </span>
+            {isSelectiveOpportunity(inc) && selectiveAmount && (
+              <span className="block text-[10px] font-bold text-neutral-400 mt-1 uppercase tracking-widest">
+                {selectiveAmount.label}
+              </span>
+            )}
           </div>
           {open ? <ChevronUp className="h-4 w-4 text-neutral-400" /> : <ChevronDown className="h-4 w-4 text-neutral-400" />}
         </div>
@@ -1573,7 +1624,25 @@ function IncentiveCard({
 
       {open && (
         <div className="border-t border-neutral-100 px-5 pb-5 pt-1">
+          {isSelectiveOpportunity(inc) && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              <span className="px-2 py-1 text-[10px] font-black uppercase tracking-widest bg-violet-50 text-violet-700 border border-violet-200">
+                {selectiveFitLabel(inc)}
+              </span>
+              <span className="px-2 py-1 text-[10px] font-black uppercase tracking-widest bg-neutral-100 text-neutral-600 border border-neutral-200">
+                {operatorTypeLabel(inc.operator_type)}
+              </span>
+              <span className="px-2 py-1 text-[10px] font-black uppercase tracking-widest bg-neutral-100 text-neutral-600 border border-neutral-200">
+                {applicationStatusLabel(inc.application_status)}
+              </span>
+            </div>
+          )}
           <p className="text-neutral-500 mt-3 max-w-xl">{inc.benefit?.benefit_explanation}</p>
+          {isSelectiveOpportunity(inc) && inc.application_note && (
+            <p className="text-xs text-neutral-500 mt-3 max-w-xl">
+              <span className="font-bold text-neutral-700">Application note:</span> {inc.application_note}
+            </p>
+          )}
           <CulturalTestControl
             inc={inc}
             project={project}

@@ -141,6 +141,13 @@ export interface EligibleIncentive {
   country_name: string
   region?: string
   incentive_type: string
+  selection_mode: string
+  operator_type: string
+  application_status: string
+  application_note?: string | null
+  typical_award_amount?: number | null
+  typical_award_currency?: string | null
+  selective_fit_score?: number | null
   rebate_percent?: number
   requirements: Requirement[]
   benefit?: IncentiveBenefit | null

@@ -9,6 +9,7 @@ from app.scenario_generator import generate_scenarios
 @pytest.fixture(autouse=True)
 def setup_db():
     """Create tables and seed minimal test data for each test."""
+    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
 
@@ -61,6 +62,42 @@ def setup_db():
         max_cap_currency="EUR",
         source_url="https://example.com/france",
         source_description="Test source",
+    ))
+    db.add(Incentive(
+        name="Spain Foundation Fund",
+        country_code="ES",
+        incentive_type="fund",
+        rebate_percent=40.0,
+        rebate_applies_to="qualifying_spend",
+        selection_mode="selective",
+        operator_type="foundation",
+        application_status="open",
+        application_note="Spring round",
+        typical_award_amount=250_000,
+        typical_award_currency="EUR",
+        eligible_formats=["feature_fiction", "documentary"],
+        eligible_stages=["production"],
+        local_producer_required=False,
+        max_cap_currency="EUR",
+        source_url="https://example.com/es-foundation",
+        source_description="Selective fund source",
+    ))
+    db.add(Incentive(
+        name="Spain Selective Post Fund",
+        country_code="ES",
+        incentive_type="fund",
+        rebate_percent=None,
+        selection_mode="selective",
+        operator_type="market",
+        application_status="rolling",
+        application_note="Rolling selection",
+        eligible_formats=["feature_fiction", "documentary"],
+        eligible_stages=["production"],
+        local_producer_required=False,
+        post_production_local_required=True,
+        max_cap_currency="EUR",
+        source_url="https://example.com/es-market",
+        source_description="Selective market source",
     ))
 
     # Add a treaty
@@ -292,6 +329,50 @@ class TestDocumentaryProjects:
 
 
 class TestScenarioPresentationSafeguards:
+    def test_selective_fund_stays_visible_but_out_of_totals(self):
+        db = SessionLocal()
+        project = _make_project(
+            shoot_locations=[ShootLocation(country="Spain", percent=100)],
+            director_nationalities=["Spain"],
+            producer_nationalities=[],
+            production_company_countries=[],
+        )
+        scenarios = generate_scenarios(project, db)
+        db.close()
+
+        spain_scenarios = [s for s in scenarios if any(p.country_code == "ES" for p in s.partners)]
+        assert spain_scenarios
+        top = spain_scenarios[0]
+        selective = [
+            inc for p in top.partners for inc in p.eligible_incentives
+            if inc.name == "Spain Foundation Fund"
+        ]
+        assert selective
+        assert selective[0].selection_mode == "selective"
+        assert selective[0].counted_in_totals is False
+        assert selective[0].estimated_contribution_percent == 0
+        assert selective[0].potential_contribution_percent == 0
+        assert top.estimated_total_financing_percent < 40
+
+    def test_selective_funds_rank_by_fit(self):
+        db = SessionLocal()
+        project = _make_project(
+            shoot_locations=[ShootLocation(country="Spain", percent=100)],
+            director_nationalities=["Spain"],
+            producer_nationalities=[],
+            production_company_countries=[],
+            post_production_country=None,
+            post_flexible=False,
+        )
+        scenarios = generate_scenarios(project, db)
+        db.close()
+
+        spain_scenarios = [s for s in scenarios if any(p.country_code == "ES" for p in s.partners)]
+        assert spain_scenarios
+        spain_partner = next(p for p in spain_scenarios[0].partners if p.country_code == "ES")
+        selective_names = [inc.name for inc in spain_partner.eligible_incentives if inc.selection_mode == "selective"]
+        assert selective_names.index("Spain Foundation Fund") < selective_names.index("Spain Selective Post Fund")
+
     def test_conditional_incentive_not_counted_in_headline_total(self):
         db = SessionLocal()
         project = _make_project(
@@ -421,7 +502,7 @@ class TestScenarioPresentationSafeguards:
             near_miss_names = {nm.incentive_name for nm in scenario.near_misses}
             assert eligible_names.isdisjoint(near_miss_names)
 
-    def test_regional_incentive_requires_manual_confirmation(self):
+    def test_regional_incentive_requires_explicit_region_selection(self):
         db = SessionLocal()
         db.add(Incentive(
             name="Regional Spain Fund",
@@ -457,5 +538,4 @@ class TestScenarioPresentationSafeguards:
             for inc in partner.eligible_incentives
             if inc.name == "Regional Spain Fund"
         ]
-        assert regional_incentives
-        assert any(any(req.category == "region" for req in inc.requirements) for inc in regional_incentives)
+        assert not regional_incentives

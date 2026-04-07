@@ -146,6 +146,11 @@ _CACHE_TTL_SECONDS = 86400  # 24 hours
 _CACHE_FILE = os.path.join(os.path.dirname(__file__), "..", "exchange_rates_cache.json")
 
 
+def _is_selective_programme(incentive: Incentive) -> bool:
+    """Return True when a programme should be surfaced as discretionary/selective."""
+    return (getattr(incentive, "selection_mode", "automatic") or "automatic").lower() == "selective"
+
+
 def _fetch_live_rates() -> dict[str, float] | None:
     """Fetch latest EUR-base rates from frankfurter.app (ECB data). Returns None on failure."""
     try:
@@ -789,6 +794,9 @@ def check_incentive_eligibility(
             f"{criteria} {calc_notes} "
             f"This is only a planning estimate, not a guaranteed award."
         )
+        if _is_selective_programme(incentive):
+            explanation += " This programme is selective, so the indicative amount is not counted in headline financing totals."
+            calc_notes += " This programme is selective, so the indicative amount is not counted in headline financing totals."
 
         benefit = IncentiveBenefit(
             criteria_summary=criteria,
@@ -807,12 +815,16 @@ def check_incentive_eligibility(
         benefit_amount = 0.0
         estimated_rebate_pct = 0.0
         cap_note = ""
+        typical_note = ""
         if incentive.max_cap_amount:
             cap_proj = _convert(incentive.max_cap_amount, native_ccy, project.budget_currency)
             cap_note = f" If successful, the award can go up to about {currency} {cap_proj:,.0f}."
+        elif getattr(incentive, "typical_award_amount", None):
+            typical_proj = _convert(incentive.typical_award_amount, incentive.typical_award_currency or native_ccy, project.budget_currency)
+            typical_note = f" Typical published awards are around {currency} {typical_proj:,.0f}."
         fund_label = "selective grant" if incentive.incentive_type == "grant" else "selective fund"
         explanation = (
-            f"{criteria} This is a {fund_label}, not an automatic rebate, so the calculator does not assign it a cash value.{cap_note}"
+            f"{criteria} This is a {fund_label}, not an automatic rebate, so the calculator does not assign it a cash value.{cap_note}{typical_note}"
         )
         benefit = IncentiveBenefit(
             criteria_summary=criteria,

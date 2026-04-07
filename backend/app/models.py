@@ -48,6 +48,14 @@ class Incentive(Base):
     # Mutual Exclusivity (IDs or Names of incentives this cannot be stacked with)
     mutually_exclusive_with = Column(JSON, nullable=True) # ["Incentive Name 1", "Incentive Name 2"]
 
+    # How the programme should be surfaced in scenarios
+    selection_mode = Column(String, nullable=False, default="automatic")  # automatic, selective
+    operator_type = Column(String, nullable=False, default="government")  # government, foundation, festival, market, mixed, private
+    application_status = Column(String, nullable=False, default="unknown")  # open, closed, rolling, unknown
+    application_note = Column(String, nullable=True)  # short note on deadlines / windows
+    typical_award_amount = Column(Float, nullable=True)
+    typical_award_currency = Column(String(3), nullable=True)
+
     # Requirements
     local_producer_required = Column(Boolean, default=True)
     local_crew_min_percent = Column(Float, nullable=True)
