@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Scenario, EligibleIncentive, Requirement, ProjectInput, SourceReference } from '../types'
 import { SourceBadge } from './SourceLink'
-import { ChevronDown, ChevronUp, CheckCircle2, AlertCircle, ArrowRight, HelpCircle, RotateCcw } from 'lucide-react'
+import { ChevronDown, ChevronUp, AlertCircle, ArrowRight, HelpCircle, RotateCcw } from 'lucide-react'
 
 type DocOpenHandler = (documentId: number, annotationId?: number | null) => void
 type CulturalStatus = 'unknown' | 'pass' | 'fail'

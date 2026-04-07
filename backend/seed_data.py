@@ -212,6 +212,87 @@ incentives = [
               "VFX uplift: 40% on ≥€1M qualifying VFX spend (max €10M VFX per project).",
         last_verified="2026-03",
     ),
+    inc(
+        name="Screen Ireland Fiction: Irish Production",
+        country_code="IE",
+        incentive_type="fund",
+        rebate_percent=None,
+        max_cap_amount=1_300_000,
+        max_cap_currency="EUR",
+        eligible_formats=["feature_fiction", "animation"],
+        eligible_stages=["production"],
+        selection_mode="selective",
+        operator_type="government",
+        application_status="rolling",
+        application_note="Screen Ireland publishes standing production funding guidelines rather than fixed annual deadlines; new projects can apply through the production funding process on a rolling basis.",
+        source_url="https://www.screenireland.ie/funding/funding-process-and-procedure/production-funding-guidelines",
+        source_description="Screen Ireland - Production Funding Guidelines",
+        notes="Selective production loan for Irish feature films. "
+              "The current official guidelines provide up to €950,000 for budgets up to €3M, up to €1,200,000 for budgets over €3M and up to €7M, and up to €1,300,000 for budgets over €7M and up to €20M. "
+              "Irish producer, writer, and director attachments are required for maximum support, and all Screen Ireland investment must be spent on Irish personnel, goods, and services.",
+        local_producer_required=True,
+        last_verified="2026-04",
+    ),
+    inc(
+        name="Screen Ireland Fiction: Creative Co-Production",
+        country_code="IE",
+        incentive_type="fund",
+        rebate_percent=None,
+        max_cap_amount=350_000,
+        max_cap_currency="EUR",
+        eligible_formats=["feature_fiction", "animation"],
+        eligible_stages=["production", "post"],
+        selection_mode="selective",
+        operator_type="government",
+        application_status="rolling",
+        application_note="Screen Ireland publishes standing production funding guidelines rather than fixed annual deadlines; minority Irish creative co-productions can apply through the production funding process on a rolling basis.",
+        source_url="https://www.screenireland.ie/funding/funding-process-and-procedure/production-funding-guidelines",
+        source_description="Screen Ireland - Production Funding Guidelines",
+        notes="Selective minority co-production loan for live-action or animated features with an Irish producer as minority co-producer. "
+              "The current official guidelines cap investment at €350,000 per project, with post-production-only support in the range of €150,000, and require a 1.5:1 admissible Irish expenditure ratio on Screen Ireland's investment.",
+        local_producer_required=True,
+        last_verified="2026-04",
+    ),
+    inc(
+        name="Screen Ireland Documentary Production: Feature Film",
+        country_code="IE",
+        incentive_type="fund",
+        rebate_percent=None,
+        max_cap_amount=250_000,
+        max_cap_currency="EUR",
+        eligible_formats=["documentary"],
+        eligible_stages=["production"],
+        selection_mode="selective",
+        operator_type="government",
+        application_status="rolling",
+        application_note="Screen Ireland publishes standing production funding guidelines rather than fixed annual deadlines; documentary feature production applications are handled on a rolling basis.",
+        source_url="https://www.screenireland.ie/funding/funding-process-and-procedure/production-funding-guidelines",
+        source_description="Screen Ireland - Production Funding Guidelines",
+        notes="Selective production loan for cinematic feature-length documentaries. "
+              "The current official guidelines provide up to 65% of budget with Screen Ireland investment capped at €250,000 per project, with optional enhanced funding of up to €25,000 for eligible Irish female directing talent.",
+        local_producer_required=True,
+        last_verified="2026-04",
+    ),
+    inc(
+        name="Screen Ireland Documentary: Creative Co-Production",
+        country_code="IE",
+        incentive_type="fund",
+        rebate_percent=None,
+        max_cap_amount=150_000,
+        max_cap_currency="EUR",
+        eligible_formats=["documentary"],
+        eligible_stages=["production"],
+        selection_mode="selective",
+        operator_type="government",
+        application_status="rolling",
+        application_note="Screen Ireland publishes standing production funding guidelines rather than fixed annual deadlines; minority Irish documentary co-productions can apply through the production funding process on a rolling basis.",
+        source_url="https://www.screenireland.ie/funding/funding-process-and-procedure/production-funding-guidelines",
+        source_description="Screen Ireland - Production Funding Guidelines",
+        notes="Selective minority co-production loan for cinematic feature documentaries where the Irish producer is the minority co-producer. "
+              "The current official guidelines allow up to 65% of budget with Screen Ireland investment capped at €150,000 per project.",
+        local_producer_required=True,
+        last_verified="2026-04",
+    ),
 
     # -------------------------------------------------------------------------
     # GERMANY
@@ -608,15 +689,34 @@ incentives = [
         name="Australia Location Offset",
         country_code="AU",
         incentive_type="tax_credit",
-        rebate_percent=16.5,
+        rebate_percent=30.0,
         max_cap_currency="AUD",
-        min_qualifying_spend=15_000_000,
+        min_qualifying_spend=20_000_000,
         eligible_formats=["feature_fiction", "documentary", "series"],
-        source_url="https://www.screenaustralia.gov.au/funding-and-support/producer-offset/location-and-pdv-offsets",
-        source_description="Screen Australia — Location Offset",
+        source_url="https://www.screenaustralia.gov.au/getmedia/d7f89ad4-5b72-44bb-87df-163011edccc2/Australia-Locations%2C-Incentives%2C-PostVFX-and-Co-producing-Partners.pdf?ext=.pdf",
+        source_description="Screen Australia / Ausfilm - Australia: Talent, Locations, Post/VFX and Co-production Partners (2025/2026 summary)",
         clause_reference="s.376-15, Income Tax Assessment Act 1997 (Cth)",
-        notes="16.5% of qualifying Australian production expenditure (QAPE). "
-              "Min AUD $15M QAPE. Screen Australia's current material distinguishes this statutory offset from the Producer Offset and earlier policy debates about a 30% location rate.",
+        notes="30% refundable tax offset on qualifying Australian production expenditure (QAPE). "
+              "Current federal guidance sets a minimum AUD$20M QAPE threshold in Australia and, for television series, an average Australian spend of at least AUD$1.5M per finished hour. "
+              "The offset is mutually exclusive with the Producer Offset and PDV Offset.",
+        local_producer_required=False,
+        last_verified="2026-04",
+    ),
+    inc(
+        name="Australia PDV Offset",
+        country_code="AU",
+        incentive_type="tax_credit",
+        rebate_percent=30.0,
+        max_cap_currency="AUD",
+        min_qualifying_spend=500_000,
+        eligible_formats=["feature_fiction", "documentary", "series", "animation"],
+        source_url="https://www.screenaustralia.gov.au/getmedia/d7f89ad4-5b72-44bb-87df-163011edccc2/Australia-Locations%2C-Incentives%2C-PostVFX-and-Co-producing-Partners.pdf?ext=.pdf",
+        source_description="Screen Australia / Ausfilm - Australia: Talent, Locations, Post/VFX and Co-production Partners (2025/2026 summary)",
+        clause_reference="s.376-45, Income Tax Assessment Act 1997 (Cth)",
+        notes="30% refundable tax offset on Australian QAPE attributable to post, digital and visual effects work. "
+              "Current federal guidance sets a minimum AUD$500,000 QAPE threshold on Australian PDV services, with no expenditure cap or sunset. "
+              "Projects do not need to be shot in Australia to qualify.",
+        local_producer_required=False,
         last_verified="2026-04",
     ),
     inc(
@@ -658,6 +758,22 @@ incentives = [
         notes="20% cash grant on qualifying NZ expenditure. Additional 5% uplift remains available for invited productions. "
               "Current NZFC criteria show NZ$15M minimum QNZPE for feature film theatrical releases, NZ$4M for television and other non-feature formats, and NZ$250k for PDV. "
               "Significant economic benefit test applies.",
+        last_verified="2026-04",
+    ),
+    inc(
+        name="New Zealand Screen Production Rebate (New Zealand Productions)",
+        country_code="NZ",
+        incentive_type="cash_rebate",
+        rebate_percent=40.0,
+        max_cap_amount=6_000_000,
+        max_cap_currency="NZD",
+        eligible_formats=["feature_fiction", "documentary", "series", "animation"],
+        source_url="https://www.nzfilm.co.nz/incentives/rebate-nz-nzspr",
+        source_description="New Zealand Film Commission - Rebate for New Zealand Productions and 31 August 2023 criteria",
+        clause_reference="NZSPR Criteria for New Zealand Productions (31 August 2023)",
+        notes="40% cash rebate on Qualifying New Zealand Production Expenditure (QNZPE) for eligible New Zealand productions. "
+              "The current NZFC guidance says the standard rebate is capped at NZ$6M per production, with an additional rebate potentially available for productions with QNZPE between NZ$15M and NZ$50M, taking the total maximum support to NZ$20M. "
+              "Current public criteria show a NZ$2.5M QNZPE threshold for theatrical feature films.",
         last_verified="2026-04",
     ),
 
@@ -1987,7 +2103,32 @@ incentives = [
     ),
 
     # -------------------------------------------------------------------------
-    # AUSTRIA — Regional Funds
+    # BELGIUM — Brussels-Capital Region
+    # -------------------------------------------------------------------------
+    inc(
+        name="screen.brussels fund",
+        country_code="BE",
+        region="Brussels-Capital Region",
+        incentive_type="grant",
+        rebate_percent=None,
+        min_qualifying_spend=250_000,
+        min_qualifying_spend_documentary=75_000,
+        eligible_formats=["feature_fiction", "documentary", "series", "animation"],
+        selection_mode="selective",
+        operator_type="government",
+        application_status="unknown",
+        application_note="screen.brussels runs three funding sessions each year, in January, May, and September; submissions close at 17:00 Brussels time on the session deadline.",
+        source_url="https://screen.brussels/en/fund-your-project",
+        source_description="screen.brussels fund - Fund your project / Fund request guidance",
+        notes="Selective Brussels-Capital Region fund for projects applying through a Belgian production company established for at least one year. "
+              "Official guidance requires at least four cultural criteria, at least 50% confirmed financing for features, long-form series, documentaries and animation (60% for short-form or special formats), and minimum eligible Brussels expenditure of EUR 250,000 for features, series and animation or EUR 75,000 for documentaries. "
+              "Stackable with Belgian Tax Shelter and other Belgian regional mechanisms where costs are separated.",
+        stacking_allowed=True,
+        last_verified="2026-04",
+    ),
+
+    # -------------------------------------------------------------------------
+    # AUSTRIA â€” Regional Funds
     # -------------------------------------------------------------------------
     inc(
         name="Vienna Film Fund (Filmfonds Wien)",
@@ -2135,10 +2276,53 @@ incentives = [
     ),
 
     # -------------------------------------------------------------------------
-    # IRELAND — Regional
+    # DENMARK — Regional Funds
     # -------------------------------------------------------------------------
     inc(
-        name="WRAP Fund — Western Region Audiovisual Producers Fund",
+        name="Den Vestdanske Filmpulje",
+        country_code="DK",
+        region="Western Denmark",
+        incentive_type="grant",
+        rebate_percent=None,
+        eligible_formats=["feature_fiction", "documentary", "series", "animation"],
+        selection_mode="selective",
+        operator_type="government",
+        application_status="open",
+        application_note="Official 2026 application windows are 7 January-12 May 2026 and 12 August-13 November 2026; decisions are typically given within 4-6 weeks.",
+        source_url="https://filmpuljen.dk/stoette-ansoegning-og-aflevering/foer-du-soeger-stoette/ansoegningsperioder",
+        source_description="Den Vestdanske Filmpulje - 2026 application periods and support information",
+        notes="Regional public film fund supporting development and production of artistically ambitious films and series that strengthen production environments in western Denmark. "
+              "Official support pages state applicants must be professional producers or production companies with documented film-production experience as their main business. "
+              "Live-action short films are excluded from the rolling windows and instead handled through annual short-film calls.",
+        stacking_allowed=True,
+        last_verified="2026-04",
+    ),
+    inc(
+        name="FilmFyn",
+        country_code="DK",
+        region="Funen",
+        incentive_type="grant",
+        rebate_percent=10.0,
+        max_cap_currency="DKK",
+        eligible_formats=["feature_fiction", "documentary", "series"],
+        selection_mode="selective",
+        operator_type="government",
+        application_status="rolling",
+        application_note="FilmFyn's current support terms took effect on 6 June 2025; producers are expected to make early contact with FilmFyn before submitting projects.",
+        source_url="https://filmfyn.dk/wp-content/uploads/2025/06/FilmFyns-stottevilkar-gaeldende-pr.-6.-juni-2025.pdf",
+        source_description="FilmFyn support terms effective 6 June 2025 and 2024 annual overview",
+        notes="Regional public fund for development and production of Danish films and TV drama with a relevant Funen dimension. "
+              "FilmFyn's 2024 official overview says support typically represents about 10% of a production budget, with the fund aiming to back 6-8 feature films, 6-8 documentaries and 1-2 TV series per year, plus development support. "
+              "Current terms also allow support for international projects with a Danish minority producer.",
+        stacking_allowed=True,
+        last_verified="2026-04",
+    ),
+
+    # -------------------------------------------------------------------------
+    # IRELAND â€” Regional
+    # -------------------------------------------------------------------------
+    inc(
+        name="WRAP Fund â€” Western Region Audiovisual Producers Fund",
         country_code="IE",
         region="West of Ireland",
         incentive_type="grant",
@@ -5424,6 +5608,134 @@ incentives = [
               "Stackable with federal incentives. Competitive application.",
         stacking_allowed=True,
         last_verified="2026-03",
+    ),
+    inc(
+        name="Australia - Screen Queensland Production Attraction Strategy (PAS) Incentive",
+        country_code="AU",
+        region="Queensland",
+        incentive_type="grant",
+        rebate_percent=None,
+        min_qualifying_spend=3_500_000,
+        min_spend_currency="AUD",
+        eligible_formats=["feature_fiction", "documentary", "series"],
+        selection_mode="selective",
+        operator_type="government",
+        application_status="open",
+        application_note="Official 2026 board-linked deadlines are 7 January, 11 March, 6 May, 8 July, 9 September, and 28 October 2026.",
+        source_url="https://screenqueensland.com.au/investment-support/incentives/production-attraction/",
+        source_description="Screen Queensland - Production Attraction Strategy (PAS) Incentive",
+        notes="Selective Queensland incentive for footloose, fully financed projects. "
+              "Official eligibility requires at least AUD 3.5 million in qualifying Queensland production expenditure, evidence of genuine marketplace commitment, and no Queensland production start before approval. "
+              "Screen Queensland states the PAS may be combined with the federal Producer Offset or Location Offset.",
+        stacking_allowed=True,
+        local_producer_required=False,
+        last_verified="2026-04",
+    ),
+    inc(
+        name="Australia - Screen Queensland Screen Finance Fund",
+        country_code="AU",
+        region="Queensland",
+        incentive_type="fund",
+        rebate_percent=None,
+        max_cap_amount=850_000,
+        max_cap_currency="AUD",
+        eligible_formats=["feature_fiction", "documentary", "series"],
+        eligible_stages=["production"],
+        selection_mode="selective",
+        operator_type="government",
+        application_status="rolling",
+        application_note="Rolling fund; Screen Queensland states applications over AUD 250,000 are considered against board meeting dates, and smaller applications are also assessed in line with those dates.",
+        source_url="https://screenqueensland.com.au/investment-support/investments/finance-program/",
+        source_description="Screen Queensland - Screen Finance Fund",
+        notes="Selective production finance for projects with Queensland practitioners in key creative roles. "
+              "Official programme page says the fund can invest up to AUD 850,000 toward production and is offered as a percentage of Queensland Production Expenditure. "
+              "Projects are assessed against Screen Queensland's strategic priorities and are not automatically entitled to support.",
+        stacking_allowed=True,
+        last_verified="2026-04",
+    ),
+    inc(
+        name="Australia - South Australian Film Corporation Screen Production Fund",
+        country_code="AU",
+        region="South Australia",
+        incentive_type="grant",
+        rebate_percent=10.0,
+        max_cap_currency="AUD",
+        eligible_formats=["feature_fiction", "documentary", "series"],
+        eligible_stages=["production"],
+        selection_mode="selective",
+        operator_type="government",
+        application_status="rolling",
+        application_note="Applications are open year-round through the SAFC grants platform; projects seeking over AUD 1.1 million must apply at least six weeks before a board meeting.",
+        source_url="https://www.safilm.com.au/funding-programs/",
+        source_description="South Australian Film Corporation - Funding and Support Programs / Screen Production Fund",
+        notes="Selective South Australian production grant for narrative film, television and online projects intended for commercial release. "
+              "SAFC states producers may generally receive up to 10% of Qualifying South Australian Expenditure, subject to available funds, and that projects are expected to be substantially produced and post-produced in South Australia. "
+              "The fund can sit alongside the SA PDV Rebate where separate expenditure is claimed.",
+        stacking_allowed=True,
+        last_verified="2026-04",
+    ),
+    inc(
+        name="Australia - South Australian PDV Rebate",
+        country_code="AU",
+        region="South Australia",
+        incentive_type="cash_rebate",
+        rebate_percent=10.0,
+        min_qualifying_spend=250_000,
+        min_spend_currency="AUD",
+        eligible_formats=["feature_fiction", "documentary", "series", "animation"],
+        selection_mode="selective",
+        operator_type="government",
+        application_status="rolling",
+        application_note="Applications are made through the SAFC and should be submitted once the production schedule is reasonably certain; if also seeking SAFC production funding, both applications should be lodged at the same time.",
+        source_url="https://www.safilm.com.au/incentives/",
+        source_description="South Australian Film Corporation - Incentives page and SA PDV Rebate guidelines",
+        notes="Expenditure-based South Australian rebate for post-production, digital and visual effects work incurred and retained in the state. "
+              "Official SAFC guidance states the rebate is 10% of qualifying South Australian PDV expenditure, requires at least AUD 250,000 of qualifying spend, and can be combined with the federal 30% PDV Offset for a combined 40% rebate on eligible South Australian PDV work.",
+        stacking_allowed=True,
+        local_producer_required=False,
+        last_verified="2026-04",
+    ),
+    inc(
+        name="Australia - Western Australian Production Attraction Incentive",
+        country_code="AU",
+        region="Western Australia",
+        incentive_type="grant",
+        rebate_percent=10.0,
+        max_cap_currency="AUD",
+        eligible_formats=["feature_fiction", "documentary", "series"],
+        selection_mode="selective",
+        operator_type="government",
+        application_status="unknown",
+        application_note="Screenwest markets the incentive as an ongoing attraction programme; producers are directed to discuss projects with the programme manager and apply under the published guidelines.",
+        source_url="https://www.screenwest.com.au/funding-incentives/incentives/",
+        source_description="Screenwest - Incentives / WA Production Attraction Incentive",
+        notes="Selective Western Australian incentive for high-profile, market-driven footloose productions. "
+              "Screenwest states the incentive offers production funding of a minimum of 10% of Qualifying Western Australian Expenditure. "
+              "It is separate from, and may be complemented by, the Western Australian PDV and Regional Screen Fund mechanisms.",
+        stacking_allowed=True,
+        local_producer_required=False,
+        last_verified="2026-04",
+    ),
+    inc(
+        name="Australia - Western Australian PDV Incentive",
+        country_code="AU",
+        region="Western Australia",
+        incentive_type="cash_rebate",
+        rebate_percent=20.0,
+        min_qualifying_spend=100_000,
+        min_spend_currency="AUD",
+        eligible_formats=["feature_fiction", "documentary", "series", "animation"],
+        selection_mode="selective",
+        operator_type="government",
+        application_status="unknown",
+        application_note="As of 7 April 2026, Screenwest's published 2025 guidelines remain in force; producers apply through Screenwest before PDV work starts in Western Australia.",
+        source_url="https://www.screenwest.com.au/wp-content/uploads/2025/05/Western-Australian-Post-Digital-Visual-Effects-Incentive-Guidelines-2025.pdf",
+        source_description="Screenwest - Western Australian Post-Production, Digital & Visual Effects Incentive Guidelines (2025)",
+        notes="Western Australian PDV incentive for projects undertaking post-production, digital and visual effects work in the state regardless of where principal photography occurred. "
+              "Screenwest's current guidelines state the incentive is calculated at 20% of qualifying WA PDV expenditure, with a minimum AUD 100,000 spend threshold, and it can be combined with the federal Producer, Location and PDV offsets where eligible.",
+        stacking_allowed=True,
+        local_producer_required=False,
+        last_verified="2026-04",
     ),
 
     # -------------------------------------------------------------------------
