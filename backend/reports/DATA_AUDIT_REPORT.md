@@ -2,16 +2,13 @@
 Total Countries Analyzed: 196
 
 ## Summary
-- Countries with 0 incentives: 42
-- Countries with 1 incentive: 127
-- Countries with 3+ incentives: 15
+- Countries with 0 incentives: 39
+- Countries with 1 incentive: 117
+- Countries with 3+ incentives: 28
 
 ## Red Flag Countries (0 or 1 Incentive)
 | Code | Country | Num Incs | Avg Comp % |
 |---|---|---|---|
-| AM | Armenia | 0 | 0.0% |
-| AZ | Azerbaijan | 0 | 0.0% |
-| BY | Belarus | 0 | 0.0% |
 | LI | Liechtenstein | 0 | 0.0% |
 | MC | Monaco | 0 | 0.0% |
 | SM | San Marino | 0 | 0.0% |
@@ -51,10 +48,11 @@ Total Countries Analyzed: 196
 | GA | Gabon | 0 | 0.0% |
 | GH | Ghana | 0 | 0.0% |
 | ML | Mali | 0 | 0.0% |
+| AM | Armenia | 1 | 50.0% |
+| BY | Belarus | 1 | 50.0% |
 | BA | Bosnia and Herzegovina | 1 | 50.0% |
 | MD | Moldova | 1 | 50.0% |
 | AG | Antigua and Barbuda | 1 | 50.0% |
-| AR | Argentina | 1 | 50.0% |
 | BS | Bahamas | 1 | 50.0% |
 | BB | Barbados | 1 | 50.0% |
 | BZ | Belize | 1 | 50.0% |
@@ -65,7 +63,6 @@ Total Countries Analyzed: 196
 | GY | Guyana | 1 | 50.0% |
 | HT | Haiti | 1 | 50.0% |
 | HN | Honduras | 1 | 50.0% |
-| PE | Peru | 1 | 50.0% |
 | KN | Saint Kitts and Nevis | 1 | 50.0% |
 | LC | Saint Lucia | 1 | 50.0% |
 | VC | Saint Vincent and the Grenadines | 1 | 50.0% |
@@ -87,7 +84,6 @@ Total Countries Analyzed: 196
 | DZ | Algeria | 1 | 50.0% |
 | GQ | Equatorial Guinea | 1 | 50.0% |
 | SZ | Eswatini | 1 | 50.0% |
-| KE | Kenya | 1 | 50.0% |
 | LS | Lesotho | 1 | 50.0% |
 | MG | Madagascar | 1 | 50.0% |
 | MW | Malawi | 1 | 50.0% |
@@ -98,7 +94,7 @@ Total Countries Analyzed: 196
 | SS | South Sudan | 1 | 50.0% |
 | ZW | Zimbabwe | 1 | 50.0% |
 | AD | Andorra | 1 | 62.5% |
-| DK | Denmark | 1 | 62.5% |
+| AZ | Azerbaijan | 1 | 62.5% |
 | XK | Kosovo | 1 | 62.5% |
 | LU | Luxembourg | 1 | 62.5% |
 | CU | Cuba | 1 | 62.5% |
@@ -109,7 +105,6 @@ Total Countries Analyzed: 196
 | BH | Bahrain | 1 | 62.5% |
 | BD | Bangladesh | 1 | 62.5% |
 | BN | Brunei | 1 | 62.5% |
-| IN | India | 1 | 62.5% |
 | IL | Israel | 1 | 62.5% |
 | JO | Jordan | 1 | 62.5% |
 | KZ | Kazakhstan | 1 | 62.5% |
@@ -148,9 +143,6 @@ Total Countries Analyzed: 196
 | PA | Panama | 1 | 75.0% |
 | PY | Paraguay | 1 | 75.0% |
 | TT | Trinidad and Tobago | 1 | 75.0% |
-| SG | Singapore | 1 | 75.0% |
-| TW | Taiwan | 1 | 75.0% |
-| TH | Thailand | 1 | 75.0% |
 | FJ | Fiji | 1 | 75.0% |
 | MU | Mauritius | 1 | 75.0% |
 | MA | Morocco | 1 | 75.0% |
@@ -173,26 +165,41 @@ Total Countries Analyzed: 196
 | SI | Slovenia | 1 | 87.5% |
 | CH | Switzerland | 1 | 87.5% |
 | TR | Turkey | 1 | 87.5% |
-| UA | Ukraine | 1 | 87.5% |
-| JP | Japan | 1 | 87.5% |
-| KR | South Korea | 1 | 87.5% |
-| NZ | New Zealand | 1 | 87.5% |
-| ZA | South Africa | 1 | 87.5% |
 
 ## Tier 1 Critical Markets Audit
 | Code | Country | Num Incs | Avg Comp % |
 |---|---|---|---|
 | CN | China | 4 | 53.1% |
-| IN | India | 1 | 62.5% |
-| JP | Japan | 1 | 87.5% |
+| IN | India | 3 | 58.3% |
+| JP | Japan | 3 | 87.5% |
 | VN | Vietnam | 1 | 50.0% |
-| TH | Thailand | 1 | 75.0% |
+| TH | Thailand | 2 | 68.8% |
 | ID | Indonesia | 2 | 62.5% |
 | BR | Brazil | 3 | 66.7% |
-| MX | Mexico | 3 | 54.2% |
-| KR | South Korea | 1 | 87.5% |
+| MX | Mexico | 5 | 57.5% |
+| KR | South Korea | 3 | 75.0% |
 
 ## Detailed Inventory
+### Armenia (AM)
+Total Incentives: 1
+- **Armenia Free Economic Zone Incentives**
+  - Type: tax_exemption
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 50.0%
+  - Last Verified: 2026-04
+
+### Belarus (BY)
+Total Incentives: 1
+- **Belarus Preferential Investment Project Framework**
+  - Type: tax_exemption
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 50.0%
+  - Last Verified: 2026-04
+
 ### Bosnia and Herzegovina (BA)
 Total Incentives: 1
 - **Bosnia and Herzegovina Foundation for Cinematography Co-financing Calls**
@@ -201,7 +208,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: None
   - Completeness: 50.0%
-  - Last Verified: 2026-03
+  - Last Verified: 2026-04
 
 ### Moldova (MD)
 Total Incentives: 1
@@ -217,16 +224,6 @@ Total Incentives: 1
 Total Incentives: 1
 - **Antigua and Barbuda Film Commission Incentive Package**
   - Type: tax_exemption
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 50.0%
-  - Last Verified: 2026-03
-
-### Argentina (AR)
-Total Incentives: 1
-- **Argentina INCAA Fondo de Fomento Cinematografico**
-  - Type: fund
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
@@ -327,16 +324,6 @@ Total Incentives: 1
 Total Incentives: 1
 - **Honduras Investment Promotion and Protection Law Incentives**
   - Type: tax_exemption
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 50.0%
-  - Last Verified: 2026-03
-
-### Peru (PE)
-Total Incentives: 1
-- **Peru Economic Stimuli for Cinematographic and Audiovisual Activity**
-  - Type: fund
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
@@ -553,16 +540,6 @@ Total Incentives: 1
   - Completeness: 50.0%
   - Last Verified: 2026-03
 
-### Kenya (KE)
-Total Incentives: 1
-- **Kenya Film Camera Import Duty and VAT Waiver**
-  - Type: tax_exemption
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 50.0%
-  - Last Verified: 2026-03
-
 ### Lesotho (LS)
 Total Incentives: 1
 - **Lesotho Manufacturing and Investment Fiscal Incentives**
@@ -663,15 +640,15 @@ Total Incentives: 1
   - Completeness: 62.5%
   - Last Verified: 2026-03
 
-### Denmark (DK)
+### Azerbaijan (AZ)
 Total Incentives: 1
-- **Denmark West Danish Film Fund**
-  - Type: grant
-  - Rebate: None%
+- **Azerbaijan Investment Promotion Mechanism**
+  - Type: tax_exemption
+  - Rebate: 50.0%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Kosovo (XK)
 Total Incentives: 1
@@ -691,7 +668,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Cuba (CU)
 Total Incentives: 1
@@ -773,16 +750,6 @@ Total Incentives: 1
   - Completeness: 62.5%
   - Last Verified: 2026-03
 
-### India (IN)
-Total Incentives: 1
-- **India Incentive Scheme for Foreign Films and Official AV Coproductions**
-  - Type: cash_rebate
-  - Rebate: 30.0%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2026-03
-
 ### Israel (IL)
 Total Incentives: 1
 - **Israel Film Fund - Feature Film Investment Schemes**
@@ -791,7 +758,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2026-03
+  - Last Verified: 2026-04
 
 ### Jordan (JO)
 Total Incentives: 1
@@ -1091,7 +1058,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: None
   - Completeness: 75.0%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Iceland (IS)
 Total Incentives: 1
@@ -1101,7 +1068,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: None
   - Completeness: 75.0%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Colombia (CO)
 Total Incentives: 1
@@ -1111,7 +1078,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: None
   - Completeness: 75.0%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Costa Rica (CR)
 Total Incentives: 1
@@ -1163,36 +1130,6 @@ Total Incentives: 1
   - Completeness: 75.0%
   - Last Verified: 2026-03
 
-### Singapore (SG)
-Total Incentives: 1
-- **"Singapore On-Screen Fund (IMDA/STB**
-  - Type: fund
-  - Rebate: 30.0%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 75.0%
-  - Last Verified: 2026-03
-
-### Taiwan (TW)
-Total Incentives: 1
-- **Taiwan Subsidy for Foreign Motion Picture and TV Drama Production**
-  - Type: cash_rebate
-  - Rebate: 30.0%
-  - Min Budget: None
-  - Min Spend: 3000000
-  - Completeness: 75.0%
-  - Last Verified: 2026-03
-
-### Thailand (TH)
-Total Incentives: 1
-- **"Thailand Film Incentive Measures (Foreign Production Rebate**
-  - Type: cash_rebate
-  - Rebate: 15.0%
-  - Min Budget: None
-  - Min Spend: 50000000
-  - Completeness: 75.0%
-  - Last Verified: 2026-03
-
 ### Fiji (FJ)
 Total Incentives: 1
 - **Fiji Film Tax Rebate**
@@ -1221,7 +1158,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: None
   - Completeness: 75.0%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Albania (AL)
 Total Incentives: 1
@@ -1231,7 +1168,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: 50000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Bulgaria (BG)
 Total Incentives: 1
@@ -1241,7 +1178,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: 250000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-03
 
 ### Croatia (HR)
 Total Incentives: 1
@@ -1251,7 +1188,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: 150000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Cyprus (CY)
 Total Incentives: 1
@@ -1261,7 +1198,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: 200000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Estonia (EE)
 Total Incentives: 1
@@ -1271,7 +1208,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: 200000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Georgia (GE)
 Total Incentives: 1
@@ -1281,7 +1218,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: 200000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Greece (GR)
 Total Incentives: 1
@@ -1291,7 +1228,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: 100000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Latvia (LV)
 Total Incentives: 1
@@ -1301,7 +1238,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: 150000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Lithuania (LT)
 Total Incentives: 1
@@ -1311,7 +1248,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: 43000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Malta (MT)
 Total Incentives: 1
@@ -1321,7 +1258,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: 100000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Montenegro (ME)
 Total Incentives: 1
@@ -1331,7 +1268,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: 50000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### North Macedonia (MK)
 Total Incentives: 1
@@ -1341,27 +1278,27 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: 100000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Portugal (PT)
 Total Incentives: 1
-- **Portugal Cash Rebate for Film and TV**
+- **Portugal SCRI.PT Film Production Incentive**
   - Type: cash_rebate
   - Rebate: 30.0%
   - Min Budget: None
   - Min Spend: 500000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-03
 
 ### Romania (RO)
 Total Incentives: 1
 - **Romania Cash Rebate Programme**
   - Type: cash_rebate
-  - Rebate: 35.0%
+  - Rebate: 30.0%
   - Min Budget: None
   - Min Spend: 100000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-03
 
 ### Serbia (RS)
 Total Incentives: 1
@@ -1371,7 +1308,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: 300000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-03
 
 ### Slovakia (SK)
 Total Incentives: 1
@@ -1381,7 +1318,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: 150000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Slovenia (SI)
 Total Incentives: 1
@@ -1391,7 +1328,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: 150000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Switzerland (CH)
 Total Incentives: 1
@@ -1401,7 +1338,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: 200000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Turkey (TR)
 Total Incentives: 1
@@ -1411,57 +1348,7 @@ Total Incentives: 1
   - Min Budget: None
   - Min Spend: 500000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
-
-### Ukraine (UA)
-Total Incentives: 1
-- **Ukraine Cash Rebate for Audiovisual Production**
-  - Type: cash_rebate
-  - Rebate: 30.0%
-  - Min Budget: None
-  - Min Spend: 250000
-  - Completeness: 87.5%
-  - Last Verified: 2025-03
-
-### Japan (JP)
-Total Incentives: 1
-- **Japan JLOX+ Location Incentive Program**
-  - Type: cash_rebate
-  - Rebate: 50.0%
-  - Min Budget: None
-  - Min Spend: 500000000
-  - Completeness: 87.5%
   - Last Verified: 2026-03
-
-### South Korea (KR)
-Total Incentives: 1
-- **"South Korea Location Incentive (KOFIC**
-  - Type: cash_rebate
-  - Rebate: 25.0%
-  - Min Budget: None
-  - Min Spend: 400000000
-  - Completeness: 87.5%
-  - Last Verified: 2026-03
-
-### New Zealand (NZ)
-Total Incentives: 1
-- **"New Zealand Screen Production Grant (International**
-  - Type: cash_rebate
-  - Rebate: 20.0%
-  - Min Budget: None
-  - Min Spend: 15000000
-  - Completeness: 87.5%
-  - Last Verified: 2025-03
-
-### South Africa (ZA)
-Total Incentives: 1
-- **South Africa Foreign Film and Television Production Incentive**
-  - Type: cash_rebate
-  - Rebate: 25.0%
-  - Min Budget: None
-  - Min Spend: 12000000
-  - Completeness: 87.5%
-  - Last Verified: 2025-03
 
 ### Pakistan (PK)
 Total Incentives: 2
@@ -1480,22 +1367,22 @@ Total Incentives: 2
   - Completeness: 50.0%
   - Last Verified: 2026-03
 
-### Lebanon (LB)
+### Peru (PE)
 Total Incentives: 2
-- **Lebanon Ministry of Culture - Cinematographic Works Support**
+- **Peru Economic Stimuli for Cinematographic and Audiovisual Activity**
   - Type: fund
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 50.0%
   - Last Verified: 2026-03
-- **"AFAC Cinema Program (Lebanon-based regional fund**
+- **Peru Concurso de Proyectos de Documental 2026**
   - Type: fund
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2026-03
+  - Last Verified: 2026-04
 
 ### Indonesia (ID)
 Total Incentives: 2
@@ -1507,23 +1394,6 @@ Total Incentives: 2
   - Completeness: 62.5%
   - Last Verified: 2026-03
 - **Indonesia International Co-Production Matching Fund**
-  - Type: fund
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2026-03
-
-### Qatar (QA)
-Total Incentives: 2
-- **"Qatar Screen Production Incentive (QSPI**
-  - Type: cash_rebate
-  - Rebate: 40.0%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2026-03
-- **"Qatari Film Fund (Doha Film Institute**
   - Type: fund
   - Rebate: None%
   - Min Budget: None
@@ -1546,41 +1416,24 @@ Total Incentives: 2
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2026-03
+  - Last Verified: 2026-04
 
 ### Czech Republic (CZ)
 Total Incentives: 2
 - **Czech Republic Film Incentive Programme**
   - Type: cash_rebate
-  - Rebate: 30.0%
+  - Rebate: 25.0%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 75.0%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-03
 - **"Prague Audiovisual Endowment Fund (PAVF**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
-
-### Chile (CL)
-Total Incentives: 2
-- **"Chile IFI Audiovisual (High-Impact Foreign Investment Support**
-  - Type: cash_rebate
-  - Rebate: 30.0%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2026-03
-- **"Chile Fondo de Inversion Audiovisual (FIA**
-  - Type: fund
-  - Rebate: None%
-  - Min Budget: 50000000
-  - Min Spend: None
-  - Completeness: 75.0%
-  - Last Verified: 2026-03
+  - Last Verified: 2026-04
 
 ### Philippines (PH)
 Total Incentives: 2
@@ -1599,6 +1452,40 @@ Total Incentives: 2
   - Completeness: 62.5%
   - Last Verified: 2026-03
 
+### Singapore (SG)
+Total Incentives: 2
+- **"Singapore On-Screen Fund (IMDA/STB**
+  - Type: fund
+  - Rebate: 30.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-03
+- **SGIFF SEA-DOC Grant**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+
+### Thailand (TH)
+Total Incentives: 2
+- **"Thailand Film Incentive Measures (Foreign Production Rebate**
+  - Type: cash_rebate
+  - Rebate: 15.0%
+  - Min Budget: None
+  - Min Spend: 50000000
+  - Completeness: 75.0%
+  - Last Verified: 2026-03
+- **Purin Film Fund - Production Fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+
 ### Finland (FI)
 Total Incentives: 2
 - **Finland Production Incentive**
@@ -1607,89 +1494,161 @@ Total Incentives: 2
   - Min Budget: None
   - Min Spend: 150000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **"North Finland Film Commission (POEM/Business Oulu**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
-### Ireland (IE)
+### Ukraine (UA)
 Total Incentives: 2
-- **Ireland Section 481 Film Tax Credit**
-  - Type: tax_credit
-  - Rebate: 32.0%
-  - Min Budget: None
-  - Min Spend: 125000
-  - Completeness: 87.5%
-  - Last Verified: 2025-03
-- **WRAP Fund — Western Region Audiovisual Producers Fund**
-  - Type: grant
+- **European Solidarity Fund for Ukrainian Films**
+  - Type: fund
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
-
-### Netherlands (NL)
-Total Incentives: 2
-- **Netherlands Film Production Incentive**
+  - Last Verified: 2026-04
+- **Ukraine Cash Rebate for Audiovisual Production**
   - Type: cash_rebate
-  - Rebate: 35.0%
-  - Min Budget: 1000000
-  - Min Spend: 150000
-  - Completeness: 100.0%
-  - Last Verified: 2025-03
-- **Netherlands Film Fund — Regional Support**
-  - Type: grant
-  - Rebate: None%
+  - Rebate: 25.0%
   - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Min Spend: 250000
+  - Completeness: 87.5%
+  - Last Verified: 2026-03
 
-### Australia (AU)
+### Taiwan (TW)
 Total Incentives: 2
-- **Australia Location Offset**
-  - Type: tax_credit
+- **Taiwan Subsidy for Foreign Motion Picture and TV Drama Production**
+  - Type: cash_rebate
   - Rebate: 30.0%
+  - Min Budget: None
+  - Min Spend: 3000000
+  - Completeness: 75.0%
+  - Last Verified: 2026-03
+- **TAICCA Creative Content Development Program - Documentary**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: 0
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-04
+
+### New Zealand (NZ)
+Total Incentives: 2
+- **"New Zealand Screen Production Grant (International**
+  - Type: cash_rebate
+  - Rebate: 20.0%
   - Min Budget: None
   - Min Spend: 15000000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
-- **Australia Producer Offset**
-  - Type: tax_credit
+  - Last Verified: 2026-04
+- **"New Zealand Screen Production Rebate (New Zealand Productions**
+  - Type: cash_rebate
   - Rebate: 40.0%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 75.0%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
-### Mexico (MX)
+### Argentina (AR)
 Total Incentives: 3
-- **Mexico EFICINE 189**
-  - Type: tax_credit
+- **Argentina INCAA Fondo de Fomento Cinematografico**
+  - Type: fund
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 50.0%
   - Last Verified: 2026-03
-- **"Mexico Federal Stimulus for Cinematic and Audiovisual Production (2026 Decree**
-  - Type: tax_credit
+- **Argentina Concurso de Largometrajes: Ficción y Documental - 1er Llamado 2026**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Argentina Concurso de Postproduccion 2026**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+
+### India (IN)
+Total Incentives: 3
+- **India Incentive Scheme for Foreign Films and Official AV Coproductions**
+  - Type: cash_rebate
   - Rebate: 30.0%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
   - Last Verified: 2026-03
-- **"Mexico FOCINE (Fomento al Cine Mexicano**
+- **India Maharashtra Film Subsidy Scheme**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 50.0%
   - Last Verified: 2026-03
+- **India Rajasthan Film Tourism Promotion Policy Subsidy**
+  - Type: cash_rebate
+  - Rebate: 30.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-03
+
+### Lebanon (LB)
+Total Incentives: 3
+- **Lebanon Ministry of Culture - Cinematographic Works Support**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 50.0%
+  - Last Verified: 2026-03
+- **"AFAC Cinema Program (Lebanon-based regional fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **AFAC Documentary Film Program**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+
+### Qatar (QA)
+Total Incentives: 3
+- **"Qatar Screen Production Incentive (QSPI**
+  - Type: cash_rebate
+  - Rebate: 40.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-03
+- **"Qatari Film Fund (Doha Film Institute**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Doha Film Institute Grants Programme**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
 
 ### Sweden (SE)
 Total Incentives: 3
@@ -1699,21 +1658,21 @@ Total Incentives: 3
   - Min Budget: None
   - Min Spend: None
   - Completeness: 75.0%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **"Film i Väst (West Sweden Film Fund**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **Film Stockholm**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Brazil (BR)
 Total Incentives: 3
@@ -1739,6 +1698,30 @@ Total Incentives: 3
   - Completeness: 75.0%
   - Last Verified: 2026-03
 
+### Chile (CL)
+Total Incentives: 3
+- **"Chile IFI Audiovisual (High-Impact Foreign Investment Support**
+  - Type: cash_rebate
+  - Rebate: 30.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-03
+- **"Chile Fondo de Inversion Audiovisual (FIA**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: 50000000
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-03
+- **Chile Fondo Audiovisual 2026 - Largometraje Documental**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+
 ### Poland (PL)
 Total Incentives: 3
 - **Poland Cash Rebate Programme**
@@ -1747,45 +1730,69 @@ Total Incentives: 3
   - Min Budget: None
   - Min Spend: 1000000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **Łódź Film Fund**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **Mazovia Warsaw Film Fund**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
-### Norway (NO)
+### South Korea (KR)
 Total Incentives: 3
-- **Norway Incentive Scheme for International Film and TV**
+- **"South Korea Location Incentive (KOFIC**
   - Type: cash_rebate
   - Rebate: 25.0%
-  - Min Budget: 25000000
-  - Min Spend: 2000000
+  - Min Budget: None
+  - Min Spend: 400000000
+  - Completeness: 87.5%
+  - Last Verified: 2026-03
+- **Seoul Film Commission Location Incentive**
+  - Type: cash_rebate
+  - Rebate: 30.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-03
+- **"Asian Network of Documentary (AND**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+
+### Japan (JP)
+Total Incentives: 3
+- **Japan JLOX+ Location Incentive Program**
+  - Type: cash_rebate
+  - Rebate: 50.0%
+  - Min Budget: None
+  - Min Spend: 500000000
+  - Completeness: 87.5%
+  - Last Verified: 2026-03
+- **Tokyo International Content Production Support Program Grant**
+  - Type: grant
+  - Rebate: 50.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-04
+- **Fukuoka City Location Incentive Funding**
+  - Type: grant
+  - Rebate: 50.0%
+  - Min Budget: 100000000
+  - Min Spend: 10000000
   - Completeness: 100.0%
-  - Last Verified: 2025-03
-- **"Arctic Film Norway (formerly Nordnorsk Filmsenter**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **"Vestnorsk Filmsenter (Western Norway Film Fund**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### China (CN)
 Total Incentives: 4
@@ -1818,153 +1825,604 @@ Total Incentives: 4
   - Completeness: 62.5%
   - Last Verified: 2026-03
 
-### United Kingdom (GB)
+### Kenya (KE)
 Total Incentives: 4
-- **"UK Audio-Visual Expenditure Credit (AVEC**
-  - Type: tax_credit
-  - Rebate: 34.0%
+- **Kenya Film Camera Import Duty and VAT Waiver**
+  - Type: tax_exemption
+  - Rebate: None%
   - Min Budget: None
   - Min Spend: None
-  - Completeness: 75.0%
-  - Last Verified: 2025-03
-- **Screen Scotland Production Growth Fund**
+  - Completeness: 50.0%
+  - Last Verified: 2026-03
+- **Docubox Funding**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Documentary Africa RRI Startup Grants**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **Ffilm Cymru Wales Production Fund**
+  - Last Verified: 2026-04
+- **NTD Doc Series**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **Northern Ireland Screen Fund**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 
 ### Austria (AT)
 Total Incentives: 4
 - **"Austria FISA+ (Film Location Austria Incentive**
   - Type: grant
-  - Rebate: 35.0%
+  - Rebate: 30.0%
   - Min Budget: None
   - Min Spend: 150000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **"Vienna Film Fund (Filmfonds Wien**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **Cine Tirol Production Incentive**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **Salzburg Film Fund**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
+
+### Denmark (DK)
+Total Incentives: 4
+- **Denmark Production Rebate**
+  - Type: cash_rebate
+  - Rebate: 25.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-03
+- **Denmark West Danish Film Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Den Vestdanske Filmpulje**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **FilmFyn**
+  - Type: grant
+  - Rebate: 10.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-04
+
+### South Africa (ZA)
+Total Incentives: 4
+- **South Africa Foreign Film and Television Production Incentive**
+  - Type: cash_rebate
+  - Rebate: 25.0%
+  - Min Budget: None
+  - Min Spend: 12000000
+  - Completeness: 87.5%
+  - Last Verified: 2026-04
+- **National Film and Video Foundation Production and Development Funding Call**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **National Film and Video Foundation / Netherlands Film Fund: Thuthuka Co-Development Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **South Africa Domestic Film and Television Production Incentive**
+  - Type: cash_rebate
+  - Rebate: 35.0%
+  - Min Budget: None
+  - Min Spend: 1500000
+  - Completeness: 75.0%
+  - Last Verified: 2026-03
+
+### Mexico (MX)
+Total Incentives: 5
+- **Mexico EFICINE 189**
+  - Type: tax_credit
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 50.0%
+  - Last Verified: 2026-03
+- **"Mexico Federal Stimulus for Cinematic and Audiovisual Production (2026 Decree**
+  - Type: tax_credit
+  - Rebate: 30.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-03
+- **"Mexico FOCINE (Fomento al Cine Mexicano**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 50.0%
+  - Last Verified: 2026-03
+- **Mexico FOCINE Produccion de Largometrajes Documentales 2026**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Mexico Estimulo a la Escritura de Guion y Desarrollo de Proyectos - Documental 2026**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
 
 ### Belgium (BE)
-Total Incentives: 4
+Total Incentives: 5
 - **Belgium Tax Shelter**
   - Type: tax_shelter
   - Rebate: 42.0%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 75.0%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **"Wallimage Coproductions (Wallonia**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: 300000
   - Completeness: 75.0%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **"Screen Flanders (VAF Economic Fund**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **Centre du Cinéma — Fédération Wallonie-Bruxelles Film Fund**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
+- **screen.brussels fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: 250000
+  - Completeness: 75.0%
+  - Last Verified: 2026-04
 
-### United States (US)
+### Netherlands (NL)
 Total Incentives: 5
-- **US California Film and Television Tax Credit Program 4.0**
-  - Type: tax_credit
+- **Netherlands Film Production Incentive**
+  - Type: cash_rebate
   - Rebate: 35.0%
   - Min Budget: 1000000
-  - Min Spend: None
-  - Completeness: 75.0%
+  - Min Spend: 150000
+  - Completeness: 100.0%
   - Last Verified: 2026-03
-- **US Georgia Entertainment Industry Investment Act**
-  - Type: tax_credit
-  - Rebate: 20.0%
+- **Netherlands Film Fund — Regional Support**
+  - Type: grant
+  - Rebate: None%
   - Min Budget: None
-  - Min Spend: 500000
-  - Completeness: 75.0%
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Hubert Bals Fund - Script and Project Development Support**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **IDFA Bertha Fund - IBF Classic**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **IDFA Bertha Fund - IBF Europe Minority Co-production**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+
+### Ireland (IE)
+Total Incentives: 6
+- **Ireland Section 481 Film Tax Credit**
+  - Type: tax_credit
+  - Rebate: 32.0%
+  - Min Budget: None
+  - Min Spend: 125000
+  - Completeness: 87.5%
   - Last Verified: 2026-03
-- **US New York Film Production Tax Credit**
+- **Screen Ireland Fiction: Irish Production**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Screen Ireland Fiction: Creative Co-Production**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Screen Ireland Documentary Production: Feature Film**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Screen Ireland Documentary: Creative Co-Production**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **WRAP Fund â€” Western Region Audiovisual Producers Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+
+### Norway (NO)
+Total Incentives: 6
+- **Norway Incentive Scheme for International Film and TV**
+  - Type: cash_rebate
+  - Rebate: 25.0%
+  - Min Budget: 25000000
+  - Min Spend: 4000000
+  - Completeness: 100.0%
+  - Last Verified: 2026-04
+- **Norway Documentary Co-production Funding**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **"Arctic Film Norway (formerly Nordnorsk Filmsenter**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **"Vestnorsk Filmsenter (Western Norway Film Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Sørfond Grant**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Nordisk Film & TV Fond Documentary Top Financing**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+
+### Australia (AU)
+Total Incentives: 11
+- **Australia Location Offset**
   - Type: tax_credit
   - Rebate: 30.0%
+  - Min Budget: None
+  - Min Spend: 20000000
+  - Completeness: 87.5%
+  - Last Verified: 2026-04
+- **Australia PDV Offset**
+  - Type: tax_credit
+  - Rebate: 30.0%
+  - Min Budget: None
+  - Min Spend: 500000
+  - Completeness: 87.5%
+  - Last Verified: 2026-04
+- **Australia Producer Offset**
+  - Type: tax_credit
+  - Rebate: 40.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-04
+- **Australia - Made in NSW Fund**
+  - Type: grant
+  - Rebate: 10.0%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
   - Last Verified: 2026-03
-- **US New Jersey Film and Digital Media Tax Credit**
+- **"Australia - VICSCREEN Victorian Screen Incentive (VSI**
+  - Type: grant
+  - Rebate: 10.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-03
+- **"Australia - Screen Queensland Production Attraction Strategy (PAS**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: 3500000
+  - Completeness: 75.0%
+  - Last Verified: 2026-04
+- **Australia - Screen Queensland Screen Finance Fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Australia - South Australian Film Corporation Screen Production Fund**
+  - Type: grant
+  - Rebate: 10.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-04
+- **Australia - South Australian PDV Rebate**
+  - Type: cash_rebate
+  - Rebate: 10.0%
+  - Min Budget: None
+  - Min Spend: 250000
+  - Completeness: 87.5%
+  - Last Verified: 2026-04
+- **Australia - Western Australian Production Attraction Incentive**
+  - Type: grant
+  - Rebate: 10.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-04
+- **Australia - Western Australian PDV Incentive**
+  - Type: cash_rebate
+  - Rebate: 20.0%
+  - Min Budget: None
+  - Min Spend: 100000
+  - Completeness: 87.5%
+  - Last Verified: 2026-04
+
+### Spain (ES)
+Total Incentives: 12
+- **Spain Tax Incentive for Foreign Productions**
   - Type: tax_credit
   - Rebate: 30.0%
   - Min Budget: None
   - Min Spend: 1000000
-  - Completeness: 75.0%
-  - Last Verified: 2026-03
-- **US New Mexico Film Production Tax Credit**
+  - Completeness: 87.5%
+  - Last Verified: 2026-04
+- **Spain — Canary Islands Tax Incentive**
   - Type: tax_credit
-  - Rebate: 25.0%
+  - Rebate: 54.0%
+  - Min Budget: None
+  - Min Spend: 1000000
+  - Completeness: 87.5%
+  - Last Verified: 2026-04
+- **"Spain — Navarre Tax Incentive (Foral Regime**
+  - Type: tax_credit
+  - Rebate: 45.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-04
+- **"Spain — Basque Country Tax Incentive (Bizkaia Foral Regime**
+  - Type: tax_credit
+  - Rebate: 60.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-04
+- **"Spain — Catalonia Film Fund (ICEC**
+  - Type: grant
+  - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Spain — Madrid Film Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Spain — Andalusia Film Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **"Spain — Galicia Film Fund (AGADIC**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Spain — Balearic Islands Film Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **"Spain — Valencia Film Fund (IVC**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Spain — Castilla y León Film Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Ibermedia Co-production Grant**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+
+### Germany (DE)
+Total Incentives: 12
+- **"Germany DFFF (German Federal Film Fund**
+  - Type: grant
+  - Rebate: 30.0%
+  - Min Budget: 1000000
+  - Min Spend: None
+  - Completeness: 87.5%
+  - Last Verified: 2026-04
+- **"Germany GMPF (German Motion Picture Fund**
+  - Type: grant
+  - Rebate: 30.0%
+  - Min Budget: 5000000
+  - Min Spend: None
+  - Completeness: 87.5%
+  - Last Verified: 2026-04
+- **Medienboard Berlin-Brandenburg**
+  - Type: grant
+  - Rebate: 30.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 75.0%
   - Last Verified: 2026-03
+- **"FFF Bayern (FilmFernsehFonds Bayern**
+  - Type: grant
+  - Rebate: 30.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-03
+- **Film- und Medienstiftung NRW**
+  - Type: grant
+  - Rebate: 30.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-04
+- **MOIN Film Fund Hamburg Schleswig-Holstein**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **MFG Filmförderung Baden-Württemberg**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **HessenFilm und Medien**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **MDM Mitteldeutsche Medienförderung**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Nordmedia Film- und Mediengesellschaft**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **World Cinema Fund Classic**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: 200000
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-04
+- **World Cinema Fund Europe**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
 
 ### Canada (CA)
-Total Incentives: 7
+Total Incentives: 14
 - **"Canada CPTC (Canadian Film or Video Production Tax Credit**
   - Type: tax_credit
   - Rebate: 25.0%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 75.0%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **"Canada FISTC (Film or Video Production Services Tax Credit**
   - Type: tax_credit
   - Rebate: 16.0%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 75.0%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **"Ontario Film and Television Tax Credit (OFTTC**
   - Type: tax_credit
   - Rebate: 35.0%
@@ -2000,344 +2458,792 @@ Total Incentives: 7
   - Min Spend: None
   - Completeness: 62.5%
   - Last Verified: 2026-03
-
-### Germany (DE)
-Total Incentives: 10
-- **"Germany DFFF (German Federal Film Fund**
-  - Type: grant
-  - Rebate: 30.0%
-  - Min Budget: 1000000
+- **Hot Docs-Blue Ice Docs Fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
   - Min Spend: None
-  - Completeness: 87.5%
-  - Last Verified: 2025-03
-- **"Germany GMPF (German Motion Picture Fund**
-  - Type: grant
-  - Rebate: 25.0%
-  - Min Budget: 5000000
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Hot Docs-Slaight Family Fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
   - Min Spend: None
-  - Completeness: 87.5%
-  - Last Verified: 2025-03
-- **Medienboard Berlin-Brandenburg**
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Hot Docs CrossCurrents Canada Doc Fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Hot Docs Citizen Minutes Series 4**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Alter-Cine Foundation Documentary Film Grants**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **"FFF Bayern (FilmFernsehFonds Bayern**
-  - Type: grant
+  - Last Verified: 2026-04
+- **Rogers Documentary Fund**
+  - Type: fund
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **Film- und Medienstiftung NRW**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **MOIN Film Fund Hamburg Schleswig-Holstein**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **MFG Filmförderung Baden-Württemberg**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **HessenFilm und Medien**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **MDM Mitteldeutsche Medienförderung**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **Nordmedia Film- und Mediengesellschaft**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-
-### Spain (ES)
-Total Incentives: 11
-- **Spain Tax Incentive for Foreign Productions**
+  - Last Verified: 2026-04
+- **Quebec - SODEC Film and Television Tax Credit**
   - Type: tax_credit
-  - Rebate: 30.0%
-  - Min Budget: None
-  - Min Spend: 1000000
-  - Completeness: 87.5%
-  - Last Verified: 2025-03
-- **Spain — Canary Islands Tax Incentive**
-  - Type: tax_credit
-  - Rebate: 50.0%
-  - Min Budget: None
-  - Min Spend: 1000000
-  - Completeness: 87.5%
-  - Last Verified: 2025-03
-- **"Spain — Navarre Tax Incentive (Foral Regime**
-  - Type: tax_credit
-  - Rebate: 45.0%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 75.0%
-  - Last Verified: 2025-03
-- **"Spain — Basque Country Tax Incentive (Bizkaia Foral Regime**
-  - Type: tax_credit
-  - Rebate: 60.0%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 75.0%
-  - Last Verified: 2025-03
-- **"Spain — Catalonia Film Fund (ICEC**
-  - Type: grant
-  - Rebate: None%
+  - Rebate: 20.0%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **Spain — Madrid Film Fund**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **Spain — Andalusia Film Fund**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **"Spain — Galicia Film Fund (AGADIC**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **Spain — Balearic Islands Film Fund**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **"Spain — Valencia Film Fund (IVC**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **Spain — Castilla y León Film Fund**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-
-### France (FR)
-Total Incentives: 12
-- **"France TRIP (Tax Rebate for International Production**
-  - Type: tax_rebate
-  - Rebate: 30.0%
-  - Min Budget: None
-  - Min Spend: 250000
-  - Completeness: 87.5%
-  - Last Verified: 2025-03
-- **"France Crédit d'impôt Cinéma (domestic**
-  - Type: tax_credit
-  - Rebate: 25.0%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 75.0%
-  - Last Verified: 2025-03
-- **Île-de-France Film Commission Fund**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **"Région Sud (PACA**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **Auvergne-Rhône-Alpes Cinéma**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **Nouvelle-Aquitaine Film Fund**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **Occitanie Films Fund**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **Bretagne FACCA Film Fund**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **Hauts-de-France Film Fund**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **Grand Est Film Fund**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **Normandie Images Film Fund**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
-- **Corsica Film Fund**
-  - Type: grant
-  - Rebate: None%
-  - Min Budget: None
-  - Min Spend: None
-  - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-03
 
 ### Italy (IT)
-Total Incentives: 14
+Total Incentives: 15
 - **Italy Tax Credit for Foreign Productions**
   - Type: tax_credit
   - Rebate: 40.0%
   - Min Budget: None
   - Min Spend: 200000
   - Completeness: 87.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **Roma Lazio Film Commission Fund**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **Lombardy for Cinema Fund**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **Sicilia Film Commission Fund**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **Film Commission Torino Piemonte — FIP**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **Apulia Film Fund**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **Emilia-Romagna Film Commission Fund**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **Toscana Film Commission Fund**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **Veneto Film and Audiovisual Fund**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **Campania Film Commission Fund**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **Sardegna Film Commission — Large Production Fund**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **Calabria Film Commission Fund**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **FVG Film Commission Fund**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
 - **Trentino Film Fund**
   - Type: grant
   - Rebate: None%
   - Min Budget: None
   - Min Spend: None
   - Completeness: 62.5%
-  - Last Verified: 2025-03
+  - Last Verified: 2026-04
+- **TorinoFilmLab - TFL Co-Production Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+
+### France (FR)
+Total Incentives: 15
+- **"France TRIP (Tax Rebate for International Production**
+  - Type: tax_rebate
+  - Rebate: 30.0%
+  - Min Budget: None
+  - Min Spend: 250000
+  - Completeness: 87.5%
+  - Last Verified: 2026-04
+- **"France Crédit d'impôt Cinéma (domestic**
+  - Type: tax_credit
+  - Rebate: 25.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-04
+- **Île-de-France Film Commission Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **"Région Sud (PACA**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Auvergne-Rhône-Alpes Cinéma**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Nouvelle-Aquitaine Film Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Occitanie Films Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Bretagne FACCA Film Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Hauts-de-France Film Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Grand Est Film Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Normandie Images Film Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Corsica Film Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Docs Up Fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Aide aux cinémas du monde**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Eurimages Co-production Support**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+
+### United Kingdom (GB)
+Total Incentives: 27
+- **"UK Audio-Visual Expenditure Credit (AVEC**
+  - Type: tax_credit
+  - Rebate: 34.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-04
+- **BFI National Lottery Development Funding**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **BFI Filmmaking Fund - Discovery and Impact Feature Funding**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: 1000000
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-04
+- **BFI Doc Society Fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **BFI Doc Society RAD Fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **BFI Doc Society Made of Truth Short Film Fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **BFI NETWORK England short film funding**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **BFI NETWORK England: Early Development Fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **BFI NETWORK England feature treatment funding**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **"BFI Doc Society Short Film Fund (Made of Truth**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Screen Scotland Film Development and Production Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Screen Scotland Production Growth Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: 2000000
+  - Completeness: 75.0%
+  - Last Verified: 2026-04
+- **Take Three: North Star Shorts**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Take Three: Next Wave**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Take Three: The Bigger Picture**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Ffilm Cymru Wales Production Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Ffilm Cymru Wales Beacons: Short Film Funding**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Ffilm Cymru Wales Feature Film Development**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Northern Ireland Screen Development Funding**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Northern Ireland Screen Production Funding**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Northern Ireland Screen New Shorts Focus**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Northern Ireland Screen Short Film Call**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Screen Yorkshire Content Fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **The Whickers Film & TV Funding Award**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **One World Media Climate and Labour Film Grant**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **One World Media Global Health Film Grant**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **One World Media Amazon Film Grant**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+
+### United States (US)
+Total Incentives: 47
+- **US California Film and Television Tax Credit Program 4.0**
+  - Type: tax_credit
+  - Rebate: 35.0%
+  - Min Budget: 1000000
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-03
+- **US Georgia Entertainment Industry Investment Act**
+  - Type: tax_credit
+  - Rebate: 20.0%
+  - Min Budget: None
+  - Min Spend: 500000
+  - Completeness: 75.0%
+  - Last Verified: 2026-03
+- **US New York Film Production Tax Credit**
+  - Type: tax_credit
+  - Rebate: 30.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-03
+- **US New Jersey Film and Digital Media Tax Credit**
+  - Type: tax_credit
+  - Rebate: 30.0%
+  - Min Budget: None
+  - Min Spend: 1000000
+  - Completeness: 75.0%
+  - Last Verified: 2026-03
+- **US New Mexico Film Production Tax Credit**
+  - Type: tax_credit
+  - Rebate: 25.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-03
+- **"US Texas Moving Image Industry Incentive Program (TMIIIP**
+  - Type: grant
+  - Rebate: 5.0%
+  - Min Budget: None
+  - Min Spend: 250000
+  - Completeness: 75.0%
+  - Last Verified: 2026-03
+- **US Illinois Film Production Tax Credit**
+  - Type: tax_credit
+  - Rebate: 35.0%
+  - Min Budget: None
+  - Min Spend: 100000
+  - Completeness: 75.0%
+  - Last Verified: 2026-03
+- **US Connecticut Digital Media & Motion Picture Tax Credit**
+  - Type: tax_credit
+  - Rebate: 30.0%
+  - Min Budget: None
+  - Min Spend: 1000000
+  - Completeness: 75.0%
+  - Last Verified: 2026-03
+- **US Massachusetts Film Production Tax Credit**
+  - Type: tax_credit
+  - Rebate: 25.0%
+  - Min Budget: None
+  - Min Spend: 50000
+  - Completeness: 75.0%
+  - Last Verified: 2026-03
+- **US Pennsylvania Film Production Tax Credit**
+  - Type: tax_credit
+  - Rebate: 25.0%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-03
+- **Catapult Film Fund Development Grant**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Who Let The Docs Out - Coexistence Documentary Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Who Let The Docs Out - Automation & Humanity Documentary Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Sundance Institute Documentary Fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: 0
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-04
+- **Sundance Institute | Sandbox Fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Sundance Institute Documentary Short Fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Chicken & Egg Films - Research & Development Grant**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Ford Foundation JustFilms Open Call**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **SFFILM Rainin Grant**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: 0
+  - Min Spend: None
+  - Completeness: 75.0%
+  - Last Verified: 2026-04
+- **SFFILM Documentary Film Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **SFFILM Catapult Documentary Fellowship**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **SFFILM Sloan Science in Cinema Filmmaker Fellowship**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **SFFILM Sloan Stories of Science Development Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **SFFILM Cedar Road Iyagi Grant**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Film Independent Sloan Distribution Grant**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **ITVS Open Call**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **ITVS Development Fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **ITVS Diversity Development Fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **ITVS Incubator Fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **IDA Pare Lorentz Documentary Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **IDA Enterprise Documentary Fund**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **IDA Logan Elevate Grant**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **LEF Moving Image Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Jewish Story Partners Jury Grants**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Catapult Development Grant**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Catapult Research Grant**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Berkeley Film Foundation Documentary Grant Program**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Berkeley Film Foundation Student Documentary Grant**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Black Public Media Open Call**
+  - Type: fund
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Firelight Media Documentary Lab**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Ellis-Beauregard Foundation Documentary Film Award**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **AXS Film Fund**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Vision Maker Media Creative Shorts Fellowship**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **Austin Film Society Grant for Feature Films**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **North Texas Pioneer Film Award**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **AFS New Texas Voices Award**
+  - Type: grant
+  - Rebate: None%
+  - Min Budget: None
+  - Min Spend: None
+  - Completeness: 62.5%
+  - Last Verified: 2026-04
+- **US Louisiana Motion Picture Production Tax Credit**
+  - Type: tax_credit
+  - Rebate: 25.0%
+  - Min Budget: None
+  - Min Spend: 300000
+  - Completeness: 75.0%
+  - Last Verified: 2026-03

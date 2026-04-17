@@ -1,7 +1,4 @@
 Country Code,Country Name,Num Incentives,Avg Completeness %
-AM,Armenia,0,0.0
-AZ,Azerbaijan,0,0.0
-BY,Belarus,0,0.0
 LI,Liechtenstein,0,0.0
 MC,Monaco,0,0.0
 SM,San Marino,0,0.0
@@ -41,10 +38,11 @@ ET,Ethiopia,0,0.0
 GA,Gabon,0,0.0
 GH,Ghana,0,0.0
 ML,Mali,0,0.0
+AM,Armenia,1,50.0
+BY,Belarus,1,50.0
 BA,Bosnia and Herzegovina,1,50.0
 MD,Moldova,1,50.0
 AG,Antigua and Barbuda,1,50.0
-AR,Argentina,1,50.0
 BS,Bahamas,1,50.0
 BB,Barbados,1,50.0
 BZ,Belize,1,50.0
@@ -55,7 +53,6 @@ GT,Guatemala,1,50.0
 GY,Guyana,1,50.0
 HT,Haiti,1,50.0
 HN,Honduras,1,50.0
-PE,Peru,1,50.0
 KN,Saint Kitts and Nevis,1,50.0
 LC,Saint Lucia,1,50.0
 VC,Saint Vincent and the Grenadines,1,50.0
@@ -77,7 +74,6 @@ VU,Vanuatu,1,50.0
 DZ,Algeria,1,50.0
 GQ,Equatorial Guinea,1,50.0
 SZ,Eswatini,1,50.0
-KE,Kenya,1,50.0
 LS,Lesotho,1,50.0
 MG,Madagascar,1,50.0
 MW,Malawi,1,50.0
@@ -88,7 +84,7 @@ SO,Somalia,1,50.0
 SS,South Sudan,1,50.0
 ZW,Zimbabwe,1,50.0
 AD,Andorra,1,62.5
-DK,Denmark,1,62.5
+AZ,Azerbaijan,1,62.5
 XK,Kosovo,1,62.5
 LU,Luxembourg,1,62.5
 CU,Cuba,1,62.5
@@ -99,7 +95,6 @@ SR,Suriname,1,62.5
 BH,Bahrain,1,62.5
 BD,Bangladesh,1,62.5
 BN,Brunei,1,62.5
-IN,India,1,62.5
 IL,Israel,1,62.5
 JO,Jordan,1,62.5
 KZ,Kazakhstan,1,62.5
@@ -138,9 +133,6 @@ DO,Dominican Republic,1,75.0
 PA,Panama,1,75.0
 PY,Paraguay,1,75.0
 TT,Trinidad and Tobago,1,75.0
-SG,Singapore,1,75.0
-TW,Taiwan,1,75.0
-TH,Thailand,1,75.0
 FJ,Fiji,1,75.0
 MU,Mauritius,1,75.0
 MA,Morocco,1,75.0
@@ -163,35 +155,43 @@ SK,Slovakia,1,87.5
 SI,Slovenia,1,87.5
 CH,Switzerland,1,87.5
 TR,Turkey,1,87.5
-UA,Ukraine,1,87.5
-JP,Japan,1,87.5
-KR,South Korea,1,87.5
-NZ,New Zealand,1,87.5
-ZA,South Africa,1,87.5
 PK,Pakistan,2,50.0
-LB,Lebanon,2,56.2
+PE,Peru,2,56.2
 ID,Indonesia,2,62.5
-QA,Qatar,2,62.5
 SA,Saudi Arabia,2,62.5
 CZ,Czech Republic,2,68.8
-CL,Chile,2,68.8
 PH,Philippines,2,68.8
+SG,Singapore,2,68.8
+TH,Thailand,2,68.8
 FI,Finland,2,75.0
-IE,Ireland,2,75.0
-NL,Netherlands,2,81.2
-AU,Australia,2,81.2
-MX,Mexico,3,54.2
+UA,Ukraine,2,75.0
+TW,Taiwan,2,75.0
+NZ,New Zealand,2,81.2
+AR,Argentina,3,58.3
+IN,India,3,58.3
+LB,Lebanon,3,58.3
+QA,Qatar,3,62.5
 SE,Sweden,3,66.7
 BR,Brazil,3,66.7
+CL,Chile,3,66.7
 PL,Poland,3,70.8
-NO,Norway,3,75.0
+KR,South Korea,3,75.0
+JP,Japan,3,87.5
 CN,China,4,53.1
-GB,United Kingdom,4,65.6
+KE,Kenya,4,59.4
 AT,Austria,4,68.8
-BE,Belgium,4,68.8
-US,United States,5,70.0
-CA,Canada,7,67.9
-DE,Germany,10,67.5
-ES,Spain,11,69.3
-FR,France,12,65.6
-IT,Italy,14,64.3
+DK,Denmark,4,68.8
+ZA,South Africa,4,71.9
+MX,Mexico,5,57.5
+BE,Belgium,5,70.0
+NL,Netherlands,5,70.0
+IE,Ireland,6,66.7
+NO,Norway,6,68.8
+AU,Australia,11,76.1
+ES,Spain,12,68.8
+DE,Germany,12,70.8
+CA,Canada,14,65.2
+IT,Italy,15,64.2
+FR,France,15,65.0
+GB,United Kingdom,27,63.9
+US,United States,47,65.2

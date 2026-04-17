@@ -5,16 +5,16 @@ This report is generated from `backend/seed_data.py` and `backend/app/countries.
 ## Snapshot
 
 - Supported countries in catalog: **196**
-- Countries with incentives: **154** (78.6%)
+- Countries with incentives: **157** (80.1%)
 - Treaty-only countries (no incentive data yet): **0** (0.0%)
-- No coverage (no incentives or treaties): **42** (21.4%)
+- No coverage (no incentives or treaties): **39** (19.9%)
 
 ## Regional Coverage (Incentive or Treaty)
 
 - Africa: **37/54** (68.5%)
 - Americas: **34/35** (97.1%)
 - Asia: **31/41** (75.6%)
-- Europe: **42/49** (85.7%)
+- Europe: **45/49** (91.8%)
 - Oceania: **7/14** (50.0%)
 - Other: **3/3** (100.0%)
 

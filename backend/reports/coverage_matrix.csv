@@ -4,16 +4,16 @@ AE,United Arab Emirates,Other,incentive_covered,1,1,no,0,no,2026-03,fresh_2025,0
 AF,Afghanistan,Asia,no_coverage,0,0,no,0,no,,unknown,2,undercovered_region
 AG,Antigua and Barbuda,Americas,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 AL,Albania,Europe,incentive_covered,1,0,no,0,yes,2026-04,fresh_2025,0,already_has_incentives
-AM,Armenia,Europe,no_coverage,0,0,no,0,no,,unknown,0,lower_priority_gap
+AM,Armenia,Europe,incentive_covered,1,0,no,0,no,2026-04,fresh_2025,0,already_has_incentives
 AO,Angola,Africa,no_coverage,0,0,no,0,no,,unknown,1,region_gap
-AR,Argentina,Americas,incentive_covered,1,0,no,8,no,2026-03,fresh_2025,0,already_has_incentives
+AR,Argentina,Americas,incentive_covered,3,0,no,8,no,2026-04,fresh_2025,0,already_has_incentives
 AT,Austria,Europe,incentive_covered,4,3,yes,2,yes,2026-04,fresh_2025,0,already_has_incentives
-AU,Australia,Oceania,incentive_covered,4,2,yes,17,no,2026-04,fresh_2025,0,already_has_incentives
-AZ,Azerbaijan,Europe,no_coverage,0,0,no,0,no,,unknown,0,lower_priority_gap
+AU,Australia,Oceania,incentive_covered,11,8,yes,17,no,2026-04,fresh_2025,0,already_has_incentives
+AZ,Azerbaijan,Europe,incentive_covered,1,0,no,0,no,2026-04,fresh_2025,0,already_has_incentives
 BA,Bosnia and Herzegovina,Europe,incentive_covered,1,0,no,0,yes,2026-04,fresh_2025,0,already_has_incentives
 BB,Barbados,Americas,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 BD,Bangladesh,Asia,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
-BE,Belgium,Europe,incentive_covered,4,3,no,5,yes,2026-04,fresh_2025,0,already_has_incentives
+BE,Belgium,Europe,incentive_covered,5,4,no,5,yes,2026-04,fresh_2025,0,already_has_incentives
 BF,Burkina Faso,Africa,no_coverage,0,0,no,0,no,,unknown,1,region_gap
 BG,Bulgaria,Europe,incentive_covered,1,0,no,0,yes,2026-03,fresh_2025,0,already_has_incentives
 BH,Bahrain,Asia,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
@@ -25,15 +25,15 @@ BR,Brazil,Americas,incentive_covered,3,2,no,9,no,2026-03,fresh_2025,0,already_ha
 BS,Bahamas,Americas,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 BT,Bhutan,Asia,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 BW,Botswana,Africa,no_coverage,0,0,no,0,no,,unknown,1,region_gap
-BY,Belarus,Europe,no_coverage,0,0,no,0,no,,unknown,0,lower_priority_gap
+BY,Belarus,Europe,incentive_covered,1,0,no,0,no,2026-04,fresh_2025,0,already_has_incentives
 BZ,Belize,Americas,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
-CA,Canada,Americas,incentive_covered,9,6,no,32,no,2026-04,fresh_2025,0,already_has_incentives
+CA,Canada,Americas,incentive_covered,14,6,no,32,no,2026-04,fresh_2025,0,already_has_incentives
 CD,DR Congo,Africa,no_coverage,0,0,no,0,no,,unknown,1,region_gap
 CF,Central African Republic,Africa,no_coverage,0,0,no,0,no,,unknown,1,region_gap
 CG,Republic of the Congo,Africa,no_coverage,0,0,no,0,no,,unknown,1,region_gap
 CH,Switzerland,Europe,incentive_covered,1,0,no,7,yes,2026-04,fresh_2025,0,already_has_incentives
 CI,Ivory Coast,Africa,no_coverage,0,0,no,0,no,,unknown,1,region_gap
-CL,Chile,Americas,incentive_covered,2,0,no,4,no,2026-03,fresh_2025,0,already_has_incentives
+CL,Chile,Americas,incentive_covered,3,0,no,4,no,2026-04,fresh_2025,0,already_has_incentives
 CM,Cameroon,Africa,no_coverage,0,0,no,0,no,,unknown,1,region_gap
 CN,China,Asia,incentive_covered,4,3,no,5,no,2026-03,fresh_2025,0,already_has_incentives
 CO,Colombia,Americas,incentive_covered,1,0,no,3,no,2026-04,fresh_2025,0,already_has_incentives
@@ -44,7 +44,7 @@ CY,Cyprus,Europe,incentive_covered,1,0,no,0,yes,2026-04,fresh_2025,0,already_has
 CZ,Czech Republic,Europe,incentive_covered,2,1,no,2,yes,2026-04,fresh_2025,0,already_has_incentives
 DE,Germany,Europe,incentive_covered,12,8,no,22,yes,2026-04,fresh_2025,0,already_has_incentives
 DJ,Djibouti,Africa,no_coverage,0,0,no,0,no,,unknown,1,region_gap
-DK,Denmark,Europe,incentive_covered,2,1,no,5,yes,2026-04,fresh_2025,0,already_has_incentives
+DK,Denmark,Europe,incentive_covered,4,3,no,5,yes,2026-04,fresh_2025,0,already_has_incentives
 DM,Dominica,Americas,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 DO,Dominican Republic,Americas,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 DZ,Algeria,Africa,incentive_covered,1,0,no,1,no,2026-03,fresh_2025,0,already_has_incentives
@@ -57,9 +57,9 @@ ET,Ethiopia,Africa,no_coverage,0,0,no,0,no,,unknown,1,region_gap
 FI,Finland,Europe,incentive_covered,2,1,no,4,yes,2026-04,fresh_2025,0,already_has_incentives
 FJ,Fiji,Oceania,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 FM,Micronesia,Oceania,no_coverage,0,0,no,0,no,,unknown,1,region_gap
-FR,France,Europe,incentive_covered,14,10,no,46,yes,2026-04,fresh_2025,0,already_has_incentives
+FR,France,Europe,incentive_covered,15,10,no,46,yes,2026-04,fresh_2025,0,already_has_incentives
 GA,Gabon,Africa,no_coverage,0,0,no,0,no,,unknown,1,region_gap
-GB,United Kingdom,Europe,incentive_covered,11,6,yes,13,yes,2026-04,fresh_2025,0,already_has_incentives
+GB,United Kingdom,Europe,incentive_covered,27,16,yes,13,yes,2026-04,fresh_2025,0,already_has_incentives
 GD,Grenada,Americas,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 GE,Georgia,Europe,incentive_covered,1,0,no,0,yes,2026-04,fresh_2025,0,already_has_incentives
 GH,Ghana,Africa,no_coverage,0,0,no,0,no,,unknown,1,region_gap
@@ -75,7 +75,7 @@ HR,Croatia,Europe,incentive_covered,1,0,yes,2,yes,2026-04,fresh_2025,0,already_h
 HT,Haiti,Americas,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 HU,Hungary,Europe,incentive_covered,1,0,yes,1,yes,2026-04,fresh_2025,0,already_has_incentives
 ID,Indonesia,Asia,incentive_covered,2,0,no,1,no,2026-03,fresh_2025,0,already_has_incentives
-IE,Ireland,Europe,incentive_covered,2,1,yes,7,yes,2026-04,fresh_2025,0,already_has_incentives
+IE,Ireland,Europe,incentive_covered,6,1,yes,7,yes,2026-04,fresh_2025,0,already_has_incentives
 IL,Israel,Asia,incentive_covered,1,0,no,6,no,2026-04,fresh_2025,0,already_has_incentives
 IN,India,Asia,incentive_covered,3,2,no,11,no,2026-03,fresh_2025,0,already_has_incentives
 IQ,Iraq,Asia,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
@@ -84,19 +84,19 @@ IS,Iceland,Europe,incentive_covered,1,0,no,2,yes,2026-04,fresh_2025,0,already_ha
 IT,Italy,Europe,incentive_covered,15,13,no,16,yes,2026-04,fresh_2025,0,already_has_incentives
 JM,Jamaica,Americas,incentive_covered,1,0,no,1,no,2026-03,fresh_2025,0,already_has_incentives
 JO,Jordan,Asia,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
-JP,Japan,Asia,incentive_covered,1,0,no,2,no,2026-03,fresh_2025,0,already_has_incentives
-KE,Kenya,Africa,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
+JP,Japan,Asia,incentive_covered,3,2,no,2,no,2026-04,fresh_2025,0,already_has_incentives
+KE,Kenya,Africa,incentive_covered,4,0,no,0,no,2026-04,fresh_2025,0,already_has_incentives
 KG,Kyrgyzstan,Asia,no_coverage,0,0,no,0,no,,unknown,2,undercovered_region
 KH,Cambodia,Asia,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 KI,Kiribati,Oceania,no_coverage,0,0,no,0,no,,unknown,1,region_gap
 KM,Comoros,Africa,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 KN,Saint Kitts and Nevis,Americas,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 KP,North Korea,Asia,no_coverage,0,0,no,0,no,,unknown,2,undercovered_region
-KR,South Korea,Asia,incentive_covered,2,1,no,6,no,2026-03,fresh_2025,0,already_has_incentives
+KR,South Korea,Asia,incentive_covered,3,1,no,6,no,2026-04,fresh_2025,0,already_has_incentives
 KW,Kuwait,Asia,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 KZ,Kazakhstan,Asia,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 LA,Laos,Asia,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
-LB,Lebanon,Other,incentive_covered,2,0,no,1,no,2026-04,fresh_2025,0,already_has_incentives
+LB,Lebanon,Other,incentive_covered,3,0,no,1,no,2026-04,fresh_2025,0,already_has_incentives
 LC,Saint Lucia,Americas,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 LI,Liechtenstein,Europe,no_coverage,0,0,no,0,no,,unknown,0,lower_priority_gap
 LK,Sri Lanka,Asia,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
@@ -121,7 +121,7 @@ MT,Malta,Europe,incentive_covered,1,0,no,0,yes,2026-04,fresh_2025,0,already_has_
 MU,Mauritius,Africa,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 MV,Maldives,Asia,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 MW,Malawi,Africa,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
-MX,Mexico,Americas,incentive_covered,3,0,no,4,no,2026-03,fresh_2025,0,already_has_incentives
+MX,Mexico,Americas,incentive_covered,5,0,no,4,no,2026-04,fresh_2025,0,already_has_incentives
 MY,Malaysia,Asia,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 MZ,Mozambique,Africa,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 NA,Namibia,Africa,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
@@ -129,13 +129,13 @@ NE,Niger,Africa,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_i
 NG,Nigeria,Africa,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 NI,Nicaragua,Americas,no_coverage,0,0,no,0,no,,unknown,2,undercovered_region
 NL,Netherlands,Europe,incentive_covered,5,1,no,6,yes,2026-04,fresh_2025,0,already_has_incentives
-NO,Norway,Europe,incentive_covered,4,2,yes,5,yes,2026-04,fresh_2025,0,already_has_incentives
+NO,Norway,Europe,incentive_covered,6,2,yes,5,yes,2026-04,fresh_2025,0,already_has_incentives
 NP,Nepal,Asia,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 NR,Nauru,Oceania,no_coverage,0,0,no,0,no,,unknown,1,region_gap
-NZ,New Zealand,Oceania,incentive_covered,1,0,no,7,no,2026-04,fresh_2025,0,already_has_incentives
+NZ,New Zealand,Oceania,incentive_covered,2,0,no,7,no,2026-04,fresh_2025,0,already_has_incentives
 OM,Oman,Asia,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 PA,Panama,Americas,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
-PE,Peru,Americas,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
+PE,Peru,Americas,incentive_covered,2,0,no,0,no,2026-04,fresh_2025,0,already_has_incentives
 PG,Papua New Guinea,Oceania,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 PH,Philippines,Asia,incentive_covered,2,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 PK,Pakistan,Asia,incentive_covered,2,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
@@ -153,7 +153,7 @@ SB,Solomon Islands,Oceania,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,al
 SC,Seychelles,Africa,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 SD,Sudan,Africa,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 SE,Sweden,Europe,incentive_covered,3,2,no,3,yes,2026-04,fresh_2025,0,already_has_incentives
-SG,Singapore,Asia,incentive_covered,1,0,no,3,no,2026-03,fresh_2025,0,already_has_incentives
+SG,Singapore,Asia,incentive_covered,2,0,no,3,no,2026-04,fresh_2025,0,already_has_incentives
 SI,Slovenia,Europe,incentive_covered,1,0,no,0,yes,2026-04,fresh_2025,0,already_has_incentives
 SK,Slovakia,Europe,incentive_covered,1,0,yes,0,yes,2026-04,fresh_2025,0,already_has_incentives
 SL,Sierra Leone,Africa,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
@@ -177,11 +177,11 @@ TO,Tonga,Oceania,no_coverage,0,0,no,0,no,,unknown,1,region_gap
 TR,Turkey,Europe,incentive_covered,1,0,yes,1,yes,2026-03,fresh_2025,0,already_has_incentives
 TT,Trinidad and Tobago,Americas,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 TV,Tuvalu,Oceania,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
-TW,Taiwan,Asia,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
+TW,Taiwan,Asia,incentive_covered,2,0,no,0,no,2026-04,fresh_2025,0,already_has_incentives
 TZ,Tanzania,Africa,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
-UA,Ukraine,Europe,incentive_covered,1,0,no,0,yes,2026-03,fresh_2025,0,already_has_incentives
+UA,Ukraine,Europe,incentive_covered,2,0,no,0,yes,2026-04,fresh_2025,0,already_has_incentives
 UG,Uganda,Africa,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
-US,United States,Americas,incentive_covered,38,11,no,0,no,2026-04,fresh_2025,0,already_has_incentives
+US,United States,Americas,incentive_covered,47,11,no,0,no,2026-04,fresh_2025,0,already_has_incentives
 UY,Uruguay,Americas,incentive_covered,1,0,no,2,no,2026-03,fresh_2025,0,already_has_incentives
 UZ,Uzbekistan,Asia,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 VA,Vatican City,Europe,no_coverage,0,0,no,0,no,,unknown,0,lower_priority_gap
@@ -192,6 +192,6 @@ VU,Vanuatu,Oceania,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_ha
 WS,Samoa,Oceania,no_coverage,0,0,no,0,no,,unknown,1,region_gap
 XK,Kosovo,Europe,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 YE,Yemen,Asia,no_coverage,0,0,no,0,no,,unknown,2,undercovered_region
-ZA,South Africa,Africa,incentive_covered,2,0,no,11,no,2026-04,fresh_2025,0,already_has_incentives
+ZA,South Africa,Africa,incentive_covered,4,0,no,11,no,2026-04,fresh_2025,0,already_has_incentives
 ZM,Zambia,Africa,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
 ZW,Zimbabwe,Africa,incentive_covered,1,0,no,0,no,2026-03,fresh_2025,0,already_has_incentives
