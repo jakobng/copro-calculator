@@ -158,6 +158,7 @@ class NearMiss(BaseModel):
 
 
 class EligibleIncentive(BaseModel):
+    id: Optional[int] = None
     name: str
     country_code: str
     country_name: str = ""

@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 import os
+import re
 from datetime import datetime
+from typing import Optional
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
+from fastapi import APIRouter, Depends, File, Form, Header, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
@@ -14,7 +16,7 @@ from app.schemas import (
     DocumentResponse, DocumentAnnotationResponse,
 )
 from app.scenario_generator import generate_scenarios
-from app.models import Incentive, Treaty, Document, DocumentAnnotation, SourceAlert, DataUpdateProposal
+from app.models import Incentive, Treaty, Document, DocumentAnnotation, SourceAlert, DataUpdateProposal, DataChangeLog
 from app import countries
 from app import llm_intake
 
@@ -56,18 +58,68 @@ class DataUpdateProposalResponse(BaseModel):
     id: int
     incentive_id: int
     field_name: str
-    old_value: str | None
+    old_value: Optional[str]
     new_value: str
     proposed_source_url: str
     status: str
     created_at: str
-    reviewed_at: str | None
-    reviewed_by: str | None
+    reviewed_at: Optional[str]
+    reviewed_by: Optional[str]
 
 
 class ReviewProposalRequest(BaseModel):
     action: str  # "approve" or "reject"
-    notes: str | None = None  # Admin review notes
+    notes: Optional[str] = None  # Admin review notes
+
+
+PROPOSABLE_INCENTIVE_FIELDS = {
+    "rebate_percent": float,
+    "min_qualifying_spend": float,
+    "min_total_budget": float,
+    "max_cap_amount": float,
+    "local_crew_min_percent": float,
+    "min_spend_percent": float,
+    "min_shoot_percent": float,
+    "min_shoot_days": int,
+    "application_status": str,
+    "application_note": str,
+    "notes": str,
+    "source_url": str,
+    "source_description": str,
+    "clause_reference": str,
+}
+
+
+def _parse_proposed_value(field_name: str, value: str):
+    parser = PROPOSABLE_INCENTIVE_FIELDS.get(field_name)
+    if parser is None:
+        raise HTTPException(400, f"Field '{field_name}' cannot be updated through public proposals.")
+
+    cleaned = value.strip()
+    if parser is str:
+        if field_name == "source_url" and not cleaned.startswith(("https://", "http://")):
+            raise HTTPException(400, "Source URL updates must use a full URL.")
+        return cleaned
+
+    try:
+        numeric_value = re.sub(r"[^0-9.\-]", "", cleaned)
+        return parser(numeric_value)
+    except ValueError:
+        raise HTTPException(400, f"'{value}' is not a valid value for {field_name}.")
+
+
+def _validate_proposal_field(field_name: str) -> None:
+    if field_name not in PROPOSABLE_INCENTIVE_FIELDS:
+        raise HTTPException(400, f"Field '{field_name}' cannot be updated through public proposals.")
+
+
+def _require_admin_token(x_admin_token: Optional[str] = Header(None)) -> str:
+    expected = os.getenv("ADMIN_UPDATE_TOKEN")
+    if not expected:
+        raise HTTPException(503, "Admin review is disabled until ADMIN_UPDATE_TOKEN is configured.")
+    if not x_admin_token or x_admin_token != expected:
+        raise HTTPException(401, "Admin token required.")
+    return "admin"
 
 
 
@@ -282,7 +334,7 @@ def _doc_to_response(doc: Document, annotations: list[DocumentAnnotation]) -> di
 
 @router.get("/documents")
 def list_documents(
-    country_code: str | None = Query(None),
+    country_code: Optional[str] = Query(None),
     db: Session = Depends(get_db),
 ):
     """List all documents, optionally filtered by country code."""
@@ -426,6 +478,13 @@ def propose_data_update(req: DataUpdateProposalRequest, db: Session = Depends(ge
     Filmmakers/professionals can report stale or incorrect incentive data
     and propose updates with official source citations.
     """
+    _validate_proposal_field(req.field_name)
+
+    if not req.proposed_source_url.startswith(("https://", "http://")):
+        raise HTTPException(400, "Please provide a full official source URL.")
+
+    _parse_proposed_value(req.field_name, req.new_value)
+
     # Fetch the incentive to get old value
     inc = db.query(Incentive).filter(Incentive.id == req.incentive_id).first()
     if not inc:
@@ -470,7 +529,7 @@ def propose_data_update(req: DataUpdateProposalRequest, db: Session = Depends(ge
 
 @router.get("/admin/update-proposals")
 def list_update_proposals(
-    status: str | None = None,
+    status: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
     """List all data update proposals (optionally filtered by status).
@@ -511,6 +570,7 @@ def list_update_proposals(
 def review_proposal(
     proposal_id: int,
     req: ReviewProposalRequest,
+    admin_user: str = Depends(_require_admin_token),
     db: Session = Depends(get_db),
 ):
     """Review and approve/reject a data update proposal.
@@ -534,28 +594,29 @@ def review_proposal(
     # Mark proposal as reviewed
     proposal.status = "approved" if req.action == "approve" else "rejected"
     proposal.reviewed_at = datetime.utcnow().isoformat()
-    proposal.reviewed_by = "admin"  # TODO: get actual admin user from auth context
+    proposal.reviewed_by = admin_user
     proposal.notes = req.notes
 
     if req.action == "approve":
-        # Update the incentive field
-        # Parse new_value based on field type
         field_name = proposal.field_name
-        new_value = proposal.new_value
-
-        # Try to parse as appropriate type
-        if field_name.endswith("_percent") or field_name.endswith("_fraction"):
-            new_value = float(new_value)
-        elif field_name.endswith("_amount"):
-            new_value = float(new_value)
-        elif field_name.endswith("_days"):
-            new_value = int(new_value)
-        # else: keep as string
+        new_value = _parse_proposed_value(field_name, proposal.new_value)
+        old_value = getattr(inc, field_name, None)
 
         setattr(inc, field_name, new_value)
         # Reset verification date to today
         today = datetime.now().date()
         inc.last_verified = today.strftime("%Y-%m")
+        db.add(DataChangeLog(
+            proposal_id=proposal.id,
+            incentive_id=inc.id,
+            field_name=field_name,
+            old_value=None if old_value is None else str(old_value),
+            new_value=None if new_value is None else str(new_value),
+            source_url=proposal.proposed_source_url,
+            changed_at=datetime.utcnow().isoformat(),
+            changed_by=admin_user,
+            notes=req.notes,
+        ))
 
     db.add(proposal)
     db.add(inc)

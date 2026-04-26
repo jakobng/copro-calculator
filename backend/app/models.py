@@ -195,3 +195,19 @@ class DataUpdateProposal(Base):
     reviewed_at = Column(String, nullable=True)  # ISO timestamp when reviewed
     reviewed_by = Column(String, nullable=True)  # Admin who reviewed it
     notes = Column(Text, nullable=True)  # Admin review notes (why approved/rejected)
+
+
+class DataChangeLog(Base):
+    """Audit log for approved data updates."""
+    __tablename__ = "data_change_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    proposal_id = Column(Integer, nullable=True, index=True)
+    incentive_id = Column(Integer, nullable=False, index=True)
+    field_name = Column(String, nullable=False)
+    old_value = Column(String, nullable=True)
+    new_value = Column(String, nullable=True)
+    source_url = Column(Text, nullable=True)
+    changed_at = Column(String, nullable=False)
+    changed_by = Column(String, nullable=False)
+    notes = Column(Text, nullable=True)

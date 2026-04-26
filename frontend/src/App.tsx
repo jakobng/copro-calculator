@@ -4,6 +4,7 @@ import type { ProjectInput, AnalyzeResponse } from './types'
 import { ProjectForm } from './components/ProjectForm'
 import { ScenarioList } from './components/ScenarioList'
 import { DocumentPanel } from './components/DocumentPanel'
+import { IntakeChat } from './components/IntakeChat'
 import { Info, ArrowRight, Clock3 } from 'lucide-react'
 
 const EXPECTED_WAKE_UP_SECONDS = 30
@@ -51,6 +52,7 @@ function App() {
   const [backendReady, setBackendReady] = useState(false)
   const [warmupStartedAt] = useState(() => Date.now())
   const [elapsedWarmupSeconds, setElapsedWarmupSeconds] = useState(0)
+  const [inputMode, setInputMode] = useState<'guided' | 'manual'>('guided')
 
   const handleDocumentOpen = useCallback((documentId: number, annotationId?: number | null) => {
     setDocViewer({ documentId, annotationId })
@@ -182,13 +184,12 @@ function App() {
       </header>
 
       <main className="mx-auto max-w-7xl px-6 py-12">
-        {/* Simple Introduction */}
+        {/* Plain-language framing */}
         <section className="mb-12 pb-8 border-b border-neutral-100">
           <p className="text-lg text-neutral-600 leading-relaxed max-w-5xl">
-            Input your project details to find the international film funds and tax credits you qualify for today.
-            The calculator also identifies additional financing you could unlock through minor logistical changes or by adding a co-production partner.
-            Every scenario is transparent: click any result to inspect the underlying math and cited treaty texts.
-            Use the project form to input your data directly and compare financing scenarios.
+            Describe the film you are trying to make. The tool compares production structures, shows which money looks likely to count in a finance plan,
+            and separates that from money that depends on extra checks, applications, or changes to the project.
+            Every estimate shows its assumptions and sources so you know what to verify with your producer, lawyer, or accountant.
           </p>
         </section>
 
@@ -198,19 +199,51 @@ function App() {
             <div className="lg:sticky lg:top-32 space-y-8">
               <div>
                 <h2 className="text-2xl font-bold font-serif tracking-tight">Project details</h2>
-                <p className="mt-2 text-sm text-neutral-500">Provide your film's basics to see available financing.</p>
+                <p className="mt-2 text-sm text-neutral-500">Use the guided interview or enter the production plan directly.</p>
+              </div>
+
+              <div className="grid grid-cols-2 border border-neutral-200 bg-white p-1">
+                <button
+                  type="button"
+                  onClick={() => setInputMode('guided')}
+                  className={`px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${
+                    inputMode === 'guided'
+                      ? 'bg-gallery-text text-white'
+                      : 'text-neutral-500 hover:text-neutral-900'
+                  }`}
+                >
+                  Guided interview
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setInputMode('manual')}
+                  className={`px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${
+                    inputMode === 'manual'
+                      ? 'bg-gallery-text text-white'
+                      : 'text-neutral-500 hover:text-neutral-900'
+                  }`}
+                >
+                  Manual form
+                </button>
               </div>
 
               <div className="relative">
                 <div className={`card p-6 transition-opacity duration-300 ${backendReady ? 'opacity-100' : 'opacity-50'}`}>
-                  <ProjectForm
-                    project={project}
-                    onChange={setProject}
-                    onAnalyze={analyze}
-                    loading={loading}
-                    error={error}
-                    backendReady={backendReady}
-                  />
+                  {inputMode === 'guided' ? (
+                    <IntakeChat
+                      onProjectReady={setProject}
+                      onAnalyze={(projectOverride) => analyze(projectOverride)}
+                    />
+                  ) : (
+                    <ProjectForm
+                      project={project}
+                      onChange={setProject}
+                      onAnalyze={analyze}
+                      loading={loading}
+                      error={error}
+                      backendReady={backendReady}
+                    />
+                  )}
                 </div>
                 {!backendReady && (
                   <div className="absolute inset-0 z-10 rounded-sm border border-amber-200 bg-white/70 backdrop-blur-[2px]" />

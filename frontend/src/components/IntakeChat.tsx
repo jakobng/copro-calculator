@@ -18,7 +18,7 @@ interface InvestigatingItem {
 
 interface Props {
   onProjectReady: (project: ProjectInput) => void
-  onAnalyze: () => void
+  onAnalyze: (project?: ProjectInput) => void
   onSessionStart?: (sessionId: string) => void
 }
 
@@ -33,6 +33,7 @@ export function IntakeChat({ onProjectReady, onAnalyze, onSessionStart }: Props)
   const [error, setError] = useState<string | null>(null)
   const [investigating, setInvestigating] = useState<InvestigatingItem[]>([])
   const [uploading, setUploading] = useState(false)
+  const [latestProject, setLatestProject] = useState<ProjectInput | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -44,6 +45,7 @@ export function IntakeChat({ onProjectReady, onAnalyze, onSessionStart }: Props)
     setMessages((prev) => [...prev, { role: 'assistant', text: data.reply }])
     setCompleteness(data.completeness_score)
     setIsReady(data.is_ready)
+    setLatestProject(data.project_draft)
     onProjectReady(data.project_draft)
     if (data.investigating) {
       setInvestigating(data.investigating)
@@ -62,6 +64,7 @@ export function IntakeChat({ onProjectReady, onAnalyze, onSessionStart }: Props)
       setMessages([{ role: 'assistant', text: data.reply }])
       setCompleteness(data.completeness_score)
       setIsReady(data.is_ready)
+      setLatestProject(data.project_draft)
       setStarted(true)
       if (data.is_ready) onProjectReady(data.project_draft)
     } catch (e) {
@@ -193,7 +196,7 @@ export function IntakeChat({ onProjectReady, onAnalyze, onSessionStart }: Props)
         {isReady && (
           <div className="flex items-center justify-between gap-4 p-3 bg-gallery-accent/5 border border-gallery-accent/10">
             <span className="text-[9px] font-black uppercase tracking-widest text-gallery-accent">Profile Complete</span>
-            <button onClick={onAnalyze} className="text-[9px] font-black uppercase tracking-widest underline decoration-2 underline-offset-4 hover:text-gallery-accent">Run Calculation</button>
+            <button onClick={() => onAnalyze(latestProject || undefined)} className="text-[9px] font-black uppercase tracking-widest underline decoration-2 underline-offset-4 hover:text-gallery-accent">Run Calculation</button>
           </div>
         )}
 

@@ -213,6 +213,7 @@ def _evaluate_country(
         selective_fit_score = _selective_fit_score(project, cand["inc"], cand["reqs"]) if is_selective else None
 
         eligible.append(EligibleIncentive(
+            id=cand["inc"].id,
             name=cand["inc"].name,
             country_code=cand["inc"].country_code,
             country_name=countries.display_name(cand["inc"].country_code),
@@ -613,7 +614,7 @@ def _build_rationale(
     elif incentive_count > 0 and conditional_pct > 0:
         parts.append(
             f"The calculator found {incentive_count} relevant incentive(s), "
-            f"but none look bankable from the current inputs yet. "
+            f"but none look countable from the current inputs yet. "
             f"If the remaining conditions are resolved, modeled upside could reach about {conditional_pct:.1f}% "
             f"of budget ({currency} {conditional_amount:,.0f})."
         )

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { API_BASE_URL } from '../config'
-import type { ProjectInput, ShootLocation, CountryOption } from '../types'
+import type { ProjectInput, ShootLocation, CountryOption, SpendAllocation } from '../types'
 import { Plus, X, ChevronDown } from 'lucide-react'
 
 const FORMATS = [
@@ -168,6 +168,32 @@ export function ProjectForm({ project, onChange, onAnalyze, loading, error, back
     })
   }
 
+  const addSpendAllocation = () => {
+    onChange({
+      ...project,
+      spend_allocations: [
+        ...project.spend_allocations,
+        { country: '', amount: 0, currency: project.budget_currency || 'EUR' },
+      ],
+    })
+  }
+
+  const updateSpendAllocation = (index: number, allocation: Partial<SpendAllocation>) => {
+    onChange({
+      ...project,
+      spend_allocations: project.spend_allocations.map((item, i) =>
+        i === index ? { ...item, ...allocation } : item
+      ),
+    })
+  }
+
+  const removeSpendAllocation = (index: number) => {
+    onChange({
+      ...project,
+      spend_allocations: project.spend_allocations.filter((_, i) => i !== index),
+    })
+  }
+
   const totalShootPct = project.shoot_locations.reduce((sum, l) => sum + l.percent, 0)
 
   const getRegionOptions = (countryName: string) => {
@@ -269,7 +295,15 @@ export function ProjectForm({ project, onChange, onAnalyze, loading, error, back
     </div>
   </Field>
 
-  <BudgetBreakdown project={project} onChange={onChange} />
+  <BudgetBreakdown
+    project={project}
+    onChange={onChange}
+    countries={countries}
+    update={update}
+    addSpendAllocation={addSpendAllocation}
+    updateSpendAllocation={updateSpendAllocation}
+    removeSpendAllocation={removeSpendAllocation}
+  />
 </section>
 
 {/* Production */}
@@ -366,6 +400,53 @@ export function ProjectForm({ project, onChange, onAnalyze, loading, error, back
         </Field>
       </section>
 
+      {/* Story signals */}
+      <section className="space-y-5">
+        <Field label="Story Subject Country">
+          <CountryInput
+            value={project.subject_country || ''}
+            onChange={(v) => update('subject_country', (v || undefined) as ProjectInput['subject_country'])}
+            countries={countries}
+            placeholder="Optional"
+          />
+        </Field>
+        <Field label="Story Setting Country">
+          <CountryInput
+            value={project.story_setting_country || ''}
+            onChange={(v) => update('story_setting_country', (v || undefined) as ProjectInput['story_setting_country'])}
+            countries={countries}
+            placeholder="Optional"
+          />
+        </Field>
+        <Field label="Project Languages">
+          <MultiTextInput
+            values={project.languages}
+            onCommit={(v) => update('languages', v)}
+            placeholder="Add language"
+          />
+        </Field>
+      </section>
+
+      {/* Partnerships */}
+      <section className="space-y-5">
+        <Field label="Existing Co-Producers">
+          <MultiCountryInput
+            values={project.has_coproducer}
+            onCommit={(v) => update('has_coproducer', v)}
+            countries={countries}
+            placeholder="Add country"
+          />
+        </Field>
+        <Field label="Countries You Are Open To">
+          <MultiCountryInput
+            values={project.open_to_copro_countries}
+            onCommit={(v) => update('open_to_copro_countries', v)}
+            countries={countries}
+            placeholder="Add country"
+          />
+        </Field>
+      </section>
+
       {/* Logic */}
       <section className="space-y-4 pt-4 border-t border-neutral-100">
         <Toggle
@@ -378,6 +459,30 @@ export function ProjectForm({ project, onChange, onAnalyze, loading, error, back
           onChange={(v) => update('post_flexible', v)}
           label="Flexible post-production"
         />
+        <Toggle
+          checked={project.vfx_flexible}
+          onChange={(v) => update('vfx_flexible', v)}
+          label="Flexible VFX"
+        />
+        <Toggle
+          checked={project.willing_add_coproducer}
+          onChange={(v) => update('willing_add_coproducer', v)}
+          label="Open to adding a co-producer"
+        />
+        <Field label="Local Crew Estimate">
+          <div className="relative">
+            <input
+              type="number"
+              min={0}
+              max={100}
+              value={project.local_crew_percent ?? ''}
+              onChange={(e) => update('local_crew_percent', (e.target.value === '' ? undefined : Math.max(0, Math.min(100, parseFloat(e.target.value) || 0))) as ProjectInput['local_crew_percent'])}
+              placeholder="Optional"
+              className="input pr-8"
+            />
+            <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-[10px] font-bold text-neutral-300">%</span>
+          </div>
+        </Field>
       </section>
 
       {/* CTA */}
@@ -399,9 +504,14 @@ export function ProjectForm({ project, onChange, onAnalyze, loading, error, back
   )
 }
 
-function BudgetBreakdown({ project, onChange }: {
+function BudgetBreakdown({ project, onChange, countries, update, addSpendAllocation, updateSpendAllocation, removeSpendAllocation }: {
   project: ProjectInput
   onChange: (project: ProjectInput) => void
+  countries: CountryOption[]
+  update: <K extends keyof ProjectInput>(key: K, value: ProjectInput[K]) => void
+  addSpendAllocation: () => void
+  updateSpendAllocation: (index: number, allocation: Partial<SpendAllocation>) => void
+  removeSpendAllocation: (index: number) => void
 }) {
   const [open, setOpen] = useState(false)
 
@@ -446,6 +556,64 @@ function BudgetBreakdown({ project, onChange }: {
           <div className="pt-2 flex justify-between items-center border-t border-neutral-200">
             <span className="text-[10px] font-bold text-neutral-400 uppercase">Total Allocation</span>
             <span className={`text-xs font-black ${total === 100 ? 'text-emerald-600' : 'text-red-500'}`}>{total}%</span>
+          </div>
+
+          <Field label="Post-Production Country">
+            <CountryInput
+              value={project.post_production_country || ''}
+              onChange={(v) => update('post_production_country', (v || undefined) as ProjectInput['post_production_country'])}
+              countries={countries}
+              placeholder="Leave blank if undecided"
+            />
+          </Field>
+
+          <div className="space-y-3 border-t border-neutral-200 pt-4">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Known Spend By Country</span>
+              <button
+                type="button"
+                onClick={addSpendAllocation}
+                className="text-[10px] font-black uppercase tracking-widest text-gallery-accent hover:text-gallery-text"
+              >
+                Add spend
+              </button>
+            </div>
+            {project.spend_allocations.length === 0 && (
+              <p className="text-xs text-neutral-400">
+                Add exact country spend only when you know it. Exact spend overrides the shoot-percent estimate for that country.
+              </p>
+            )}
+            {project.spend_allocations.map((allocation, index) => (
+              <div key={index} className="grid grid-cols-[1fr_7rem_4rem_auto] items-start gap-2">
+                <CountryInput
+                  value={allocation.country}
+                  onChange={(v) => updateSpendAllocation(index, { country: v })}
+                  countries={countries}
+                  placeholder="Country"
+                />
+                <input
+                  type="number"
+                  min={0}
+                  value={allocation.amount || ''}
+                  onChange={(e) => updateSpendAllocation(index, { amount: Math.max(0, parseFloat(e.target.value) || 0) })}
+                  className="input bg-white"
+                  placeholder="Amount"
+                />
+                <input
+                  type="text"
+                  value={allocation.currency}
+                  onChange={(e) => updateSpendAllocation(index, { currency: e.target.value.toUpperCase().slice(0, 3) })}
+                  className="input bg-white uppercase"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeSpendAllocation(index)}
+                  className="p-2 text-neutral-300 hover:text-red-500 transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -635,6 +803,68 @@ function MultiCountryInput({
         countries={countries}
         placeholder={values.length === 0 ? placeholder : ""}
       />
+    </div>
+  )
+}
+
+function MultiTextInput({
+  values,
+  onCommit,
+  placeholder,
+}: {
+  values: string[]
+  onCommit: (v: string[]) => void
+  placeholder?: string
+}) {
+  const [draft, setDraft] = useState('')
+
+  const addValue = () => {
+    const next = draft.trim()
+    if (!next) return
+    onCommit(Array.from(new Set([...values, next])))
+    setDraft('')
+  }
+
+  const removeValue = (index: number) => {
+    onCommit(values.filter((_, i) => i !== index))
+  }
+
+  return (
+    <div className="space-y-2">
+      <div className="flex flex-wrap gap-2">
+        {values.map((value, i) => (
+          <span
+            key={`${value}-${i}`}
+            className="flex items-center gap-1.5 bg-neutral-100 px-2 py-1 rounded-sm text-[10px] font-black uppercase"
+          >
+            {value}
+            <button type="button" onClick={() => removeValue(i)} className="text-neutral-400 hover:text-red-500">
+              <X className="h-3 w-3" />
+            </button>
+          </span>
+        ))}
+      </div>
+      <div className="flex gap-2">
+        <input
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault()
+              addValue()
+            }
+          }}
+          placeholder={values.length === 0 ? placeholder : ''}
+          className="input"
+        />
+        <button
+          type="button"
+          onClick={addValue}
+          className="px-3 text-[10px] font-black uppercase tracking-widest border border-neutral-200 text-neutral-500 hover:border-gallery-accent hover:text-gallery-accent"
+        >
+          Add
+        </button>
+      </div>
     </div>
   )
 }

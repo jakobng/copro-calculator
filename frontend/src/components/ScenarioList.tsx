@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
+import { API_BASE_URL } from '../config'
 import type { Scenario, EligibleIncentive, Requirement, ProjectInput, SourceReference } from '../types'
 import { SourceBadge } from './SourceLink'
+import { ReportIssueModal } from './ReportIssueModal'
 import { ChevronDown, ChevronUp, AlertCircle, ArrowRight, HelpCircle, RotateCcw } from 'lucide-react'
 
 type DocOpenHandler = (documentId: number, annotationId?: number | null) => void
@@ -72,6 +74,78 @@ function fmt(amount: number, currency: string) {
 function budgetPercent(amount: number, budget: number) {
   if (!budget) return 0
   return Number(((amount / budget) * 100).toFixed(1))
+}
+
+function scenarioTitle(scenario: Scenario) {
+  return scenario.partners.map((p) => p.country_name).join(' + ')
+}
+
+function scenarioPotentialAmount(scenario: Scenario) {
+  const nearMissTotal = scenario.near_misses?.reduce((sum, nm) => sum + (nm.potential_benefit_amount || 0), 0) || 0
+  return scenario.estimated_total_financing_amount + scenario.estimated_conditional_financing_amount + nearMissTotal
+}
+
+function scenarioStatus(scenario: Scenario) {
+  const allIncentives = scenario.partners.flatMap((p) => p.eligible_incentives)
+  const hasSelective = allIncentives.some(isSelectiveOpportunity)
+  const hasInformation = allIncentives.length > 0 || scenario.treaty_basis.length > 0
+
+  if (scenario.estimated_total_financing_amount > 0) return 'Likely countable in your finance plan'
+  if (scenario.estimated_conditional_financing_amount > 0) return 'Possible, but conditions remain'
+  if ((scenario.near_misses?.length || 0) > 0) return 'Could be unlocked with changes'
+  if (hasSelective) return 'Competitive or selective funding'
+  if (hasInformation) return 'Informational only'
+  return 'Not enough information yet'
+}
+
+function scenarioStatusClass(status: string) {
+  if (status.startsWith('Likely')) return 'border-emerald-200 bg-emerald-50 text-emerald-700'
+  if (status.startsWith('Possible')) return 'border-sky-200 bg-sky-50 text-sky-700'
+  if (status.startsWith('Could')) return 'border-amber-200 bg-amber-50 text-amber-700'
+  if (status.startsWith('Competitive')) return 'border-violet-200 bg-violet-50 text-violet-700'
+  return 'border-neutral-200 bg-neutral-100 text-neutral-600'
+}
+
+function freshnessText(sources: SourceReference[] | undefined) {
+  const accessed = (sources || [])
+    .map((source) => source.accessed)
+    .filter((value): value is string => Boolean(value))
+    .sort()
+    .pop()
+
+  return accessed ? `Source checked ${accessed}` : 'Source date not shown'
+}
+
+function buildProducerSummary(scenarios: Scenario[], budget: number, currency: string) {
+  const lines = [
+    'CoPro Calculator producer summary',
+    '',
+    `Project budget: ${fmt(budget, currency)}`,
+    '',
+    'Top structures:',
+  ]
+
+  scenarios.slice(0, 5).forEach((scenario, index) => {
+    const likely = scenario.estimated_total_financing_amount
+    const conditional = scenario.estimated_conditional_financing_amount
+    const potential = scenarioPotentialAmount(scenario)
+    lines.push(
+      `${index + 1}. ${scenarioTitle(scenario)} — ${scenarioStatus(scenario)}`,
+      `   Likely countable: ${fmt(likely, currency)} (${budgetPercent(likely, budget)}% of budget)`,
+      `   Possible extra or unlocked amount: ${fmt(Math.max(potential - likely, 0), currency)}`,
+      `   Main note: ${scenario.rationale}`,
+    )
+  })
+
+  lines.push(
+    '',
+    'Assumptions to verify:',
+    '- These figures are planning estimates, not legal or accounting advice.',
+    '- A producer, lawyer, accountant, or local co-producer should confirm eligibility, spend rules, timing, application windows, and source documents.',
+    '- Competitive or selective funding is not counted as reliable financing until awarded.',
+  )
+
+  return lines.join('\n')
 }
 
 function incentiveAmount(inc: EligibleIncentive) {
@@ -1306,10 +1380,73 @@ function RequirementList({ requirements }: { requirements: Requirement[] }) {
 }
 
 export function ScenarioList({ scenarios, project, budget, currency, onProjectUpdate, onReanalyze, onDocumentOpen }: Props) {
+  const [copiedSummary, setCopiedSummary] = useState(false)
   if (scenarios.length === 0) return null
+
+  const likelyScenario = scenarios.find((scenario) => scenario.estimated_total_financing_amount > 0)
+  const simplestScenario = [...scenarios].sort((a, b) =>
+    (a.requirements.length + (a.near_misses?.length || 0)) - (b.requirements.length + (b.near_misses?.length || 0))
+  )[0]
+  const highestUpsideScenario = [...scenarios].sort((a, b) => scenarioPotentialAmount(b) - scenarioPotentialAmount(a))[0]
+  const treatyScenario = scenarios.find((scenario) => scenario.treaty_basis.length > 0)
+
+  const copySummary = async () => {
+    const text = buildProducerSummary(scenarios, budget, currency)
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(text)
+      setCopiedSummary(true)
+      window.setTimeout(() => setCopiedSummary(false), 1800)
+    }
+  }
 
   return (
     <div className="space-y-8">
+      <section className="border border-neutral-200 bg-white p-5 space-y-5">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Scenario Comparison</p>
+            <h3 className="mt-1 text-xl font-bold tracking-tight">What the options mean</h3>
+          </div>
+          <button
+            type="button"
+            onClick={copySummary}
+            className="px-4 py-2 text-[10px] font-black uppercase tracking-widest border border-neutral-200 text-neutral-600 hover:border-gallery-accent hover:text-gallery-accent transition-all"
+          >
+            {copiedSummary ? 'Copied Summary' : 'Copy Producer Summary'}
+          </button>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <ComparisonTile
+            label="What can I count on from the current plan?"
+            scenario={likelyScenario}
+            empty="Nothing looks clearly countable yet."
+            budget={budget}
+            currency={currency}
+          />
+          <ComparisonTile
+            label="Which option is simplest?"
+            scenario={simplestScenario}
+            empty="Add project details to compare simplicity."
+            budget={budget}
+            currency={currency}
+          />
+          <ComparisonTile
+            label="Which option has the most upside?"
+            scenario={highestUpsideScenario}
+            empty="No upside estimate yet."
+            budget={budget}
+            currency={currency}
+            usePotential
+          />
+          <ComparisonTile
+            label="Which option has a treaty route?"
+            scenario={treatyScenario}
+            empty="No treaty route appears in the current results."
+            budget={budget}
+            currency={currency}
+          />
+        </div>
+      </section>
       {scenarios.map((scenario, idx) => (
         <ScenarioCard
           key={idx}
@@ -1323,6 +1460,47 @@ export function ScenarioList({ scenarios, project, budget, currency, onProjectUp
           onDocumentOpen={onDocumentOpen}
         />
       ))}
+    </div>
+  )
+}
+
+function ComparisonTile({
+  label,
+  scenario,
+  empty,
+  budget,
+  currency,
+  usePotential = false,
+}: {
+  label: string
+  scenario?: Scenario
+  empty: string
+  budget: number
+  currency: string
+  usePotential?: boolean
+}) {
+  const amount = scenario
+    ? usePotential
+      ? scenarioPotentialAmount(scenario)
+      : scenario.estimated_total_financing_amount
+    : 0
+
+  return (
+    <div className="border border-neutral-100 bg-neutral-50 p-4 min-h-32">
+      <p className="text-[10px] font-black uppercase tracking-widest text-neutral-400">{label}</p>
+      {scenario ? (
+        <div className="mt-3 space-y-2">
+          <p className="font-bold text-neutral-900">{scenarioTitle(scenario)}</p>
+          <p className="text-sm text-neutral-600">
+            {fmt(amount, currency)} ({budgetPercent(amount, budget)}% of budget)
+          </p>
+          <span className={`inline-flex border px-2 py-1 text-[10px] font-black uppercase tracking-widest ${scenarioStatusClass(scenarioStatus(scenario))}`}>
+            {scenarioStatus(scenario)}
+          </span>
+        </div>
+      ) : (
+        <p className="mt-3 text-sm text-neutral-500">{empty}</p>
+      )}
     </div>
   )
 }
@@ -1361,10 +1539,11 @@ function ScenarioCard({
   const nearMissTotal = scenario.near_misses?.reduce((sum, nm) => sum + (nm.potential_benefit_amount || 0), 0) || 0
   const headlineAmount = confirmedTotal > 0 ? confirmedTotal : conditionalTotal
   const headlineLabel = confirmedTotal > 0
-    ? 'Money you can model now'
+    ? 'Likely countable in your finance plan'
     : conditionalTotal > 0
-      ? 'Potential financing with checks'
-      : 'No bankable incentives yet'
+      ? 'Possible, but conditions remain'
+      : scenarioStatus(scenario)
+  const status = scenarioStatus(scenario)
 
   const thresholdRequirements = scenario.requirements.filter((r) => ['budget', 'spend', 'shoot', 'region'].includes(r.category))
   const adminRequirements = scenario.requirements.filter((r) => !['budget', 'spend', 'shoot', 'region', 'cultural'].includes(r.category))
@@ -1381,11 +1560,14 @@ function ScenarioCard({
           </div>
           <div>
             <h3 className="text-2xl font-bold tracking-tight">
-              {scenario.partners.map((p) => p.country_name).join(' + ')}
+              {scenarioTitle(scenario)}
             </h3>
             <p className="text-sm text-neutral-500 font-medium">
               {headlineLabel}: <span className="text-black font-bold">{fmt(headlineAmount, currency)}</span> ({budgetPercent(headlineAmount, budget)}% of budget)
             </p>
+            <span className={`mt-2 inline-flex border px-2 py-1 text-[10px] font-black uppercase tracking-widest ${scenarioStatusClass(status)}`}>
+              {status}
+            </span>
           </div>
         </div>
 
@@ -1400,7 +1582,7 @@ function ScenarioCard({
           )}
           {nearMissTotal > 0 && (
             <div className="text-right px-4 border-r border-neutral-200">
-              <span className="block text-[10px] font-black uppercase text-amber-600 tracking-widest">Almost There</span>
+              <span className="block text-[10px] font-black uppercase text-amber-600 tracking-widest">Could Unlock</span>
               <span className="text-lg font-bold text-amber-600">+{fmt(nearMissTotal, currency)}</span>
             </div>
           )}
@@ -1411,7 +1593,7 @@ function ScenarioCard({
       <div className="border-t border-neutral-100 px-6 py-4 space-y-5">
         {confirmedIncentives.length > 0 && (
           <div className="space-y-2">
-            <p className="text-[10px] font-black uppercase tracking-widest text-emerald-700">Usable Now</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-emerald-700">Likely Countable In Your Finance Plan</p>
             <div className="grid gap-2">
               {confirmedIncentives.map((inc, i) => (
                 <IncentiveCard
@@ -1432,7 +1614,7 @@ function ScenarioCard({
 
         {conditionalIncentives.length > 0 && (
           <div className="space-y-2">
-            <p className="text-[10px] font-black uppercase tracking-widest text-sky-700">Needs Checks Or Tweaks</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-sky-700">Possible, But Conditions Remain</p>
             <div className="grid gap-2">
               {conditionalIncentives.map((inc, i) => (
                 <IncentiveCard
@@ -1453,8 +1635,8 @@ function ScenarioCard({
 
         {strategicFunds.length > 0 && (
           <div className="space-y-2">
-            <p className="text-[10px] font-black uppercase tracking-widest text-violet-700">Selective Opportunities</p>
-            <p className="text-xs text-neutral-500">Discretionary funds and strategic programmes that match the project, but are not counted in headline financing totals.</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-violet-700">Competitive Or Selective Funding</p>
+            <p className="text-xs text-neutral-500">These funds may fit the project, but they depend on applications, judging, deadlines, or available budgets. They are not counted as reliable financing until awarded.</p>
             <div className="grid gap-2">
               {strategicFunds.map((inc, i) => (
                 <IncentiveCard
@@ -1498,7 +1680,7 @@ function ScenarioCard({
                     <div className="h-8 w-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center">
                       <AlertCircle size={20} />
                     </div>
-                    <h4 className="text-xl font-bold">Almost There</h4>
+                    <h4 className="text-xl font-bold">Could Be Unlocked With Changes</h4>
                     <span className="text-sm text-neutral-400 font-medium">(Options that are mainly being blocked by one threshold)</span>
                   </div>
 
@@ -1512,7 +1694,7 @@ function ScenarioCard({
                           </div>
                           <div className="text-right">
                             <span className="text-xl font-bold text-amber-600">+{fmt(nm.potential_benefit_amount || 0, nm.potential_benefit_currency || currency)}</span>
-                            <span className="block text-xs font-bold text-neutral-400 mt-1">IF YOU FIX THIS GAP</span>
+                            <span className="block text-xs font-bold text-neutral-400 mt-1">IF THIS CHANGES</span>
                           </div>
                         </div>
 
@@ -1555,6 +1737,22 @@ function ScenarioCard({
                   )}
                 </section>
               )}
+
+              <section className="space-y-4 pt-6 border-t border-neutral-100">
+                <h4 className="text-xl font-bold">What A Professional Should Verify</h4>
+                <div className="grid gap-3 md:grid-cols-2">
+                  {[
+                    'Whether the project actually meets each programme rule.',
+                    'Which expenses count and which expenses are excluded.',
+                    'Application timing, audit timing, payment timing, and cash-flow risk.',
+                    'Whether the treaty route and producer shares match the legal structure.',
+                  ].map((item) => (
+                    <div key={item} className="border border-neutral-100 bg-neutral-50 p-4 text-sm font-medium text-neutral-700">
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </section>
             </>
           )}
         </div>
@@ -1589,7 +1787,17 @@ function IncentiveCard({
         ? 'text-sky-700'
         : 'text-violet-700'
   const [open, setOpen] = useState(false)
+  const [reportOpen, setReportOpen] = useState(false)
   const selectiveAmount = isSelectiveOpportunity(inc) ? selectiveAmountInfo(inc, currency) : null
+
+  const submitDataIssue = async (proposal: any) => {
+    const response = await fetch(`${API_BASE_URL}/api/data/propose-update`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(proposal),
+    })
+    if (!response.ok) throw new Error(await response.text())
+  }
 
   return (
     <div className="border border-neutral-200">
@@ -1638,6 +1846,11 @@ function IncentiveCard({
             </div>
           )}
           <p className="text-neutral-500 mt-3 max-w-xl">{inc.benefit?.benefit_explanation}</p>
+          {inc.benefit?.sources && inc.benefit.sources.length > 0 && (
+            <p className="text-xs font-bold uppercase tracking-widest text-neutral-400 mt-3">
+              {freshnessText(inc.benefit.sources)}
+            </p>
+          )}
           {isSelectiveOpportunity(inc) && inc.application_note && (
             <p className="text-xs text-neutral-500 mt-3 max-w-xl">
               <span className="font-bold text-neutral-700">Application note:</span> {inc.application_note}
@@ -1654,9 +1867,24 @@ function IncentiveCard({
             {inc.benefit?.sources.map((s, idx) => (
               <SourceBadge key={idx} source={s} onDocumentOpen={onDocumentOpen} />
             ))}
+            {inc.id && (
+              <button
+                type="button"
+                onClick={() => setReportOpen(true)}
+                className="px-3 py-1 text-[10px] font-black uppercase tracking-widest border border-neutral-200 text-neutral-500 hover:border-gallery-accent hover:text-gallery-accent transition-all"
+              >
+                Report Data Issue
+              </button>
+            )}
           </div>
         </div>
       )}
+      <ReportIssueModal
+        incentive={inc}
+        isOpen={reportOpen}
+        onClose={() => setReportOpen(false)}
+        onSubmit={submitDataIssue}
+      />
     </div>
   )
 }

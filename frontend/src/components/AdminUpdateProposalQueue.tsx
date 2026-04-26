@@ -29,6 +29,8 @@ export function AdminUpdateProposalQueue({ initialStatus = 'pending' }: Props) {
   const [status, setStatus] = useState(initialStatus)
   const [reviewingId, setReviewingId] = useState<number | null>(null)
   const [reviewNotes, setReviewNotes] = useState('')
+  const [adminToken, setAdminToken] = useState('')
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     loadProposals()
@@ -44,6 +46,7 @@ export function AdminUpdateProposalQueue({ initialStatus = 'pending' }: Props) {
       setProposals(data)
     } catch (err) {
       console.error('Failed to load proposals:', err)
+      setError(err instanceof Error ? err.message : 'Failed to load proposals')
     } finally {
       setLoading(false)
     }
@@ -53,45 +56,64 @@ export function AdminUpdateProposalQueue({ initialStatus = 'pending' }: Props) {
     try {
       const response = await fetch(`${API_BASE_URL}/api/admin/update-proposals/${proposalId}/review`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Admin-Token': adminToken,
+        },
         body: JSON.stringify({
           action,
           notes: reviewNotes || null,
         }),
       })
-      if (!response.ok) throw new Error('Failed to review proposal')
+      if (!response.ok) throw new Error(await response.text())
 
       // Reload proposals
       setReviewingId(null)
       setReviewNotes('')
+      setError(null)
       await loadProposals()
     } catch (err) {
       console.error('Failed to review proposal:', err)
+      setError(err instanceof Error ? err.message : 'Failed to review proposal')
     }
   }
 
   return (
     <div className="space-y-4">
       {/* Status filter */}
-      <div className="flex gap-2">
-        {['pending', 'approved', 'rejected'].map((s) => (
-          <button
-            key={s}
-            onClick={() => setStatus(s)}
-            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-              status === s
-                ? 'bg-indigo-600 text-white'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-            }`}
-          >
-            {s.charAt(0).toUpperCase() + s.slice(1)}
-            {s === 'pending' && proposals.length > 0 && (
-              <span className="ml-1.5 inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold bg-red-100 text-red-700">
-                {proposals.length}
-              </span>
-            )}
-          </button>
-        ))}
+      <div className="space-y-3">
+        <div className="flex gap-2">
+          {['pending', 'approved', 'rejected'].map((s) => (
+            <button
+              key={s}
+              onClick={() => setStatus(s)}
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                status === s
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              {s.charAt(0).toUpperCase() + s.slice(1)}
+              {s === 'pending' && proposals.length > 0 && (
+                <span className="ml-1.5 inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold bg-red-100 text-red-700">
+                  {proposals.length}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+        <input
+          type="password"
+          value={adminToken}
+          onChange={(e) => setAdminToken(e.target.value)}
+          placeholder="Admin review token"
+          className="w-full px-3 py-2 rounded-md border border-slate-300 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+        />
+        {error && (
+          <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+            {error}
+          </div>
+        )}
       </div>
 
       {/* Proposals list */}
